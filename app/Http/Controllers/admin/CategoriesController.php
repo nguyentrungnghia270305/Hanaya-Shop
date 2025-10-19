@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Category; // Assuming you have a Category model
+use App\Models\Product\Category; // Assuming you have a Category model
 
 class CategoriesController extends Controller
 {
@@ -31,7 +31,6 @@ class CategoriesController extends Controller
         $category->save();
 
         return response()->json($category);
-       
     }
 
     public function update(Request $request, $id)
@@ -49,7 +48,7 @@ class CategoriesController extends Controller
 
         return response()->json($category);
     }
-    
+
     public function destroy($id)
     {
         // Find the category by ID and delete it
@@ -57,5 +56,16 @@ class CategoriesController extends Controller
         $category->delete();
 
         return response()->json(['success' => true]);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $categories = Category::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('description', 'LIKE', "%{$query}%")
+            ->get();
+
+        return response()->json($categories);
     }
 }
