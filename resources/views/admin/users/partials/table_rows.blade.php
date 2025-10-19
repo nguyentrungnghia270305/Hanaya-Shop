@@ -3,6 +3,7 @@
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
             <tr>
+                <th scope="col" class="px-4 py-2"><input type="checkbox" id="select-all-users" title="Select all users" onclick="document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = this.checked)"></th>
                 <th scope="col" class="px-4 py-2">ID</th>
                 <th scope="col" class="px-4 py-2">Name</th>
                 <th scope="col" class="px-4 py-2">Email</th>
@@ -14,6 +15,7 @@
         <tbody class="bg-white divide-y divide-gray-200">
             @foreach($users as $user)
             <tr tabindex="0" class="focus:bg-blue-50 @if($loop->even) bg-gray-100 @endif" title="User ID: {{ $user->id }}">
+                <td class="px-4 py-2"><input type="checkbox" class="user-checkbox" value="{{ $user->id }}" title="Select user"></td>
                 <td class="px-4 py-2" title="User ID">{{ $user->id }}</td>
                 <td class="px-4 py-2" title="Full name">{{ $user->name }}</td>
                 <td class="px-4 py-2" title="Email address">{{ $user->email }}</td>
@@ -37,5 +39,23 @@
             </tr>
             @endforeach
         </tbody>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7" class="px-4 py-2 bg-gray-50 text-right">
+                    <span class="font-semibold">Total users: {{ $users->count() }}</span>
+                    <button class="bg-red-500 text-white px-3 py-1 rounded ml-4" onclick="bulkDeleteUsers()">Delete Selected</button>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </div>
+<script>
+function bulkDeleteUsers() {
+    const ids = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value);
+    if(ids.length === 0) { alert('No users selected!'); return; }
+    if(!confirm('Delete selected users?')) return;
+    // TODO: Implement AJAX bulk delete
+    alert('Bulk delete: ' + ids.join(', '));
+}
+</script>
