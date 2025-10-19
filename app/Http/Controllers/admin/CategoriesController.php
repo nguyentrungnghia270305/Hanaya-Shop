@@ -31,7 +31,6 @@ class CategoriesController extends Controller
         $category->save();
 
         return response()->json($category);
-        
     }
 
     public function update(Request $request, $id)
@@ -64,10 +63,9 @@ class CategoriesController extends Controller
         $query = $request->input('query');
 
         $categories = Category::where('name', 'LIKE', "%{$query}%")
-                          ->orWhere('description', 'LIKE', "%{$query}%")
-                          ->get();
+            ->orWhere('description', 'LIKE', "%{$query}%")
+            ->get();
 
         return response()->json($categories);
     }
-
 }
