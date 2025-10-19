@@ -50,12 +50,23 @@
         </tfoot>
     </table>
 </div>
+<div id="bulk-delete-status" class="mt-2 text-sm text-red-600" style="display:none"></div>
+<div id="bulk-delete-loading" class="mt-2 text-sm text-blue-600" style="display:none">Deleting users...</div>
 <script>
 function bulkDeleteUsers() {
     const ids = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value);
-    if(ids.length === 0) { alert('No users selected!'); return; }
+    const status = document.getElementById('bulk-delete-status');
+    const loading = document.getElementById('bulk-delete-loading');
+    status.style.display = 'none';
+    loading.style.display = 'none';
+    if(ids.length === 0) { status.textContent = 'No users selected!'; status.style.display = 'block'; return; }
     if(!confirm('Delete selected users?')) return;
+    loading.style.display = 'block';
     // TODO: Implement AJAX bulk delete
-    alert('Bulk delete: ' + ids.join(', '));
+    setTimeout(() => {
+        loading.style.display = 'none';
+        status.textContent = 'Bulk delete: ' + ids.join(', ');
+        status.style.display = 'block';
+    }, 1200);
 }
 </script>
