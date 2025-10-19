@@ -4,6 +4,48 @@
  * Admin Users Controller
  *
  * This controller handles user management functionality for the admin panel
+    /**
+     * Export users to CSV
+     * Allows admin to download all users as a CSV file for reporting
+     */
+    public function exportCsv()
+    {
+        $users = User::all();
+        $filename = 'users_' . date('Ymd_His') . '.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$filename",
+        ];
+        $callback = function() use ($users) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['ID', 'Name', 'Email', 'Role', 'Created At']);
+            foreach ($users as $user) {
+                fputcsv($handle, [$user->id, $user->name, $user->email, $user->role, $user->created_at]);
+            }
+            fclose($handle);
+        };
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Toggle user status (active/inactive)
+     * Allows admin to quickly enable/disable user accounts
+     */
+    public function toggleStatus($id)
+    {
+        $user = User::findOrFail($id);
+        $user->active = !$user->active;
+        $user->save();
+        return redirect()->back()->with('success', 'User status updated!');
+    }
+
+    /**
+     * Flash message helper for actions
+     */
+    protected function flashSuccess($message)
+    {
+        session()->flash('success', $message);
+    }
  * in the Hanaya Shop e-commerce application. It provides comprehensive CRUD
  * operations for user accounts, including creation, editing, deletion, and
  * detailed user information viewing.
