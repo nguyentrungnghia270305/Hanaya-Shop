@@ -45,8 +45,14 @@ Route::middleware(['auth'])->group(function () {
 
 use App\Http\Middleware\IsAdmin;
 
+use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\User\PostController as UserPostController;
+
 Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Quản lý post (admin)
+    Route::resource('posts', AdminPostController::class);
 
     Route::get('/product', [ProductsController::class, 'index'])->name('product');
     Route::get('/product/create', [ProductsController::class, 'create'])->name('product.create');
@@ -67,9 +73,13 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
 
     Route::get('/statistical', [StatisticalController::class, 'index'])->name('statistical');
 
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
+
+// Hiển thị post cho user
+Route::resource('posts', UserPostController::class)->only(['index', 'show']);
