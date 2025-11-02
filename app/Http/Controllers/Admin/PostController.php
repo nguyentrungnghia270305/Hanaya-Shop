@@ -12,7 +12,14 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = \App\Models\Post::orderByDesc('published_at')->paginate(10);
+        $query = \App\Models\Post::query();
+        if ($search = request('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%$search%")
+                  ->orWhere('author', 'like', "%$search%\");
+            });
+        }
+        $posts = $query->orderByDesc('published_at')->paginate(10);
         return view('admin.posts.index', compact('posts'));
     }
 

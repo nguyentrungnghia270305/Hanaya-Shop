@@ -10,6 +10,11 @@
 <div class="py-8">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white shadow-sm rounded-lg p-6">
+            <form method="GET" action="{{ route('admin.posts.index') }}" class="mb-4 flex gap-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by title or author..." class="form-control w-64" />
+                <button type="submit" class="btn btn-secondary">Search</button>
+                <a href="{{ route('admin.posts.index') }}" class="btn btn-link">Clear</a>
+            </form>
             <a href="{{ route('admin.posts.create') }}" class="btn btn-primary mb-3">Add New Post</a>
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
