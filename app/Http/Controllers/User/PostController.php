@@ -12,7 +12,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = \App\Models\Post::orderByDesc('published_at')->paginate(8);
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -36,7 +37,8 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $post = \App\Models\Post::findOrFail($id);
+        return view('posts.show', compact('post'));
     }
 
     /**
