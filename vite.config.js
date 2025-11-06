@@ -3,12 +3,12 @@ import laravel from "laravel-vite-plugin";
 
 export default defineConfig({
     server: {
-        host: "hanaya.local", // Dùng domain giống Laravel
+        host: "localhost", // Dùng domain giống Laravel
         port: 5174,
         strictPort: true,
         https: false,
         hmr: {
-            host: "hanaya.local",
+            host: "localhost",
             protocol: "ws", // hoặc 'wss' nếu bạn dùng HTTPS
         },
         cors: true, // <-- Bắt buộc thêm dòng này
