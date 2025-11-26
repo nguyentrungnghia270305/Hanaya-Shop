@@ -19,36 +19,49 @@
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-            <table class="table table-bordered w-full">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Published At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach($posts as $post)
-                    <tr>
-                        <td>{{ $post->id }}</td>
-                        <td>{{ $post->title }}</td>
-                        <td>{{ $post->author }}</td>
-                        <td>{{ optional($post->published_at)->format('d/m/Y') }}</td>
-                        <td>
-                            <a href="{{ route('admin.posts.show', $post->id) }}" class="btn btn-info btn-sm">View</a>
-                            <a href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST" style="display:inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this post?')">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+            <form method="POST" action="{{ route('admin.posts.bulk-delete') }}" id="bulk-delete-form">
+                @csrf
+                @method('DELETE')
+                <table class="table table-bordered w-full">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select-all"></th>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Published At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($posts as $post)
+                        <tr>
+                            <td><input type="checkbox" name="ids[]" value="{{ $post->id }}"></td>
+                            <td>{{ $post->id }}</td>
+                            <td>{{ $post->title }}</td>
+                            <td>{{ $post->author }}</td>
+                            <td>{{ optional($post->published_at)->format('d/m/Y') }}</td>
+                            <td>
+                                <a href="{{ route('admin.posts.show', $post->id) }}" class="btn btn-info btn-sm">View</a>
+                                <a href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST" style="display:inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this post?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-danger mt-2" onclick="return confirm('Delete selected posts?')">Delete Selected</button>
+            </form>
+            <script>
+                document.getElementById('select-all').onclick = function() {
+                    let checkboxes = document.querySelectorAll('input[name="ids[]"]');
+                    for (let cb of checkboxes) cb.checked = this.checked;
+                };
+            </script>
             <div class="mt-4">
                 {{ $posts->links() }}
             </div>
