@@ -1366,3 +1366,311 @@ See [ROADMAP.md](ROADMAP.md) for detailed plans.
 - **バージョン管理**: Git
 - **CI/CD**: GitHub Actions
 - **監視**: Laravel Telescope（開発環境）
+
+## 💻 システム要件
+
+### 最小要件
+
+- **PHP**: 8.2以上
+- **Composer**: 2.5+
+- **Node.js**: 18.x以上
+- **NPM**: 9.x以上
+- **データベース**: MySQL 8.0+またはPostgreSQL 14+
+- **Redis**: 7.0+（オプションですが推奨）
+- **Webサーバー**: Nginx 1.20+またはApache 2.4+
+
+### 推奨サーバー仕様
+
+- **CPU**: 2コア以上
+- **RAM**: 最小4GB、推奨8GB
+- **ストレージ**: 20GB SSD
+- **OS**: Ubuntu 22.04 LTS、Debian 11、または同等
+
+### 必要なPHP拡張機能
+
+```
+- BCMath
+- Ctype
+- Fileinfo
+- JSON
+- Mbstring
+- OpenSSL
+- PDO
+- Tokenizer
+- XML
+- GDまたはImagick
+- Redis（キャッシング用）
+- Zip
+```
+
+## 📦 インストール
+
+### クイックスタート（開発環境）
+
+```bash
+# リポジトリのクローン
+git clone https://github.com/nguyentrungnghia270305/Hanaya-Shop.git
+cd Hanaya-Shop
+
+# PHP依存関係のインストール
+composer install
+
+# Node依存関係のインストール
+npm install
+
+# 環境ファイルのコピー
+cp .env.example .env
+
+# アプリケーションキーの生成
+php artisan key:generate
+
+# .envファイルでデータベースを設定
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=hanaya_shop
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+# マイグレーションとシーダーの実行
+php artisan migrate --seed
+
+# フロントエンドアセットのビルド
+npm run dev
+
+# 開発サーバーの起動
+php artisan serve
+```
+
+アプリケーションには `http://localhost:8000` でアクセスできます
+
+### 詳細なインストール手順
+
+#### 1. クローンとセットアップ
+
+```bash
+# すべてのブランチを含むリポジトリのクローン
+git clone --branch main https://github.com/nguyentrungnghia270305/Hanaya-Shop.git
+
+# プロジェクトディレクトリに移動
+cd Hanaya-Shop
+
+# 必要に応じて特定のブランチをチェックアウト
+git checkout develop
+```
+
+#### 2. 依存関係のインストール
+
+```bash
+# Composer依存関係のインストール（本番環境）
+composer install --no-dev --optimize-autoloader
+
+# または開発環境用
+composer install
+
+# NPM依存関係のインストール
+npm ci
+
+# または最新パッケージで開発用
+npm install
+```
+
+#### 3. 環境設定
+
+```bash
+# 環境ファイルのコピー
+cp .env.example .env
+
+# アプリケーションキーの生成
+php artisan key:generate
+
+# JWTシークレットの生成（API認証を使用する場合）
+php artisan jwt:secret
+```
+
+`.env`ファイルを設定で編集：
+
+```env
+APP_NAME="Hanaya Shop"
+APP_ENV=production
+APP_KEY=base64:...
+APP_DEBUG=false
+APP_URL=https://your-domain.com
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hanaya_shop
+DB_USERNAME=your_db_user
+DB_PASSWORD=your_secure_password
+
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@hanaya-shop.com
+MAIL_FROM_NAME="${APP_NAME}"
+
+FILESYSTEM_DISK=local
+```
+
+#### 4. データベースのセットアップ
+
+```bash
+# データベースの作成（MySQLの例）
+mysql -u root -p
+CREATE DATABASE hanaya_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+exit;
+
+# マイグレーションの実行
+php artisan migrate
+
+# サンプルデータでデータベースをシード
+php artisan db:seed
+
+# または1つのコマンドでマイグレーションとシードを実行
+php artisan migrate:fresh --seed
+```
+
+#### 5. ストレージと権限
+
+```bash
+# ストレージのシンボリックリンク作成
+php artisan storage:link
+
+# 正しい権限の設定（Linux/Mac）
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+
+# または開発用
+chmod -R 777 storage bootstrap/cache
+```
+
+#### 6. アセットのビルド
+
+```bash
+# ホットリロード付き開発用
+npm run dev
+
+# 本番ビルド用
+npm run build
+
+# 変更の監視（開発）
+npm run watch
+```
+
+#### 7. キューとスケジュールのセットアップ（本番環境）
+
+```bash
+# キューワーカーの起動
+php artisan queue:work --daemon
+
+# または本番環境ではSupervisorを使用（推奨）
+# 以下の設定セクションを参照
+
+# スケジュールされたタスクのためにcrontabに追加
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+#### 8. キャッシュの最適化（本番環境）
+
+```bash
+# 設定のキャッシュ
+php artisan config:cache
+
+# ルートのキャッシュ
+php artisan route:cache
+
+# ビューのキャッシュ
+php artisan view:cache
+
+# オートローダーの最適化
+composer dump-autoload --optimize
+
+# 必要に応じてすべてのキャッシュをクリア
+php artisan optimize:clear
+```
+
+## ⚙️ 設定
+
+### Webサーバーの設定
+
+#### Nginx設定
+
+`/etc/nginx/sites-available/hanaya-shop`を作成：
+
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name your-domain.com;
+    root /var/www/hanaya-shop/public;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
+サイトを有効化してNginxを再起動：
+
+```bash
+sudo ln -s /etc/nginx/sites-available/hanaya-shop /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+### Supervisor設定（キューワーカー）
+
+`/etc/supervisor/conf.d/hanaya-shop-worker.conf`を作成：
+
+```ini
+[program:hanaya-shop-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/hanaya-shop/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/var/www/hanaya-shop/storage/logs/worker.log
+stopwaitsecs=3600
+```
+
+Supervisorの起動：
+
+```bash
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start hanaya-shop-worker:*
+```
