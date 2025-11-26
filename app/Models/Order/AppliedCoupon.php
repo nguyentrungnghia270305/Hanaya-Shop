@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Order;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Offer\Coupon;
 
 class AppliedCoupon extends Model
 {
