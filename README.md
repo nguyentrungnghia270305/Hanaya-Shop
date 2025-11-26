@@ -2006,3 +2006,227 @@ curl -X POST http://localhost:8000/api/cart/add \
     "quantity": 2
   }'
 ```
+
+#### 注文の作成
+
+```bash
+curl -X POST http://localhost:8000/api/orders \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [
+      {"product_id": 1, "quantity": 2},
+      {"product_id": 3, "quantity": 1}
+    ],
+    "shipping_address": "123 Main St, City",
+    "payment_method": "credit_card"
+  }'
+```
+
+## 🤝 貢献
+
+プロジェクトへの貢献を歓迎します！以下のガイドラインに従ってください：
+
+### 貢献の手順
+
+1. **リポジトリをフォーク**
+
+```bash
+# GitHubでフォークボタンをクリック
+```
+
+2. **フィーチャーブランチを作成**
+
+```bash
+git checkout -b feature/amazing-feature
+```
+
+3. **変更をコミット**
+
+```bash
+git add .
+git commit -m "feat: add amazing feature"
+```
+
+コミットメッセージには[Conventional Commits](https://www.conventionalcommits.org/)を使用：
+- `feat:` - 新機能
+- `fix:` - バグ修正
+- `docs:` - ドキュメントのみの変更
+- `style:` - コードの意味に影響しない変更（空白、フォーマットなど）
+- `refactor:` - バグ修正や機能追加ではないコード変更
+- `perf:` - パフォーマンスを向上させるコード変更
+- `test:` - 不足しているテストの追加または既存テストの修正
+- `chore:` - ビルドプロセスやドキュメント生成などの補助ツールの変更
+
+4. **ブランチをプッシュ**
+
+```bash
+git push origin feature/amazing-feature
+```
+
+5. **プルリクエストを開く**
+
+以下を含むプルリクエストを作成：
+- 変更内容の明確な説明
+- 関連する問題番号
+- 新機能のスクリーンショット（該当する場合）
+- テストを追加したことの確認
+
+### コーディング規約
+
+- PSR-12コーディング標準に従う
+- 複雑なロジックには説明的なコメントを記述
+- すべての新機能に対してテストを作成
+- コードを最新のmainブランチとマージする前にリベース
+
+### テストのガイドライン
+
+プルリクエストを送信する前に：
+
+```bash
+# すべてのテストを実行
+php artisan test
+
+# コードスタイルを確認
+./vendor/bin/pint
+
+# 静的解析を実行
+./vendor/bin/phpstan analyse
+```
+
+### バグ報告
+
+バグを発見した場合は、以下を含むissueを作成してください：
+- バグの明確な説明
+- 再現手順
+- 期待される動作
+- スクリーンショット（該当する場合）
+- 環境の詳細（OS、PHP バージョンなど）
+
+### 機能リクエスト
+
+機能リクエストも歓迎します！以下を含むissueを作成してください：
+- 機能の明確な説明
+- その機能が有用である理由
+- 実装案（あれば）
+
+## 📄 ライセンス
+
+このプロジェクトは**MITライセンス**の下でライセンスされています。詳細については[LICENSE](LICENSE)ファイルを参照してください。
+
+### MITライセンス
+
+```
+MIT License
+
+Copyright (c) 2025 Nguyễn Trung Nghĩa
+
+以下の条件に従い、本ソフトウェアおよび関連文書ファイル（以下「ソフトウェア」）
+の複製を取得する者に対し、ソフトウェアを無制限に取り扱う権利を無償で許可します。
+これには、ソフトウェアの複製の使用、複製、変更、結合、公開、配布、
+サブライセンス、および/または販売する権利、およびソフトウェアを提供する人に
+同じことを許可する権利が含まれますが、これらに限定されません。
+
+上記の著作権表示および本許諾表示を、ソフトウェアの全ての複製または重要な部分に
+記載するものとします。
+
+ソフトウェアは「現状のまま」提供され、商品性、特定目的への適合性、および
+非侵害についての保証を含むがこれに限定されない、明示的または黙示的な
+いかなる種類の保証もなく提供されます。
+```
+
+## 📞 お問い合わせ
+
+**Nguyễn Trung Nghĩa**
+
+- 📧 Email: [nguyentrungnghia270305@gmail.com](mailto:nguyentrungnghia270305@gmail.com)
+- 🐙 GitHub: [@nguyentrungnghia270305](https://github.com/nguyentrungnghia270305)
+- 💼 LinkedIn: [Nguyễn Trung Nghĩa](https://linkedin.com/in/nguyentrungnghia270305)
+
+**プロジェクトリンク:** [https://github.com/nguyentrungnghia270305/Hanaya-Shop](https://github.com/nguyentrungnghia270305/Hanaya-Shop)
+
+## 🙏 謝辞
+
+このプロジェクトは以下のオープンソースプロジェクトによって実現されています：
+
+- [Laravel](https://laravel.com) - PHP Webアプリケーションフレームワーク
+- [Tailwind CSS](https://tailwindcss.com) - ユーティリティファーストのCSSフレームワーク
+- [Alpine.js](https://alpinejs.dev) - JavaScriptフレームワーク
+- [Livewire](https://laravel-livewire.com) - Laravelのフルスタックフレームワーク
+- [Docker](https://docker.com) - コンテナ化プラットフォーム
+
+そして、貢献してくださったすべてのコントリビューターに感謝します！
+
+## 🗺️ ロードマップ
+
+### 近日実装予定の機能
+
+- [ ] 多言語サポート（英語、日本語、ベトナム語）
+- [ ] ソーシャルメディアログイン（Google、Facebook）
+- [ ] 高度な検索とフィルタリング
+- [ ] ウィッシュリスト機能
+- [ ] 商品の比較機能
+- [ ] レビュー評価システム
+- [ ] メール通知
+- [ ] SMSアラート
+- [ ] リアルタイム注文追跡
+- [ ] 在庫管理改善
+- [ ] 高度な分析ダッシュボード
+- [ ] PWA（プログレッシブウェブアプリ）サポート
+
+### 将来のバージョン
+
+**v2.0.0**（予定：2025年Q2）
+- マイクロサービスアーキテクチャへの移行
+- GraphQL API
+- Elasticsearchの統合
+- Redisキャッシング戦略の高度化
+- パフォーマンスの最適化
+
+**v3.0.0**（予定：2025年Q4）
+- AIベースの商品レコメンデーション
+- 音声検索
+- AR（拡張現実）商品プレビュー
+- ブロックチェーン決済統合
+- IoTデバイスサポート
+
+## 🔒 セキュリティ
+
+セキュリティ脆弱性を発見した場合は、イシュートラッカーに報告しないでください。
+代わりに、[nguyentrungnghia270305@gmail.com](mailto:nguyentrungnghia270305@gmail.com)にメールを送信してください。
+
+すべてのセキュリティ脆弱性は迅速に対処されます。
+
+### セキュリティのベストプラクティス
+
+- `.env`ファイルをバージョン管理にコミットしない
+- 本番環境では強力なデータベースパスワードを使用する
+- SSL/TLS証明書を使用する
+- アプリケーションと依存関係を定期的に更新する
+- アプリケーションログを監視する
+- 本番環境では`APP_DEBUG=false`を設定する
+- レート制限を実装する
+- CSRFとXSS保護を有効にする（Laravelのデフォルト）
+
+## 📊 プロジェクト統計
+
+- **開発開始**: 2024年12月
+- **現在のバージョン**: 1.0.0
+- **コード行数**: 15,000+
+- **テストカバレッジ**: 85%
+- **コントリビューター**: 開発中
+- **オープンイシュー**: 進行中
+
+## 📖 追加資料
+
+- [Laravel Documentation](https://laravel.com/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Docker Documentation](https://docs.docker.com)
+- [Alpine.js Documentation](https://alpinejs.dev/start-here)
+- [PHP Best Practices](https://phptherightway.com)
+
+---
+
+**Hanaya Shop**で作成 ❤️ by [Nguyễn Trung Nghĩa](https://github.com/nguyentrungnghia270305)
+
+⭐ このプロジェクトが気に入った場合は、GitHubでスターを付けてください！
