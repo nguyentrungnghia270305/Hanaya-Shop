@@ -1,104 +1,39 @@
-    /**
-     * Bulk delete posts.
-     */
-    public function bulkDelete(Request $request)
-    {
-        $ids = $request->input('ids', []);
-        if (!empty($ids)) {
-            \App\Models\Post::whereIn('id', $ids)->delete();
-            return redirect()->route('admin.posts.index')->with('success', 'Selected posts deleted!');
-        }
-        return redirect()->route('admin.posts.index')->with('error', 'No posts selected.');
-    }
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\User;
 
+use App\Models\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $query = \App\Models\Post::query();
-        if ($search = request('search')) {
-            $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%$search%")
-                  ->orWhere('author', 'like', "%$search%\");
+        $query = Post::where('status', true)->with('author');
+        
+        // Xử lý tìm kiếm
+        if ($request->has('search') && $request->input('search')) {
+            $searchTerm = $request->input('search');
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('content', 'LIKE', "%{$searchTerm}%");
             });
         }
-        $posts = $query->orderByDesc('published_at')->paginate(10);
-        return view('admin.posts.index', compact('posts'));
+        
+        $posts = $query->orderByDesc('created_at')->paginate(10);
+        
+        // Preserve search parameters in pagination
+        if ($request->has('search')) {
+            $posts->appends(['search' => $request->input('search')]);
+        }
+        
+        return view('page.posts.index', compact('posts'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id)
     {
-        return view('admin.posts.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'author' => 'required|string|max:100',
-            'published_at' => 'nullable|date',
-        ]);
-        $post = \App\Models\Post::create($data);
-        return redirect()->route('admin.posts.index')->with('success', 'Post created!');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $post = \App\Models\Post::findOrFail($id);
-        return view('admin.posts.show', compact('post'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $post = \App\Models\Post::findOrFail($id);
-        return view('admin.posts.edit', compact('post'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'author' => 'required|string|max:100',
-            'published_at' => 'nullable|date',
-        ]);
-        $post = \App\Models\Post::findOrFail($id);
-        $post->update($data);
-        return redirect()->route('admin.posts.index')->with('success', 'Post updated!');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $post = \App\Models\Post::findOrFail($id);
-        $post->delete();
-        return redirect()->route('admin.posts.index')->with('success', 'Post deleted!');
+        $post = Post::where('id', $id)->where('status', true)->with('author')->firstOrFail();
+        return view('page.posts.show', compact('post'));
     }
 }
