@@ -1,3 +1,15 @@
+    /**
+     * Bulk delete posts.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (!empty($ids)) {
+            \App\Models\Post::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.posts.index')->with('success', 'Selected posts deleted!');
+        }
+        return redirect()->route('admin.posts.index')->with('error', 'No posts selected.');
+    }
 <?php
 
 namespace App\Http\Controllers\Admin;
