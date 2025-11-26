@@ -1674,3 +1674,335 @@ sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start hanaya-shop-worker:*
 ```
+
+### SSL証明書（Let's Encrypt）
+
+```bash
+# Certbotのインストール
+sudo apt install certbot python3-certbot-nginx
+
+# SSL証明書の取得と自動設定
+sudo certbot --nginx -d your-domain.com -d www.your-domain.com
+
+# 自動更新のテスト
+sudo certbot renew --dry-run
+```
+
+### Redis設定
+
+開発環境では、デフォルトのRedis設定で動作します。本番環境では、`.env`に以下を設定：
+
+```env
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=your_redis_password
+REDIS_PORT=6379
+REDIS_CLIENT=phpredis  # より高速なパフォーマンス
+REDIS_CACHE_DB=0
+REDIS_QUEUE_DB=1
+REDIS_SESSION_DB=2
+```
+
+### メール設定
+
+実際のメールサービスを使用するように`.env`を更新：
+
+```env
+# Gmail SMTP（例）
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@hanaya-shop.com
+MAIL_FROM_NAME="Hanaya Shop"
+```
+
+## 🚀 使用方法
+
+### 基本的な使用
+
+#### 管理パネルへのアクセス
+
+```
+URL: http://localhost:8000/admin
+デフォルト認証情報:
+Email: admin@example.com
+Password: password
+```
+
+#### 顧客ショップへのアクセス
+
+```
+URL: http://localhost:8000
+テスト顧客:
+Email: customer@example.com
+Password: password
+```
+
+### 一般的なArtisanコマンド
+
+```bash
+# キャッシュのクリア
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# データベースのリフレッシュ
+php artisan migrate:fresh --seed
+
+# 新しいコントローラーの作成
+php artisan make:controller ProductController
+
+# 新しいモデルとマイグレーションの作成
+php artisan make:model Product -m
+
+# 新しいシーダーの作成
+php artisan make:seeder ProductSeeder
+
+# テストの実行
+php artisan test
+
+# キューのモニタリング
+php artisan queue:monitor
+
+# スケジュールされたコマンドのリスト表示
+php artisan schedule:list
+```
+
+### API使用方法
+
+APIエンドポイントは`/api`プレフィックスで利用可能です。認証にはSanctumトークンを使用：
+
+```bash
+# トークンの取得
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"customer@example.com","password":"password"}'
+
+# レスポンス:
+{
+  "token": "1|aBcDeFgHiJkLmNoPqRsTuVwXyZ...",
+  "user": {...}
+}
+
+# 認証されたリクエスト
+curl -X GET http://localhost:8000/api/products \
+  -H "Authorization: Bearer 1|aBcDeFgHiJkLmNoPqRsTuVwXyZ..."
+```
+
+## 🐳 Dockerデプロイ
+
+包括的なDockerガイドについては、[Docker Build & Push Guide](./GUIDE/DOCKER_BUILD_PUSH.md)を参照してください。
+
+### クイックDockerセットアップ
+
+```bash
+# イメージのビルド
+docker build -t hanaya-shop:latest .
+
+# コンテナの実行
+docker run -d \
+  --name hanaya-shop \
+  -p 8000:80 \
+  -e DB_HOST=mysql \
+  -e DB_DATABASE=hanaya_shop \
+  -e DB_USERNAME=root \
+  -e DB_PASSWORD=secret \
+  hanaya-shop:latest
+```
+
+### Docker Composeの使用
+
+```bash
+# すべてのサービスを起動
+docker-compose up -d
+
+# ログの確認
+docker-compose logs -f
+
+# コンテナの停止
+docker-compose down
+
+# ボリュームを含めて削除
+docker-compose down -v
+```
+
+`docker-compose.yml`の例：
+
+```yaml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "8000:80"
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=hanaya_shop
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: hanaya_shop
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mysql_data:
+  redis_data:
+```
+
+## 🧪 テスト
+
+### テストの実行
+
+```bash
+# すべてのテストを実行
+php artisan test
+
+# 並列テスト実行（高速）
+php artisan test --parallel
+
+# カバレッジ付きテスト
+php artisan test --coverage
+
+# 特定のテストファイルを実行
+php artisan test tests/Feature/ProductTest.php
+
+# フィルタで特定のテストを実行
+php artisan test --filter test_user_can_view_products
+
+# 詳細出力付きテスト
+php artisan test --verbose
+```
+
+### PHPUnitの使用
+
+```bash
+# PHPUnitで直接実行
+./vendor/bin/phpunit
+
+# カバレッジレポート付き
+./vendor/bin/phpunit --coverage-html coverage
+
+# 特定のテストスイート
+./vendor/bin/phpunit --testsuite Feature
+```
+
+### テストの作成
+
+```bash
+# 新しいフィーチャーテストの作成
+php artisan make:test ProductTest
+
+# 新しいユニットテストの作成
+php artisan make:test ProductTest --unit
+```
+
+テストの例：
+
+```php
+namespace Tests\Feature;
+
+use Tests\TestCase;
+use App\Models\Product;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class ProductTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_user_can_view_products()
+    {
+        $products = Product::factory()->count(3)->create();
+
+        $response = $this->get('/products');
+
+        $response->assertStatus(200);
+        $response->assertViewHas('products');
+    }
+}
+```
+
+## 📚 APIドキュメント
+
+### 認証エンドポイント
+
+```
+POST   /api/register          - 新しいユーザーの登録
+POST   /api/login             - ログインしてトークンを取得
+POST   /api/logout            - 現在のトークンを無効化
+GET    /api/user              - 認証されたユーザーの取得
+```
+
+### 商品エンドポイント
+
+```
+GET    /api/products          - すべての商品を取得
+GET    /api/products/{id}     - 特定の商品を取得
+POST   /api/products          - 新しい商品を作成（管理者）
+PUT    /api/products/{id}     - 商品を更新（管理者）
+DELETE /api/products/{id}     - 商品を削除（管理者）
+GET    /api/products/search   - 商品を検索
+```
+
+### カートエンドポイント
+
+```
+GET    /api/cart              - ユーザーのカートを取得
+POST   /api/cart/add          - カートに商品を追加
+PUT    /api/cart/update       - カート内の数量を更新
+DELETE /api/cart/remove/{id}  - カートから商品を削除
+POST   /api/cart/clear        - カートを空にする
+```
+
+### 注文エンドポイント
+
+```
+GET    /api/orders            - ユーザーの注文を取得
+GET    /api/orders/{id}       - 注文の詳細を取得
+POST   /api/orders            - 新しい注文を作成
+PUT    /api/orders/{id}       - 注文ステータスを更新（管理者）
+```
+
+### リクエストの例
+
+#### 新しい商品の作成（管理者）
+
+```bash
+curl -X POST http://localhost:8000/api/products \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Red Rose Bouquet",
+    "description": "Beautiful red roses",
+    "price": 29.99,
+    "stock": 50,
+    "category_id": 1
+  }'
+```
+
+#### カートに商品を追加
+
+```bash
+curl -X POST http://localhost:8000/api/cart/add \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "product_id": 1,
+    "quantity": 2
+  }'
+```
