@@ -976,3 +976,227 @@ Authorization: Bearer {token}
 ```
 
 For complete API documentation, visit `/api/documentation` (Swagger/OpenAPI).
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Here's how you can help:
+
+### Ways to Contribute
+
+- 🐛 **Report Bugs**: Submit issues for any bugs you find
+- 💡 **Suggest Features**: Share ideas for new features
+- 📝 **Improve Documentation**: Help us make docs clearer
+- 🔧 **Submit Pull Requests**: Contribute code improvements
+- 🌍 **Translations**: Help translate the application
+- ⭐ **Star the Project**: Show your support
+
+### Development Workflow
+
+1. **Fork the Repository**
+
+```bash
+# Click "Fork" button on GitHub
+# Then clone your fork
+git clone https://github.com/YOUR-USERNAME/Hanaya-Shop.git
+cd Hanaya-Shop
+git remote add upstream https://github.com/nguyentrungnghia270305/Hanaya-Shop.git
+```
+
+2. **Create a Feature Branch**
+
+```bash
+# Update your fork
+git checkout main
+git pull upstream main
+
+# Create feature branch
+git checkout -b feature/your-feature-name
+
+# Or for bug fixes
+git checkout -b fix/your-bug-fix
+```
+
+3. **Make Your Changes**
+
+```bash
+# Write code
+# Add tests
+# Update documentation
+
+# Check code style
+composer check
+
+# Run tests
+php artisan test
+```
+
+4. **Commit Your Changes**
+
+Follow conventional commits:
+
+```bash
+git add .
+git commit -m "feat: add product search functionality"
+
+# Commit types:
+# feat: New feature
+# fix: Bug fix
+# docs: Documentation changes
+# style: Code style changes (formatting)
+# refactor: Code refactoring
+# test: Adding or updating tests
+# chore: Maintenance tasks
+```
+
+5. **Push and Create Pull Request**
+
+```bash
+# Push to your fork
+git push origin feature/your-feature-name
+
+# Create PR on GitHub
+# Fill in the PR template
+# Wait for review
+```
+
+### Code Standards
+
+- Follow **PSR-12** coding standards
+- Write **meaningful commit messages**
+- Add **tests** for new features
+- Update **documentation** as needed
+- Keep **code coverage** above 80%
+- Use **type hints** and **return types**
+- Write **PHPDoc** comments for public methods
+
+### Pull Request Guidelines
+
+- One feature/fix per PR
+- Link related issues
+- Include tests
+- Update CHANGELOG.md
+- Ensure CI passes
+- Respond to review feedback
+
+### Issue Guidelines
+
+When creating an issue, please include:
+
+- **Bug Reports**: Steps to reproduce, expected vs actual behavior, screenshots
+- **Feature Requests**: Use case, proposed solution, alternatives considered
+- **Environment**: PHP version, Laravel version, OS, browser
+
+### Code of Conduct
+
+This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold this code.
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+```
+MIT License
+
+Copyright (c) 2024 Nguyen Trung Nghia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## 📞 Contact
+
+### Project Maintainer
+
+**Nguyen Trung Nghia**
+- 🌐 GitHub: [@nguyentrungnghia270305](https://github.com/nguyentrungnghia270305)
+- 📧 Email: nguyentrungnghia270305@gmail.com
+- 💼 LinkedIn: [Nguyen Trung Nghia](https://linkedin.com/in/nguyentrungnghia270305)
+
+### Project Links
+
+- 📦 **Repository**: [github.com/nguyentrungnghia270305/Hanaya-Shop](https://github.com/nguyentrungnghia270305/Hanaya-Shop)
+- 🐛 **Issues**: [github.com/nguyentrungnghia270305/Hanaya-Shop/issues](https://github.com/nguyentrungnghia270305/Hanaya-Shop/issues)
+- 📝 **Changelog**: [CHANGELOG.md](CHANGELOG.md)
+- 📖 **Wiki**: [github.com/nguyentrungnghia270305/Hanaya-Shop/wiki](https://github.com/nguyentrungnghia270305/Hanaya-Shop/wiki)
+
+### Community
+
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/nguyentrungnghia270305/Hanaya-Shop/discussions)
+- 🐦 **Twitter**: [@hanayashop](https://twitter.com/hanayashop)
+- 📱 **Discord**: [Join our Discord](https://discord.gg/hanayashop)
+
+## 🙏 Acknowledgments
+
+Special thanks to:
+
+- **Laravel Framework** - For the amazing PHP framework
+- **Tailwind CSS** - For the utility-first CSS framework
+- **Alpine.js** - For the lightweight JavaScript framework
+- **Font Awesome** - For the beautiful icons
+- **All Contributors** - For their valuable contributions
+
+### Inspiration
+
+This project was inspired by:
+- Modern e-commerce platforms
+- Beautiful flower shop designs
+- Laravel best practices and patterns
+
+## 📈 Project Statistics
+
+![GitHub stars](https://img.shields.io/github/stars/nguyentrungnghia270305/Hanaya-Shop?style=social)
+![GitHub forks](https://img.shields.io/github/forks/nguyentrungnghia270305/Hanaya-Shop?style=social)
+![GitHub issues](https://img.shields.io/github/issues/nguyentrungnghia270305/Hanaya-Shop)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/nguyentrungnghia270305/Hanaya-Shop)
+![GitHub last commit](https://img.shields.io/github/last-commit/nguyentrungnghia270305/Hanaya-Shop)
+![GitHub contributors](https://img.shields.io/github/contributors/nguyentrungnghia270305/Hanaya-Shop)
+
+## 🗺️ Roadmap
+
+### Version 1.1 (Q1 2025)
+- [ ] Multi-vendor support
+- [ ] Advanced analytics dashboard
+- [ ] Mobile application (Flutter)
+- [ ] Real-time chat support
+- [ ] Social media integration
+
+### Version 1.2 (Q2 2025)
+- [ ] Subscription boxes
+- [ ] Loyalty program
+- [ ] Gift registry
+- [ ] Advanced SEO tools
+- [ ] Multi-currency support
+
+### Version 2.0 (Q3 2025)
+- [ ] Headless CMS integration
+- [ ] PWA implementation
+- [ ] AI-powered recommendations
+- [ ] Blockchain-based loyalty points
+- [ ] AR flower preview
+
+See [ROADMAP.md](ROADMAP.md) for detailed plans.
+
+---
+
+<p align="center">Made with ❤️ by <a href="https://github.com/nguyentrungnghia270305">Nguyen Trung Nghia</a></p>
+
+<p align="center">
+  <a href="#english">Back to top ↑</a>
+</p>
+
+---
