@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Constants\OrderStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateOrderStatusRequest extends FormRequest
 {
@@ -21,7 +23,10 @@ class UpdateOrderStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled'
+            'status' => [
+                'required',
+                Rule::in(OrderStatus::all())
+            ]
         ];
     }
 
@@ -32,7 +37,7 @@ class UpdateOrderStatusRequest extends FormRequest
     {
         return [
             'status.required' => 'Trạng thái đơn hàng không được để trống',
-            'status.in' => 'Trạng thái không hợp lệ. Chỉ chấp nhận: pending, processing, shipped, delivered, cancelled'
+            'status.in' => 'Trạng thái không hợp lệ. Chỉ chấp nhận: ' . implode(', ', OrderStatus::all())
         ];
     }
 }

@@ -14,6 +14,12 @@ Route::prefix('orders')->group(function () {
     // Lấy tất cả đơn hàng
     Route::get('/', [OrderController::class, 'index']);
     
+    // Lấy thống kê đơn hàng
+    Route::get('/statistics', [OrderController::class, 'statistics']);
+    
+    // Lấy đơn hàng theo trạng thái
+    Route::get('/status/{status}', [OrderController::class, 'getByStatus']);
+    
     // Lấy chi tiết một đơn hàng
     Route::get('/{id}', [OrderController::class, 'show']);
     
@@ -22,7 +28,4 @@ Route::prefix('orders')->group(function () {
     
     // Hủy đơn hàng
     Route::patch('/{id}/cancel', [OrderController::class, 'cancel']);
-    
-    // Lấy đơn hàng theo trạng thái
-    Route::get('/status/{status}', [OrderController::class, 'getByStatus']);
 });

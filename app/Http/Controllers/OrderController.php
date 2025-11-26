@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\OrderStatus;
 use App\Models\Order;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -67,12 +68,20 @@ class OrderController extends Controller
             $newStatus = $request->status;
             
             // Không cho phép chuyển từ delivered/cancelled sang trạng thái khác
-            if (in_array($currentStatus, ['delivered', 'cancelled'])) {
+            if (in_array($currentStatus, OrderStatus::final())) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Không thể thay đổi trạng thái của đơn hàng đã hoàn thành hoặc đã hủy'
                 ], 400);
             }
+
+            // Log thay đổi trạng thái
+            Log::info('Cập nhật trạng thái đơn hàng', [
+                'order_id' => $order->id,
+                'old_status' => $currentStatus,
+                'new_status' => $newStatus,
+                'user_id' => $order->user_id,
+            ]);
 
             $order->status = $newStatus;
             $order->save();
@@ -83,6 +92,11 @@ class OrderController extends Controller
                 'data' => $order
             ], 200);
         } catch (\Exception $e) {
+            Log::error('Lỗi cập nhật trạng thái đơn hàng', [
+                'order_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
@@ -99,15 +113,23 @@ class OrderController extends Controller
             $order = Order::findOrFail($id);
             
             // Chỉ cho phép hủy đơn hàng ở trạng thái pending hoặc processing
-            if (!in_array($order->status, ['pending', 'processing'])) {
+            if (!in_array($order->status, OrderStatus::cancellable())) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Không thể hủy đơn hàng ở trạng thái hiện tại'
+                    'message' => 'Không thể hủy đơn hàng ở trạng thái hiện tại: ' . OrderStatus::getLabel($order->status)
                 ], 400);
             }
 
-            $order->status = 'cancelled';
+            $oldStatus = $order->status;
+            $order->status = OrderStatus::CANCELLED;
             $order->save();
+
+            // Log hủy đơn hàng
+            Log::info('Hủy đơn hàng', [
+                'order_id' => $order->id,
+                'old_status' => $oldStatus,
+                'user_id' => $order->user_id,
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -115,6 +137,11 @@ class OrderController extends Controller
                 'data' => $order
             ], 200);
         } catch (\Exception $e) {
+            Log::error('Lỗi hủy đơn hàng', [
+                'order_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
@@ -129,10 +156,10 @@ class OrderController extends Controller
     {
         try {
             // Validate status
-            if (!in_array($status, ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])) {
+            if (!OrderStatus::isValid($status)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Trạng thái không hợp lệ'
+                    'message' => 'Trạng thái không hợp lệ. Các trạng thái hợp lệ: ' . implode(', ', OrderStatus::all())
                 ], 400);
             }
 
@@ -145,7 +172,48 @@ class OrderController extends Controller
                 'success' => true,
                 'message' => 'Lấy danh sách đơn hàng thành công',
                 'data' => $orders,
-                'count' => $orders->count()
+                'count' => $orders->count(),
+                'status_label' => OrderStatus::getLabel($status)
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Lấy thống kê tổng quan đơn hàng theo trạng thái
+     */
+    public function statistics()
+    {
+        try {
+            $stats = [];
+            
+            foreach (OrderStatus::all() as $status) {
+                $count = Order::where('status', $status)->count();
+                $totalAmount = Order::where('status', $status)->sum('total_price');
+                
+                $stats[] = [
+                    'status' => $status,
+                    'label' => OrderStatus::getLabel($status),
+                    'count' => $count,
+                    'total_amount' => $totalAmount
+                ];
+            }
+
+            $totalOrders = Order::count();
+            $totalRevenue = Order::whereNotIn('status', [OrderStatus::CANCELLED])->sum('total_price');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Lấy thống kê đơn hàng thành công',
+                'data' => [
+                    'by_status' => $stats,
+                    'total_orders' => $totalOrders,
+                    'total_revenue' => $totalRevenue
+                ]
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -155,3 +223,4 @@ class OrderController extends Controller
         }
     }
 }
+
