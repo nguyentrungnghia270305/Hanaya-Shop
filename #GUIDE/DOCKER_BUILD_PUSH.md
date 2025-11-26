@@ -1,15 +1,33 @@
 # Docker Build & Push Guide
 
 ## Table of Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Docker Image Structure](#docker-image-structure)
-- [Building Docker Images](#building-docker-images)
-- [Tagging Strategies](#tagging-strategies)
-- [Pushing to Container Registry](#pushing-to-container-registry)
-- [Multi-Stage Builds](#multi-stage-builds)
-- [Optimization Tips](#optimization-tips)
-- [Troubleshooting](#troubleshooting)
+- [Docker Build \& Push Guide](#docker-build--push-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Prerequisites](#prerequisites)
+    - [System Requirements](#system-requirements)
+  - [Docker Image Structure](#docker-image-structure)
+    - [Base Images](#base-images)
+  - [Building Docker Images](#building-docker-images)
+    - [Development Build](#development-build)
+    - [Production Build](#production-build)
+    - [Build Arguments](#build-arguments)
+  - [Tagging Strategies](#tagging-strategies)
+    - [Semantic Versioning](#semantic-versioning)
+    - [Environment-Based Tags](#environment-based-tags)
+    - [Git-Based Tags](#git-based-tags)
+  - [Pushing to Container Registry](#pushing-to-container-registry)
+    - [Docker Hub](#docker-hub)
+    - [GitHub Container Registry](#github-container-registry)
+    - [Private Registry](#private-registry)
+  - [Multi-Stage Builds](#multi-stage-builds)
+    - [Stage 1: Dependencies](#stage-1-dependencies)
+    - [Stage 2: Build Assets](#stage-2-build-assets)
+    - [Stage 3: Production](#stage-3-production)
+  - [Optimization Tips](#optimization-tips)
+    - [Reduce Image Size](#reduce-image-size)
+    - [Layer Caching](#layer-caching)
+    - [Build Cache](#build-cache)
 
 ## Overview
 
@@ -298,3 +316,312 @@ docker build --cache-from hanaya-shop:latest -t hanaya-shop:latest .
 # Use inline cache
 docker build --build-arg BUILDKIT_INLINE_CACHE=1 -t hanaya-shop:latest .
 ```
+
+### Security Scanning
+
+Scan images for vulnerabilities before pushing:
+
+```bash
+# Using Docker Scout
+docker scout cves hanaya-shop:latest
+
+# Using Trivy
+trivy image hanaya-shop:latest
+
+# Using Snyk
+snyk container test hanaya-shop:latest
+```
+
+## Troubleshooting
+
+### Common Build Issues
+
+#### Issue: Build fails due to network timeout
+
+```bash
+# Increase Docker build timeout
+docker build --network host -t hanaya-shop:latest .
+
+# Or use a mirror registry
+docker build --build-arg COMPOSER_MIRROR=https://mirrors.aliyun.com/composer/ .
+```
+
+#### Issue: Out of disk space
+
+```bash
+# Clean up unused images and containers
+docker system prune -af
+
+# Remove build cache
+docker builder prune -af
+
+# Check disk usage
+docker system df
+```
+
+#### Issue: Layer caching not working
+
+```bash
+# Disable cache and rebuild
+docker build --no-cache -t hanaya-shop:latest .
+
+# Or use specific cache source
+docker build --cache-from hanaya-shop:cache -t hanaya-shop:latest .
+```
+
+### Permission Issues
+
+```bash
+# Fix permission denied errors
+sudo chown -R $USER:$USER .
+
+# Run with correct user in container
+docker run --user $(id -u):$(id -g) hanaya-shop:latest
+```
+
+### Debugging Failed Builds
+
+```bash
+# Run intermediate stage for debugging
+docker build --target dependencies -t debug-image .
+docker run -it debug-image sh
+
+# Check build logs
+docker build --progress=plain -t hanaya-shop:latest . 2>&1 | tee build.log
+```
+
+## CI/CD Integration
+
+### GitHub Actions
+
+Create `.github/workflows/docker-build-push.yml`:
+
+```yaml
+name: Docker Build and Push
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container registry
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+```
+
+### GitLab CI/CD
+
+Create `.gitlab-ci.yml`:
+
+```yaml
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+stages:
+  - build
+  - push
+  - deploy
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+  only:
+    - main
+    - develop
+    - tags
+
+push-latest:
+  stage: push
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker pull $IMAGE_TAG
+    - docker tag $IMAGE_TAG $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - main
+```
+
+### Jenkins Pipeline
+
+Create `Jenkinsfile`:
+
+```groovy
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_REGISTRY = 'ghcr.io'
+        IMAGE_NAME = 'hanaya-shop'
+        DOCKER_CREDENTIALS = credentials('docker-registry-credentials')
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                script {
+                    docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BUILD_NUMBER}")
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                script {
+                    docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BUILD_NUMBER}").inside {
+                        sh 'php artisan test'
+                    }
+                }
+            }
+        }
+        
+        stage('Push') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", 'docker-registry-credentials') {
+                        docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BUILD_NUMBER}").push()
+                        docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BUILD_NUMBER}").push('latest')
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+```
+
+## Best Practices
+
+### Image Naming
+
+Follow consistent naming conventions:
+
+```
+[registry/][username/]repository[:tag]
+
+Examples:
+- hanaya-shop:latest
+- ghcr.io/nguyentrungnghia270305/hanaya-shop:v1.0.0
+- registry.example.com/team/hanaya-shop:staging
+```
+
+### Version Control
+
+- Tag all production images with semantic versions
+- Use commit SHA for traceability
+- Keep development images separate from production
+
+### Security
+
+1. **Don't store secrets in images**:
+   ```bash
+   # Use build secrets (BuildKit)
+   docker build --secret id=env,src=.env.production .
+   ```
+
+2. **Run as non-root user**:
+   ```dockerfile
+   USER www-data
+   ```
+
+3. **Scan regularly**:
+   ```bash
+   docker scout cves --only-severity critical,high hanaya-shop:latest
+   ```
+
+### Documentation
+
+Include these labels in your Dockerfile:
+
+```dockerfile
+LABEL org.opencontainers.image.title="Hanaya Shop"
+LABEL org.opencontainers.image.description="E-commerce platform for flower shop"
+LABEL org.opencontainers.image.version="1.0.0"
+LABEL org.opencontainers.image.authors="Nguyen Trung Nghia <email@example.com>"
+LABEL org.opencontainers.image.source="https://github.com/nguyentrungnghia270305/Hanaya-Shop"
+LABEL org.opencontainers.image.licenses="MIT"
+```
+
+## Additional Resources
+
+- [Docker Documentation](https://docs.docker.com/)
+- [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
+- [Dockerfile Reference](https://docs.docker.com/engine/reference/builder/)
+- [Docker Compose Documentation](https://docs.docker.com/compose/)
+- [Container Registry Documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+
+---
+
+*Last updated: November 2025*
