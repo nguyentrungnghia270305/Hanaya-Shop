@@ -53,6 +53,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
 
     // Quản lý post (admin)
     Route::resource('posts', AdminPostController::class);
+    Route::delete('posts-bulk-delete', [AdminPostController::class, 'bulkDelete'])->name('posts.bulk-delete');
 
     Route::get('/product', [ProductsController::class, 'index'])->name('product');
     Route::get('/product/create', [ProductsController::class, 'create'])->name('product.create');
