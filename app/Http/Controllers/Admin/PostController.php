@@ -1,3 +1,15 @@
+    /**
+     * Bulk delete posts.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (!empty($ids)) {
+            \App\Models\Post::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.posts.index')->with('success', 'Selected posts deleted!');
+        }
+        return redirect()->route('admin.posts.index')->with('error', 'No posts selected.');
+    }
 <?php
 
 namespace App\Http\Controllers\Admin;
@@ -12,7 +24,14 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = \App\Models\Post::orderByDesc('published_at')->paginate(10);
+        $query = \App\Models\Post::query();
+        if ($search = request('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%$search%")
+                  ->orWhere('author', 'like', "%$search%\");
+            });
+        }
+        $posts = $query->orderByDesc('published_at')->paginate(10);
         return view('admin.posts.index', compact('posts'));
     }
 
