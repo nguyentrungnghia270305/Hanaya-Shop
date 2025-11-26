@@ -528,3 +528,451 @@ sudo certbot --nginx -d your-domain.com -d www.your-domain.com
 # Auto-renewal (already configured by certbot)
 sudo certbot renew --dry-run
 ```
+
+## 🚀 Usage
+
+### Accessing the Application
+
+#### Customer Interface
+- **Homepage**: `http://your-domain.com`
+- **Shop**: `http://your-domain.com/products`
+- **Cart**: `http://your-domain.com/cart`
+- **Account**: `http://your-domain.com/account`
+
+#### Admin Panel
+- **Login**: `http://your-domain.com/admin/login`
+- **Dashboard**: `http://your-domain.com/admin/dashboard`
+
+### Default Admin Credentials
+
+```
+Email: admin@hanaya-shop.com
+Password: admin123
+```
+
+**⚠️ Important**: Change these credentials immediately after first login!
+
+### Common Tasks
+
+#### Managing Products
+
+```bash
+# Import products from CSV
+php artisan products:import storage/imports/products.csv
+
+# Export products to CSV
+php artisan products:export
+
+# Update product stock
+php artisan products:update-stock
+
+# Generate product sitemap
+php artisan sitemap:generate
+```
+
+#### Managing Orders
+
+```bash
+# Process pending orders
+php artisan orders:process
+
+# Send order notifications
+php artisan orders:notify
+
+# Generate order reports
+php artisan reports:orders --from=2024-01-01 --to=2024-12-31
+```
+
+#### User Management
+
+```bash
+# Create admin user
+php artisan user:create-admin
+
+# List all users
+php artisan user:list
+
+# Delete inactive users
+php artisan user:cleanup --days=365
+```
+
+#### Cache Management
+
+```bash
+# Clear application cache
+php artisan cache:clear
+
+# Clear config cache
+php artisan config:clear
+
+# Clear route cache
+php artisan route:clear
+
+# Clear view cache
+php artisan view:clear
+
+# Clear all caches
+php artisan optimize:clear
+```
+
+## 🐳 Docker Deployment
+
+### Prerequisites
+
+- Docker Engine 20.10+
+- Docker Compose 2.0+
+
+### Quick Start with Docker
+
+```bash
+# Clone repository
+git clone https://github.com/nguyentrungnghia270305/Hanaya-Shop.git
+cd Hanaya-Shop
+
+# Copy environment file
+cp .env.example .env
+
+# Edit .env for Docker
+# DB_HOST=mysql
+# REDIS_HOST=redis
+
+# Build and start containers
+docker-compose up -d
+
+# Install dependencies
+docker-compose exec app composer install
+docker-compose exec app npm install
+docker-compose exec app npm run build
+
+# Run migrations
+docker-compose exec app php artisan migrate --seed
+
+# Access application at http://localhost:8000
+```
+
+### Docker Compose Configuration
+
+The `docker-compose.yml` includes:
+
+```yaml
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:9000"
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+      - redis
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: hanaya_shop
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
+
+volumes:
+  mysql-data:
+  redis-data:
+```
+
+### Docker Commands
+
+```bash
+# Start all containers
+docker-compose up -d
+
+# Stop all containers
+docker-compose down
+
+# View logs
+docker-compose logs -f app
+
+# Execute commands in container
+docker-compose exec app php artisan migrate
+
+# Rebuild containers
+docker-compose up -d --build
+
+# Remove volumes (⚠️ deletes data)
+docker-compose down -v
+```
+
+### Production Docker Build
+
+```bash
+# Build production image
+docker build -t hanaya-shop:latest --target production .
+
+# Tag for registry
+docker tag hanaya-shop:latest ghcr.io/nguyentrungnghia270305/hanaya-shop:latest
+
+# Push to registry
+docker push ghcr.io/nguyentrungnghia270305/hanaya-shop:latest
+
+# Run production container
+docker run -d \
+  --name hanaya-shop \
+  -p 80:80 \
+  -e APP_ENV=production \
+  -e DB_HOST=your-db-host \
+  ghcr.io/nguyentrungnghia270305/hanaya-shop:latest
+```
+
+For detailed Docker instructions, see [#GUIDE/DOCKER_BUILD_PUSH.md](#GUIDE/DOCKER_BUILD_PUSH.md)
+
+## 🧪 Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test suite
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+
+# Run specific test file
+php artisan test tests/Feature/ProductTest.php
+
+# Run with coverage
+php artisan test --coverage
+
+# Run parallel tests
+php artisan test --parallel
+```
+
+### Test Structure
+
+```
+tests/
+├── Feature/           # Feature/Integration tests
+│   ├── Auth/
+│   ├── Admin/
+│   ├── Product/
+│   ├── Order/
+│   └── Cart/
+├── Unit/              # Unit tests
+│   ├── Models/
+│   ├── Services/
+│   └── Helpers/
+└── TestCase.php       # Base test case
+```
+
+### Writing Tests
+
+Example feature test:
+
+```php
+<?php
+
+namespace Tests\Feature\Product;
+
+use Tests\TestCase;
+use App\Models\Product\Product;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class ProductTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_user_can_view_products()
+    {
+        $products = Product::factory()->count(10)->create();
+
+        $response = $this->get('/products');
+
+        $response->assertStatus(200);
+        $response->assertViewHas('products');
+    }
+
+    public function test_user_can_add_product_to_cart()
+    {
+        $product = Product::factory()->create();
+
+        $response = $this->post('/cart', [
+            'product_id' => $product->id,
+            'quantity' => 1,
+        ]);
+
+        $response->assertRedirect('/cart');
+        $this->assertDatabaseHas('cart_items', [
+            'product_id' => $product->id,
+        ]);
+    }
+}
+```
+
+### Code Quality Tools
+
+```bash
+# Run PHP CS Fixer
+./vendor/bin/php-cs-fixer fix
+
+# Run PHPStan
+./vendor/bin/phpstan analyse
+
+# Run PHP Code Sniffer
+./vendor/bin/phpcs
+
+# Run all quality checks
+composer check
+```
+
+### Continuous Integration
+
+The project includes GitHub Actions workflow for automated testing:
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+      - run: composer install
+      - run: php artisan test
+```
+
+## 📚 API Documentation
+
+### Authentication
+
+#### Register
+
+```http
+POST /api/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+```
+
+#### Login
+
+```http
+POST /api/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+Response:
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "user": { ... }
+}
+```
+
+### Products
+
+#### List Products
+
+```http
+GET /api/products?page=1&per_page=20&category=flowers&sort=price_asc
+Authorization: Bearer {token}
+
+Response:
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Red Rose Bouquet",
+      "price": 2999,
+      "stock": 50,
+      "category": "Bouquets"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "total": 100
+  }
+}
+```
+
+#### Get Product Details
+
+```http
+GET /api/products/1
+Authorization: Bearer {token}
+```
+
+#### Create Product (Admin)
+
+```http
+POST /api/admin/products
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "name": "Tulip Bouquet",
+  "description": "Beautiful spring tulips",
+  "price": 3500,
+  "stock": 30,
+  "category_id": 2
+}
+```
+
+### Orders
+
+#### Create Order
+
+```http
+POST /api/orders
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "product_id": 1,
+      "quantity": 2
+    }
+  ],
+  "shipping_address": "123 Main St",
+  "payment_method": "credit_card"
+}
+```
+
+#### Get Order Status
+
+```http
+GET /api/orders/123
+Authorization: Bearer {token}
+```
+
+For complete API documentation, visit `/api/documentation` (Swagger/OpenAPI).
