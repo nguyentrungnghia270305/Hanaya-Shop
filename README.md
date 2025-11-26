@@ -174,3 +174,357 @@
 - **Version Control**: Git
 - **CI/CD**: GitHub Actions
 - **Monitoring**: Laravel Telescope (development)
+
+## 💻 System Requirements
+
+### Minimum Requirements
+
+- **PHP**: 8.2 or higher
+- **Composer**: 2.5+
+- **Node.js**: 18.x or higher
+- **NPM**: 9.x or higher
+- **Database**: MySQL 8.0+ or PostgreSQL 14+
+- **Redis**: 7.0+ (optional but recommended)
+- **Web Server**: Nginx 1.20+ or Apache 2.4+
+
+### Recommended Server Specifications
+
+- **CPU**: 2+ cores
+- **RAM**: 4GB minimum, 8GB recommended
+- **Storage**: 20GB SSD
+- **OS**: Ubuntu 22.04 LTS, Debian 11, or equivalent
+
+### PHP Extensions Required
+
+```
+- BCMath
+- Ctype
+- Fileinfo
+- JSON
+- Mbstring
+- OpenSSL
+- PDO
+- Tokenizer
+- XML
+- GD or Imagick
+- Redis (for caching)
+- Zip
+```
+
+## 📦 Installation
+
+### Quick Start (Development)
+
+```bash
+# Clone the repository
+git clone https://github.com/nguyentrungnghia270305/Hanaya-Shop.git
+cd Hanaya-Shop
+
+# Install PHP dependencies
+composer install
+
+# Install Node dependencies
+npm install
+
+# Copy environment file
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+
+# Configure your database in .env file
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=hanaya_shop
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+# Run migrations and seeders
+php artisan migrate --seed
+
+# Build frontend assets
+npm run dev
+
+# Start development server
+php artisan serve
+```
+
+Access the application at `http://localhost:8000`
+
+### Detailed Installation Steps
+
+#### 1. Clone and Setup
+
+```bash
+# Clone repository with all branches
+git clone --branch main https://github.com/nguyentrungnghia270305/Hanaya-Shop.git
+
+# Navigate to project directory
+cd Hanaya-Shop
+
+# Checkout specific branch if needed
+git checkout develop
+```
+
+#### 2. Install Dependencies
+
+```bash
+# Install Composer dependencies (production)
+composer install --no-dev --optimize-autoloader
+
+# Or for development
+composer install
+
+# Install NPM dependencies
+npm ci
+
+# Or for development with latest packages
+npm install
+```
+
+#### 3. Environment Configuration
+
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+
+# Generate JWT secret (if using API authentication)
+php artisan jwt:secret
+```
+
+Edit `.env` file with your configuration:
+
+```env
+APP_NAME="Hanaya Shop"
+APP_ENV=production
+APP_KEY=base64:...
+APP_DEBUG=false
+APP_URL=https://your-domain.com
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hanaya_shop
+DB_USERNAME=your_db_user
+DB_PASSWORD=your_secure_password
+
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@hanaya-shop.com
+MAIL_FROM_NAME="${APP_NAME}"
+
+FILESYSTEM_DISK=local
+```
+
+#### 4. Database Setup
+
+```bash
+# Create database (MySQL example)
+mysql -u root -p
+CREATE DATABASE hanaya_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+exit;
+
+# Run migrations
+php artisan migrate
+
+# Seed database with sample data
+php artisan db:seed
+
+# Or run migrations and seed in one command
+php artisan migrate:fresh --seed
+```
+
+#### 5. Storage and Permissions
+
+```bash
+# Create symbolic link for storage
+php artisan storage:link
+
+# Set correct permissions (Linux/Mac)
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+
+# Or for development
+chmod -R 777 storage bootstrap/cache
+```
+
+#### 6. Build Assets
+
+```bash
+# For development with hot reload
+npm run dev
+
+# For production build
+npm run build
+
+# Watch for changes (development)
+npm run watch
+```
+
+#### 7. Queue and Schedule Setup (Production)
+
+```bash
+# Start queue worker
+php artisan queue:work --daemon
+
+# Or use Supervisor for production (recommended)
+# See configuration section below
+
+# Add to crontab for scheduled tasks
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+#### 8. Cache Optimization (Production)
+
+```bash
+# Cache configuration
+php artisan config:cache
+
+# Cache routes
+php artisan route:cache
+
+# Cache views
+php artisan view:cache
+
+# Optimize autoloader
+composer dump-autoload --optimize
+
+# Clear all caches if needed
+php artisan optimize:clear
+```
+
+## ⚙️ Configuration
+
+### Web Server Configuration
+
+#### Nginx Configuration
+
+Create `/etc/nginx/sites-available/hanaya-shop`:
+
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name your-domain.com;
+    root /var/www/hanaya-shop/public;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
+Enable site and restart Nginx:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/hanaya-shop /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+#### Apache Configuration
+
+Create `.htaccess` in public directory (already included):
+
+```apache
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+```
+
+Enable required modules:
+
+```bash
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+```
+
+### Supervisor Configuration (Queue Worker)
+
+Create `/etc/supervisor/conf.d/hanaya-shop-worker.conf`:
+
+```ini
+[program:hanaya-shop-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/hanaya-shop/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/var/www/hanaya-shop/storage/logs/worker.log
+stopwaitsecs=3600
+```
+
+Start Supervisor:
+
+```bash
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start hanaya-shop-worker:*
+```
+
+### Redis Configuration
+
+Edit `/etc/redis/redis.conf`:
+
+```conf
+maxmemory 256mb
+maxmemory-policy allkeys-lru
+```
+
+Restart Redis:
+
+```bash
+sudo systemctl restart redis
+```
+
+### SSL/TLS Configuration (Let's Encrypt)
+
+```bash
+# Install Certbot
+sudo apt install certbot python3-certbot-nginx
+
+# Obtain certificate
+sudo certbot --nginx -d your-domain.com -d www.your-domain.com
+
+# Auto-renewal (already configured by certbot)
+sudo certbot renew --dry-run
+```
