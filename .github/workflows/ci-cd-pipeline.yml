@@ -1217,3 +1217,220 @@ jobs:
           echo "Rollback Time: $(date)"
           echo "==================================="
 
+  # Notifications and Monitoring
+  notify:
+    name: 📢 Send Notifications
+    runs-on: ubuntu-latest
+    needs: [deploy, rollback]
+    if: always()
+    
+    steps:
+      - name: Determine workflow status
+        id: status
+        run: |
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "STATUS=success" >> $GITHUB_OUTPUT
+            echo "MESSAGE=Deployment completed successfully" >> $GITHUB_OUTPUT
+            echo "COLOR=#36a64f" >> $GITHUB_OUTPUT
+            echo "EMOJI=✅" >> $GITHUB_OUTPUT
+          elif [ "${{ needs.rollback.result }}" == "success" ]; then
+            echo "STATUS=rollback" >> $GITHUB_OUTPUT
+            echo "MESSAGE=Deployment failed, rollback completed" >> $GITHUB_OUTPUT
+            echo "COLOR=#ff9800" >> $GITHUB_OUTPUT
+            echo "EMOJI=🔄" >> $GITHUB_OUTPUT
+          else
+            echo "STATUS=failure" >> $GITHUB_OUTPUT
+            echo "MESSAGE=Deployment and rollback failed" >> $GITHUB_OUTPUT
+            echo "COLOR=#ff0000" >> $GITHUB_OUTPUT
+            echo "EMOJI=❌" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Slack notification
+        if: always()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "${{ steps.status.outputs.EMOJI }} Deployment Notification",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ steps.status.outputs.EMOJI }} ${{ steps.status.outputs.MESSAGE }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n${{ github.repository }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n${{ github.ref_name }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Commit:*\n<${{ github.event.head_commit.url }}|${{ github.sha }}>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author:*\n${{ github.actor }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:*\n${{ steps.status.outputs.STATUS }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Workflow:*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Commit Message:*\n${{ github.event.head_commit.message }}"
+                  }
+                }
+              ],
+              "attachments": [
+                {
+                  "color": "${{ steps.status.outputs.COLOR }}",
+                  "fields": [
+                    {
+                      "title": "Environment",
+                      "value": "Production",
+                      "short": true
+                    },
+                    {
+                      "title": "Duration",
+                      "value": "${{ github.event.workflow_run.updated_at }}",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send email notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "${{ steps.status.outputs.EMOJI }} Deployment ${{ steps.status.outputs.STATUS }} - ${{ github.repository }}"
+          to: ${{ secrets.NOTIFICATION_EMAIL }}
+          from: GitHub Actions <noreply@github.com>
+          html_body: |
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: ${{ steps.status.outputs.COLOR }}; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+                .content { background: #f4f4f4; padding: 20px; border-radius: 0 0 5px 5px; }
+                .info-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                .info-table td { padding: 10px; border-bottom: 1px solid #ddd; }
+                .info-table td:first-child { font-weight: bold; width: 150px; }
+                .button { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px 5px; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h1>${{ steps.status.outputs.EMOJI }} Deployment Notification</h1>
+                  <h2>${{ steps.status.outputs.MESSAGE }}</h2>
+                </div>
+                <div class="content">
+                  <table class="info-table">
+                    <tr>
+                      <td>Repository</td>
+                      <td>${{ github.repository }}</td>
+                    </tr>
+                    <tr>
+                      <td>Branch</td>
+                      <td>${{ github.ref_name }}</td>
+                    </tr>
+                    <tr>
+                      <td>Commit</td>
+                      <td>${{ github.sha }}</td>
+                    </tr>
+                    <tr>
+                      <td>Author</td>
+                      <td>${{ github.actor }}</td>
+                    </tr>
+                    <tr>
+                      <td>Status</td>
+                      <td>${{ steps.status.outputs.STATUS }}</td>
+                    </tr>
+                    <tr>
+                      <td>Timestamp</td>
+                      <td>${{ github.event.head_commit.timestamp }}</td>
+                    </tr>
+                  </table>
+                  
+                  <h3>Commit Message</h3>
+                  <p>${{ github.event.head_commit.message }}</p>
+                  
+                  <div style="text-align: center; margin-top: 20px;">
+                    <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" class="button">
+                      View Workflow Run
+                    </a>
+                    <a href="${{ github.event.head_commit.url }}" class="button">
+                      View Commit
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </body>
+            </html>
+
+      - name: Create deployment event
+        if: steps.status.outputs.STATUS == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: 'production',
+              required_contexts: [],
+              auto_merge: false,
+              description: 'Automated deployment from CI/CD pipeline'
+            });
+
+      - name: Update deployment status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployments = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              environment: 'production'
+            });
+            
+            if (deployments.data.length > 0) {
+              const deployment = deployments.data[0];
+              await github.rest.repos.createDeploymentStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                deployment_id: deployment.id,
+                state: '${{ steps.status.outputs.STATUS }}' === 'success' ? 'success' : 'failure',
+                log_url: `${context.payload.repository.html_url}/actions/runs/${context.runId}`,
+                description: '${{ steps.status.outputs.MESSAGE }}',
+                environment_url: 'https://hanaya-shop.com'
+              });
+            }
+
