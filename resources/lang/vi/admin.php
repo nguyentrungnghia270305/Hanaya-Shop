@@ -43,7 +43,7 @@ return [
     'payment_confirmed_successfully' => 'Xác nhận thanh toán thành công',
     'payment_update_error' => 'Lỗi khi cập nhật trạng thái thanh toán',
     'order_cancelled_successfully' => 'Đơn hàng đã được hủy thành công',
-    'order_cancel_error' => 'Có lỗi xảy ra khi hủy đơn hàng',
+    'order_cancel_error' => 'Đã xảy ra lỗi khi hủy đơn hàng',
 
     // User management
     'user_management' => 'Quản lý người dùng',
@@ -51,13 +51,12 @@ return [
     'add_user' => 'Thêm người dùng',
     'edit_user' => 'Chỉnh sửa người dùng',
     'user_role' => 'Vai trò',
-    'user_status' => 'Trạng thái',
-    'message_account_delete' => 'Xóa tài khoản thành công!',
-    'message_selected_account_delete' => 'Đã xóa các tài khoản được chọn!',
-    
+    'user_status' => 'Trạng thái người dùng',
+    'operation_successful' => 'Thao tác thành công',
+
     // Common actions
     'create' => 'Tạo',
-    'edit' => 'Chỉnh sửa',
+    'edit' => 'Sửa',
     'delete' => 'Xóa',
     'save' => 'Lưu',
     'cancel' => 'Hủy',
@@ -73,8 +72,10 @@ return [
     'updated_successfully' => 'Cập nhật thành công!',
     'deleted_successfully' => 'Xóa thành công!',
     'operation_failed' => 'Thao tác thất bại!',
-    'confirm_delete' => 'Bạn có chắc muốn xóa mục này không?',
+    'confirm_delete' => 'Bạn có chắc muốn xóa mục này?',
     'no_data' => 'Không có dữ liệu',
+    'message_account_delete' => 'Tài khoản đã được xóa thành công!',
+    'message_selected_account_delete' => 'Các tài khoản đã chọn đã được xóa thành công!',
 
     // Status
     'active' => 'Hoạt động',
@@ -85,8 +86,8 @@ return [
 
     // Navigation
     'profile' => 'Hồ sơ',
-    'admin_dashboard' => 'Bảng quản trị',
-    'user_dashboard' => 'Bảng người dùng',
+    'admin_dashboard' => 'Bảng điều khiển quản trị',
+    'user_dashboard' => 'Bảng điều khiển người dùng',
     'log_out' => 'Đăng xuất',
     'no_notifications' => 'Không có thông báo mới.',
 
@@ -100,7 +101,7 @@ return [
     'upload_failed' => 'Tải lên thất bại:',
     'post_created_successfully' => 'Tạo bài viết thành công!',
     'post_updated_successfully' => 'Cập nhật bài viết thành công!',
-    'post_deleted_successfully' => 'Xóa bài viết thành công cùng với tất cả hình ảnh liên quan',
+    'post_deleted_successfully' => 'Xóa bài viết và tất cả hình ảnh liên quan thành công',
     'product_created_successfully' => 'Tạo sản phẩm thành công!',
     'failed_to_create_product' => 'Tạo sản phẩm thất bại',
     'product_updated_successfully' => 'Cập nhật sản phẩm thành công!',
@@ -111,7 +112,7 @@ return [
     'account_updated_successfully' => 'Cập nhật tài khoản thành công!',
     'account_deleted_successfully' => 'Xóa tài khoản thành công!',
     'you_cannot_delete_yourself' => 'Bạn không thể xóa chính mình.',
-    'no_categories_found' => 'Không tìm thấy danh mục.',
+    'no_categories_found' => 'Không tìm thấy danh mục nào.',
     'add_flower_category' => 'Thêm danh mục hoa',
     'category_name' => 'Tên danh mục',
     'quick_view' => 'Xem nhanh',
@@ -119,80 +120,80 @@ return [
     'category_image' => 'Hình ảnh danh mục:',
     'current_image' => 'Hình ảnh hiện tại:',
     'description' => 'Mô tả:',
-    'confirm_cancel' => 'Bạn có chắc muốn hủy? Mọi thay đổi chưa lưu sẽ bị mất.',
+    'confirm_cancel' => 'Bạn có chắc muốn hủy? Các thay đổi chưa lưu sẽ bị mất.',
     'add_category' => 'Thêm danh mục',
     'name' => 'Tên',
     'action' => 'Hành động',
     'back_to_categories' => 'Quay lại danh mục',
     'category_id' => 'ID danh mục',
-    'created_at' => 'Tạo lúc',
-    'updated_at' => 'Cập nhật lúc',
+    'created_at' => 'Ngày tạo',
+    'updated_at' => 'Ngày cập nhật',
     'no_description_available' => 'Không có mô tả',
     'total_products' => 'Tổng sản phẩm',
-    'active_products' => 'Sản phẩm hoạt động',
+    'active_products' => 'Sản phẩm đang hoạt động',
     'inactive_products' => 'Sản phẩm không hoạt động',
     'edit_category' => 'Chỉnh sửa danh mục',
     'delete_category' => 'Xóa danh mục',
     'confirm_delete_message' => 'Bạn có chắc muốn xóa danh mục này? Hành động này không thể hoàn tác.',
 
     // dash board
-    'monthly_revenue' => 'Doanh thu tháng',
-    'total_orders' => 'Tổng đơn hàng',
-    'total_users' => 'Tổng người dùng',
+    'monthly_revenue' => 'Doanh thu hàng tháng',
+    'total_orders' => 'Tổng số đơn hàng',
+    'total_users' => 'Tổng số người dùng',
     'category' => 'Danh mục',
     'in_stock' => 'Còn hàng',
     'out_of_stock' => 'Hết hàng',
-    'new_users_this_month' => 'Người dùng mới trong tháng',
+    'new_users_this_month' => 'Người dùng mới tháng này',
     'total_revenue' => 'Tổng doanh thu',
     'revenue_chart' => 'Biểu đồ doanh thu - 6 tháng gần nhất',
-    'order_status_distribution' => 'Phân bổ trạng thái đơn hàng',
+    'order_status_distribution' => 'Phân bố trạng thái đơn hàng',
     'processing' => 'Đang xử lý',
-    'shipped' => 'Đã gửi',
+    'shipped' => 'Đã giao hàng',
     'completed' => 'Hoàn thành',
     'cancelled' => 'Đã hủy',
-    'no_orders_yet' => 'Chưa có đơn hàng',
-    'best_selling_products' => 'Sản phẩm bán chạy',
+    'no_orders_yet' => 'Chưa có đơn hàng nào',
+    'best_selling_products' => 'Sản phẩm bán chạy nhất',
     'product' => 'Sản phẩm',
     'sold' => 'Đã bán',
     'no_data_available' => 'Không có dữ liệu',
     'low_stock_products' => 'Sản phẩm sắp hết hàng',
     'remaining' => 'Còn lại',
-    'all_products_are_well_stocked' => 'Tất cả sản phẩm đều đủ hàng',
+    'all_products_are_well_stocked' => 'Tất cả sản phẩm đều còn nhiều hàng',
     'recent_orders' => 'Đơn hàng gần đây',
     'customer' => 'Khách hàng',
-    'total' => 'Tổng',
+    'total' => 'Tổng cộng',
     'status' => 'Trạng thái',
-    'welcome_message' => 'Chào mừng đến với Bảng quản trị',
-    'manage_hanaya_shop' => 'Quản lý Hanaya Shop',
+    'welcome_message' => 'Chào mừng đến với Bảng điều khiển quản trị',
+    'manage_hanaya_shop' => 'Quản lý cửa hàng Hanaya',
 
     // category index
     'view_details' => 'Xem chi tiết',
-    'search_categories' => 'Tìm danh mục...',
+    'search_categories' => 'Tìm kiếm danh mục...',
 
-    //category show
+    // category show
     'category_information' => 'Thông tin danh mục',
     'Image' => 'Hình ảnh:',
 
-    //products create
+    // products create
     'add_new_product' => 'Thêm sản phẩm mới',
     'product_already_exists' => 'Sản phẩm này đã tồn tại.',
     'price' => 'Giá',
-    'stock_quantity' => 'Số lượng tồn',
+    'stock_quantity' => 'Số lượng tồn kho',
     'discount_percent' => 'Phần trăm giảm giá',
     'select_category' => 'Chọn danh mục',
 
     // products index
-    'search_products' => 'Tìm sản phẩm...',
+    'search_products' => 'Tìm kiếm sản phẩm...',
     'filter_by_category' => 'Lọc theo danh mục',
     'all_categories' => 'Tất cả danh mục',
-    'all_stock_status' => 'Tất cả trạng thái kho',
+    'all_stock_status' => 'Tất cả trạng thái tồn kho',
     'low_stock' => 'Sắp hết hàng',
     'add' => 'Thêm',
     'quantity' => 'Số lượng',
     'discount' => 'Giảm giá',
     'product_details' => 'Chi tiết sản phẩm',
 
-    'filter_by_stock' => 'Lọc theo tồn kho',
+    'filter_by_stock' => 'Lọc theo tình trạng hàng',
     'apply_filters' => 'Áp dụng bộ lọc',
     'reset' => 'Đặt lại bộ lọc',
 
@@ -201,35 +202,32 @@ return [
     'customer_reviews' => 'Đánh giá của khách hàng',
     'reviews' => 'Đánh giá',
     'order' => 'Đặt hàng',
-    'no_reviews_yet' => 'Chưa có đánh giá.',
-    'this_product_has_received_any_reviews' => 'Sản phẩm này chưa có đánh giá.',
-
+    'order_id' => 'Mã đơn hàng',
+    'no_reviews_yet' => 'Chưa có đánh giá nào.',
+    'this_product_has_received_any_reviews' => 'Sản phẩm này chưa nhận được đánh giá nào.',
 
     // user index
     'email' => 'Email',
     'role' => 'Vai trò',
-    'search_for_a_user' => 'Tìm người dùng...',
-
+    'search_for_a_user' => 'Tìm kiếm người dùng...',
     // user create
-    'add_user_account' => 'Thêm tài khoản',
+    'add_user_account' => 'Thêm tài khoản người dùng',
     'password' => 'Mật khẩu',
     'user' => 'Người dùng',
-    'admin' => 'Quản trị',
-    'add_row' => 'Thêm dòng',
-
-    //user edit
-    'edit_user_account' => 'Chỉnh sửa tài khoản',
-    'new_password' => 'Mật khẩu mới (để trống nếu không đổi)',
-
+    'admin' => 'Quản trị viên',
+    'add_row' => 'Thêm hàng',
+    // user edit
+    'edit_user_account' => 'Chỉnh sửa tài khoản người dùng',
+    'new_password' => 'Mật khẩu mới (để trống nếu muốn giữ nguyên mật khẩu hiện tại)',
     // user show
     'account_details' => 'Chi tiết tài khoản',
     'cart' => 'Giỏ hàng',
-    'no_products_in_cart' => 'Không có sản phẩm trong giỏ',
-    'no_orders_found' => 'Không tìm thấy đơn hàng',
+    'no_products_in_cart' => 'Không có sản phẩm nào trong giỏ',
+    'no_orders_found' => 'Không tìm thấy đơn hàng nào',
 
     // order index
     'total_price' => 'Tổng giá',
-    'order_at' => 'Đặt lúc',
+    'order_at' => 'Thời gian đặt hàng',
     'payment_status' => 'Trạng thái thanh toán',
     'confirm' => 'Xác nhận',
     'paid' => 'Đã thanh toán',
@@ -237,7 +235,7 @@ return [
     // order show
     'address' => 'Địa chỉ',
     'order_information' => 'Thông tin đơn hàng',
-    'total_amount' => 'Tổng tiền',
+    'total_amount' => 'Tổng số tiền',
     'payment_information' => 'Thông tin thanh toán',
     'payment_method' => 'Phương thức thanh toán',
     'transaction_id' => 'Mã giao dịch',
@@ -247,35 +245,36 @@ return [
     'message' => 'Tin nhắn',
     'mark_as_paid' => 'Đánh dấu đã thanh toán',
     'already_paid' => 'Đã thanh toán',
-    'search_order' => 'Tìm đơn...',
     'all' => 'Tất cả',
 
-    //posts index
+    // posts index
     'posts_management' => 'Quản lý bài viết',
     'add_new_post' => 'Thêm bài viết mới',
-    'search_posts' => 'Tìm bài viết...',
+    'search_posts' => 'Tìm kiếm bài viết...',
     'clear_filter' => 'Xóa bộ lọc',
     'title' => 'Tiêu đề',
     'author' => 'Tác giả',
     'visible' => 'Hiển thị',
     'hidden' => 'Ẩn',
-    'no_posts_found' => 'Không tìm thấy bài viết.',
+    'no_posts_found' => 'Không tìm thấy bài viết nào.',
 
     // posts create
     'create_new_post' => 'Tạo bài viết mới',
     'content' => 'Nội dung',
     'guide' => 'Hướng dẫn',
-    'image_button_title' => 'Nút hình ảnh:',
-    'image_button_desc' => 'Nhấn nút Image trên thanh công cụ',
+    'image_button_title' => 'Nút Chèn Ảnh:',
+    'image_button_desc' => 'Nhấn nút Chèn Ảnh trên thanh công cụ',
     'drag_drop_title' => 'Kéo & Thả:',
-    'drag_drop_desc' => 'Kéo và thả hình ảnh vào trình soạn thảo',
+    'drag_drop_desc' => 'Kéo và thả tệp ảnh vào trình soạn thảo',
     'copy_paste_title' => 'Sao chép/Dán:',
     'copy_paste_desc' => 'Dán hình ảnh từ clipboard',
-    'limitations_title' => 'Hạn chế:',
+    'limitations_title' => 'Giới hạn:',
     'limitations_desc' => 'Kích thước tối đa 10MB, định dạng: jpg, png, gif, webp',
 
-    //posts show
+    // posts show
     'post_details' => 'Chi tiết bài viết',
     'back' => 'Quay lại',
     'by' => 'bởi',
+
+    'cannot_delete_user_with_active_orders' => 'Không thể xóa người dùng có đơn hàng đang hoạt động',
 ];

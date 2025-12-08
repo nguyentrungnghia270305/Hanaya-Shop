@@ -54,7 +54,7 @@ return [
     'user_status' => 'User Status',
     'message_account_delete' => 'Account deleted successfully!',
     'message_selected_account_delete' => 'Selected accounts deleted successfully!',
-    
+
     // Common actions
     'create' => 'Create',
     'edit' => 'Edit',
@@ -169,11 +169,11 @@ return [
     'view_details' => 'View Details',
     'search_categories' => 'Search Categories...',
 
-    //category show
+    // category show
     'category_information' => 'Category Information',
     'Image' => 'Image:',
 
-    //products create
+    // products create
     'add_new_product' => 'Add New Product',
     'product_already_exists' => 'This product already exists.',
     'price' => 'Price',
@@ -201,9 +201,9 @@ return [
     'customer_reviews' => 'Customer Reviews',
     'reviews' => 'Reviews',
     'order' => 'Order',
+    'order_id' => 'Order ID',
     'no_reviews_yet' => 'No reviews yet.',
     'this_product_has_received_any_reviews' => 'This product has not received any reviews yet.',
-
 
     // user index
     'email' => 'Email',
@@ -217,7 +217,7 @@ return [
     'admin' => 'Admin',
     'add_row' => 'Add Row',
 
-    //user edit
+    // user edit
     'edit_user_account' => 'Edit User Account ',
     'new_password' => 'New Password (leave blank to keep current password)',
 
@@ -250,7 +250,7 @@ return [
     'search_order' => 'Search Order...',
     'all' => 'All',
 
-    //posts index
+    // posts index
     'posts_management' => 'Posts Management',
     'add_new_post' => 'Add New Post',
     'search_posts' => 'Search Posts...',
@@ -274,8 +274,10 @@ return [
     'limitations_title' => 'Limitations:',
     'limitations_desc' => 'Max file size 10MB, formats: jpg, png, gif, webp',
 
-    //posts show
+    // posts show
     'post_details' => 'Post Details',
     'back' => 'Back',
     'by' => 'by',
+
+    'cannot_delete_user_with_active_orders' => 'Cannot delete user with active orders',
 ];
