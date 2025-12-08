@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Product;
 
+use App\Models\Product\Category;
 use App\Models\Product\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,8 +19,10 @@ class ProductFactory extends Factory
             'stock_quantity' => $this->faker->numberBetween(0, 100),
             'image_url' => $this->faker->imageUrl(640, 480, 'flowers', true, 'Soap Flower'),
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'updated_at' => now(), // Thêm dòng này
-            'category_id' => 1, // hoặc random nếu có nhiều category
+            'updated_at' => now(),
+            'category_id' => Category::factory(),
+            'discount_percent' => $this->faker->randomFloat(2, 0, 50), // 0-50% discount
+            'view_count' => $this->faker->numberBetween(0, 1000), // 0-1000 views
         ];
     }
 }

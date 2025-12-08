@@ -1,32 +1,51 @@
-{{-- resources/views/admin/users/edit.blade.php --}}
 @extends('layouts.admin')
 
+@section('header')
+    <!-- Page header -->
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        {{ __('admin.edit_user_account') }}
+    </h2>
+@endsection
+
 @section('content')
-<div class="container mx-auto">
-    <h2 class="text-xl font-bold mb-4">Edit User</h2>
-    <form action="{{ route('admin.user.update', $user->id) }}" method="POST">
+    <!-- Form to edit user information -->
+    <form method="POST" action="{{ route('admin.user.update', $user->id) }}"
+        class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow space-y-4">
         @csrf
         @method('PUT')
-        <div class="mb-4">
-            <label for="name" class="block">Name</label>
-            <input type="text" name="name" id="name" class="border rounded w-full p-2" value="{{ $user->name }}" required>
+
+        <!-- Name field -->
+        <div>
+            <label class="block mb-1">{{ __('admin.name') }}</label>
+            <input type="text" name="name" value="{{ old('name', $user->name) }}"
+                class="border px-2 py-1 rounded w-full" required>
         </div>
-        <div class="mb-4">
-            <label for="email" class="block">Email</label>
-            <input type="email" name="email" id="email" class="border rounded w-full p-2" value="{{ $user->email }}" required>
+
+        <!-- Email field -->
+        <div>
+            <label class="block mb-1">{{ __('admin.email') }}</label>
+            <input type="email" name="email" value="{{ old('email', $user->email) }}"
+                class="border px-2 py-1 rounded w-full" required>
         </div>
-        <div class="mb-4">
-            <label for="password" class="block">Password (leave blank to keep current)</label>
-            <input type="password" name="password" id="password" class="border rounded w-full p-2">
-        </div>
-        <div class="mb-4">
-            <label for="role" class="block">Role</label>
-            <select name="role" id="role" class="border rounded w-full p-2">
-                <option value="user" @if($user->role == 'user') selected @endif>User</option>
-                <option value="admin" @if($user->role == 'admin') selected @endif>Admin</option>
+
+        <!-- Role field -->
+        <div>
+            <label class="block mb-1">{{ __('admin.role') }}</label>
+            <select name="role" class="border px-2 py-1 rounded w-full" required>
+                <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>{{ __('admin.user') }}</option>
+                <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>{{ __('admin.admin') }}</option>
             </select>
         </div>
-        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Update</button>
+
+        <!-- Password field (optional) -->
+        <div>
+            <label class="block mb-1">{{ __('admin.new_password') }}</label>
+            <input type="password" name="password" class="border px-2 py-1 rounded w-full">
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+            {{ __('admin.save') }}
+        </button>
     </form>
-</div>
 @endsection

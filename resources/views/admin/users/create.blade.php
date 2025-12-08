@@ -1,31 +1,99 @@
-{{-- resources/views/admin/users/create.blade.php --}}
 @extends('layouts.admin')
 
+@section('header')
+    <!-- Page header title -->
+    <h2 class="font-bold text-2xl text-gray-900 leading-tight text-center">
+        {{ __('admin.add_user_account') }}
+    </h2>
+@endsection
+
 @section('content')
-<div class="container mx-auto">
-    <h2 class="text-xl font-bold mb-4">Create User</h2>
-    <form action="{{ route('admin.user.store') }}" method="POST">
+    <!-- Form to submit multiple users -->
+    <form method="POST" action="{{ route('admin.user.store') }}"
+        class="relative z-10 max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg space-y-6 border border-gray-200">
         @csrf
-        <div class="mb-4">
-            <label for="name" class="block">Name</label>
-            <input type="text" name="name" id="name" class="border rounded w-full p-2" required>
+
+        <!-- Dynamic user input fields list -->
+        <div id="user-list" class="space-y-4">
+            <!-- Default row for first user -->
+            <div class="user-item grid grid-cols-12 gap-4 items-center">
+                <input type="text" name="users[0][name]" placeholder="{{ __('admin.name') }}"
+                    class="col-span-3 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-center"
+                    required>
+                <input type="email" name="users[0][email]" placeholder="{{ __('admin.email') }}"
+                    class="col-span-3 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-center"
+                    required>
+                <input type="password" name="users[0][password]" placeholder="{{ __('admin.password') }}"
+                    class="col-span-3 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-center"
+                    required>
+                <select name="users[0][role]" class="col-span-2 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-center" required>
+                    <option value="user" selected>{{ __('admin.user') }}</option>
+                    <option value="admin">{{ __('admin.admin') }}</option>
+                </select>
+                <button type="button"
+                    class="btn-remove-user hidden col-span-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md transition">
+                    X
+                </button>
+            </div>
         </div>
-        <div class="mb-4">
-            <label for="email" class="block">Email</label>
-            <input type="email" name="email" id="email" class="border rounded w-full p-2" required>
+
+        <!-- Add & Submit buttons -->
+        <div class="flex justify-center gap-4 pt-4">
+            <button type="button" id="btn-add-user"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition">
+                + {{ __('admin.add_row') }}
+            </button>
+            <button type="submit"
+                class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg transition">
+                💾 {{ __('admin.save') }}
+            </button>
         </div>
-        <div class="mb-4">
-            <label for="password" class="block">Password</label>
-            <input type="password" name="password" id="password" class="border rounded w-full p-2" required>
-        </div>
-        <div class="mb-4">
-            <label for="role" class="block">Role</label>
-            <select name="role" id="role" class="border rounded w-full p-2">
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select>
-        </div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Create</button>
     </form>
-</div>
+
+    <!-- JavaScript for dynamic field handling -->
+    <script>
+        // Add new user input row
+        document.getElementById('btn-add-user').addEventListener('click', function () {
+            const list = document.getElementById('user-list');
+            const idx = list.children.length;
+            const div = document.createElement('div');
+            div.className = 'user-item grid grid-cols-12 gap-4 items-center';
+
+            // Create input fields dynamically
+            div.innerHTML = `
+                <input type="text" name="users[${idx}][name]" placeholder="{{ __('admin.name') }}"
+                       class="col-span-3 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-center"
+                       required>
+                <input type="email" name="users[${idx}][email]" placeholder="{{ __('admin.email') }}"
+                       class="col-span-3 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-center"
+                       required>
+                <input type="password" name="users[${idx}][password]" placeholder="{{ __('admin.password') }}"
+                       class="col-span-3 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-center"
+                       required>
+                <select name="users[${idx}][role]" class="col-span-2 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-center" required>
+                    <option value="user" selected>{{ __('admin.user') }}</option>
+                    <option value="admin">{{ __('admin.admin') }}</option>
+                </select>
+                <button type="button"
+                        class="btn-remove-user col-span-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md transition">
+                    X
+                </button>
+            `;
+
+            // Append the new row to the list
+            list.appendChild(div);
+
+            // Add event listener to remove button of this row
+            div.querySelector('.btn-remove-user').addEventListener('click', function () {
+                div.remove();
+            });
+        });
+
+        // Remove user row when remove button is clicked
+        document.querySelectorAll('.btn-remove-user').forEach(btn => {
+            btn.addEventListener('click', function () {
+                this.closest('.user-item').remove();
+            });
+        });
+    </script>
 @endsection

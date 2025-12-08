@@ -1,86 +1,114 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ProductsController;
-use App\Http\Controllers\Admin\UsersController;
-use App\Http\Controllers\Admin\OrdersController;
-use App\Http\Controllers\Admin\ReviewsController;
-use App\Http\Controllers\Admin\StatisticalController;
-use App\Http\Controllers\Admin\CategoriesController;
-use App\Http\Controllers\User\soapFlowerController;
+/**
+ * Main Web Routes Configuration
+ *
+ * This file serves as the central routing hub for the Hanaya Shop e-commerce application.
+ * It orchestrates the inclusion of specialized route files and defines global application routes.
+ * The modular approach separates concerns between user, admin, and authentication routes.
+ *
+ * Route Organization:
+ * - User routes: Customer-facing functionality (products, cart, orders)
+ * - Admin routes: Administrative panel and management features
+ * - Auth routes: Authentication and authorization functionality
+ * - Global routes: Application-wide features like chatbot
+ *
+ * Architecture Benefits:
+ * - Separation of concerns for maintainability
+ * - Clear responsibility boundaries
+ * - Easier debugging and development
+ * - Scalable route organization
+ *
+ * @author Hanaya Shop Development Team
+ *
+ * @version 1.0
+ */
 
+use App\Http\Controllers\LocaleController;       // Laravel routing facade
+// Chatbot functionality controller
+use Illuminate\Support\Facades\Route;  // Locale switching functionality controller
 
+/**
+ * Modular Route Inclusion
+ *
+ * Includes specialized route files for different application areas.
+ * This modular approach keeps routes organized and maintainable.
+ * Each file handles specific functionality domains.
+ */
 
+// User Routes - Customer-facing functionality
+/**
+ * User Route Module - Customer Interface Routes
+ * Includes: Product browsing, cart management, checkout, orders, reviews
+ * Handles both guest and authenticated user experiences
+ * File: routes/user.php
+ */
+require __DIR__.'/user.php';
 
-Route::get('/', function () {
-    return view('page.dashboard');
-});
+// Admin Routes - Administrative functionality
+/**
+ * Admin Route Module - Administrative Panel Routes
+ * Includes: Dashboard, product management, user management, order management
+ * Protected by admin middleware for security
+ * File: routes/admin.php
+ */
+require __DIR__.'/admin.php';
 
-Route::middleware(['auth'])->group(function () {
-    // Route cho người dùng
-    Route::get('/dashboard', function () {
-        return view('page.dashboard');
-    })->middleware(['verified'])->name('dashboard');
-
-    Route::get('/soapFlower', [soapFlowerController::class, 'index'])->name('soapFlower');
-    Route::get('/soapFlower/{id}', [soapFlowerController::class, 'show'])->name('soapFlower.show');
-
-
-    Route::get('/paperFlower', function () {
-        return view('page.paperFlower');
-    })->name('paperFlower');
-
-    Route::get('/souvenir', function () {
-        return view('page.souvenir');
-    })->name('souvenir');
-
-    Route::middleware('auth')->group(function () {
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    });
-});
-
-use App\Http\Middleware\IsAdmin;
-
-use App\Http\Controllers\Admin\PostController as AdminPostController;
-use App\Http\Controllers\User\PostController as UserPostController;
-
-Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Quản lý post (admin)
-    Route::resource('posts', AdminPostController::class);
-    Route::delete('posts-bulk-delete', [AdminPostController::class, 'bulkDelete'])->name('posts.bulk-delete');
-
-    Route::get('/product', [ProductsController::class, 'index'])->name('product');
-    Route::get('/product/create', [ProductsController::class, 'create'])->name('product.create');
-    Route::post('/product', [ProductsController::class, 'store'])->name('product.store');
-
-    Route::get('/category', [CategoriesController::class, 'index'])->name('category');
-    Route::post('/category', [CategoriesController::class, 'store'])->name('category.create');
-    Route::delete('/category/{id}', [CategoriesController::class, 'destroy'])->name('category.destroy');
-    Route::put('/category/{id}', [CategoriesController::class, 'update'])->name('category.update');
-    Route::get('/category/search', [CategoriesController::class, 'search'])->name('category.search');
-
-
-    Route::get('/user', [UsersController::class, 'index'])->name('user');
-
-    Route::get('/order', [OrdersController::class, 'index'])->name('order');
-
-    Route::get('/review', [ReviewsController::class, 'index'])->name('review');
-
-    Route::get('/statistical', [StatisticalController::class, 'index'])->name('statistical');
-
-
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
+// Authentication Routes - Login/registration functionality
+/**
+ * Authentication Route Module - User Authentication Routes
+ * Includes: Login, registration, password reset, email verification
+ * Handles user account management and security
+ * File: routes/auth.php
+ */
 require __DIR__.'/auth.php';
 
-// Hiển thị post cho user
-Route::resource('posts', UserPostController::class)->only(['index', 'show']);
+/**
+ * Global Application Routes
+ *
+ * Routes that don't fit into specific modules or are used across the entire application.
+ * These routes provide global functionality accessible from various parts of the system.
+ */
+
+// Chatbot Communication Route
+/**
+ * Chatbot Integration - AI-powered customer support
+ *
+ * Provides intelligent customer assistance through AI chatbot integration.
+ * Handles customer inquiries, product recommendations, and support requests.
+ * POST method ensures secure data transmission for chat interactions.
+ *
+ * Features:
+ * - Real-time customer support
+ * - Product information assistance
+ * - Order status inquiries
+ * - General shopping guidance
+ *
+ * Security: CSRF protection via POST method
+ * Accessibility: Available to both guests and authenticated users
+ */
+Route::post('/chatbot', [App\Http\Controllers\ChatbotController::class, 'chat'])
+    ->name('chatbot.chat');
+
+/**
+ * Locale Switching Route - Multi-language Support
+ *
+ * Handles switching between available application languages.
+ * Supports English, Vietnamese, and Japanese languages.
+ * Stores selected locale in session for persistence across requests.
+ *
+ * Languages:
+ * - en: English
+ * - vi: Tiếng Việt
+ * - ja: 日本語
+ *
+ * Security: Validates locale parameter against configured available locales
+ * Persistence: Selected locale stored in user session
+ */
+Route::get('/locale/{locale}', [LocaleController::class, 'setLocale'])
+    ->name('locale.set')
+    ->where('locale', '[a-z]{2}');
+
+Route::get('/health', function () {
+    return response('ok', 200)->header('Content-Type', 'text/plain');
+});
