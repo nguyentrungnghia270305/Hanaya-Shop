@@ -3,10 +3,16 @@
 /node_modules/
 .env
 .env.*.local
+.env.production
+.env.testing
 .phpunit.result.cache
 .phpstorm.meta.php
-/storage/
+/storage/logs/
+/storage/framework/
 bootstrap/cache/
+/public/images/*
+
+
 
 # Debug & IDE
 /.vscode/
@@ -17,7 +23,6 @@ bootstrap/cache/
 *.swo
 
 # Composer & Node
-package-lock.json
 yarn.lock
 npm-debug.log
 yarn-debug.log
@@ -26,5 +31,23 @@ yarn-debug.log
 .DS_Store
 Thumbs.db
 
-/public/hot
-/.scannerwork/
+# host address
+public/hot
+
+# docker
+docker-compose.production.yml
+
+# SSH Keys - NEVER commit these!
+*.pem
+*.key
+*_rsa
+*_deploy_key*
+id_rsa*
+hanaya_deploy_key*
+putty_ssh_key*
+*.ppk
+production_ssh_key*
+
+# CI/CD Sensitive Files
+.env.production
+*.secret
