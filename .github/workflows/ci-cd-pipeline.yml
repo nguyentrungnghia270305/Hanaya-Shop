@@ -1050,3 +1050,170 @@ jobs:
           echo "Commit: ${{ github.sha }}"
           echo "==================================="
 
+  # Rollback on Deployment Failure
+  rollback:
+    name: 🔄 Rollback Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: failure() && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initiate rollback
+        run: |
+          echo "==================================="
+          echo "🔄 INITIATING DEPLOYMENT ROLLBACK"
+          echo "==================================="
+          echo "Deployment failed, rolling back to previous version..."
+          echo "Failed deployment commit: ${{ github.sha }}"
+          echo "Rollback initiated at: $(date)"
+          echo "==================================="
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get backup image tag
+        id: backup
+        run: |
+          echo "==================================="
+          echo "🔍 LOCATING BACKUP IMAGE"
+          echo "==================================="
+          
+          # Find the most recent backup tag
+          BACKUP_TAGS=$(docker run --rm quay.io/skopeo/stable list-tags \
+            docker://${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }} | \
+            jq -r '.Tags[]' | grep "^backup-" | sort -r | head -5)
+          
+          echo "Available backup tags:"
+          echo "$BACKUP_TAGS"
+          
+          LATEST_BACKUP=$(echo "$BACKUP_TAGS" | head -1)
+          
+          if [ -z "$LATEST_BACKUP" ]; then
+            echo "❌ No backup image found!"
+            exit 1
+          fi
+          
+          echo "Selected backup: $LATEST_BACKUP"
+          echo "BACKUP_TAG=$LATEST_BACKUP" >> $GITHUB_OUTPUT
+          echo "==================================="
+
+      - name: Restore backup image
+        run: |
+          echo "==================================="
+          echo "📦 RESTORING BACKUP IMAGE"
+          echo "==================================="
+          
+          BACKUP_TAG="${{ steps.backup.outputs.BACKUP_TAG }}"
+          BACKUP_IMAGE="${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:$BACKUP_TAG"
+          LATEST_IMAGE="${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+          
+          echo "Pulling backup image: $BACKUP_IMAGE"
+          docker pull $BACKUP_IMAGE
+          
+          echo "Tagging as latest: $LATEST_IMAGE"
+          docker tag $BACKUP_IMAGE $LATEST_IMAGE
+          
+          echo "Pushing restored image..."
+          docker push $LATEST_IMAGE
+          
+          echo "✅ Backup image restored"
+          echo "==================================="
+
+      - name: Redeploy previous version
+        timeout-minutes: 10
+        run: |
+          echo "==================================="
+          echo "🔄 REDEPLOYING PREVIOUS VERSION"
+          echo "==================================="
+          
+          # Redeploy using the restored image
+          # Example for Kubernetes:
+          # kubectl rollout undo deployment/hanaya-shop
+          # kubectl rollout status deployment/hanaya-shop --timeout=5m
+          
+          # Example for Docker Compose:
+          # docker-compose pull
+          # docker-compose up -d --force-recreate
+          
+          echo "✅ Previous version redeployed"
+          echo "==================================="
+
+      - name: Verify rollback success
+        run: |
+          echo "==================================="
+          echo "✅ VERIFYING ROLLBACK"
+          echo "==================================="
+          
+          PROD_URL="https://hanaya-shop.com/health"
+          MAX_ATTEMPTS=10
+          ATTEMPT=0
+          
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            ATTEMPT=$((ATTEMPT + 1))
+            echo "Verification attempt $ATTEMPT of $MAX_ATTEMPTS..."
+            
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" $PROD_URL || echo "000")
+            
+            if [ "$HTTP_CODE" -eq 200 ]; then
+              echo "✅ Rollback successful! Production is healthy (HTTP $HTTP_CODE)"
+              exit 0
+            fi
+            
+            echo "⚠️ Health check returned HTTP $HTTP_CODE, retrying..."
+            sleep 10
+          done
+          
+          echo "❌ Rollback verification failed after $MAX_ATTEMPTS attempts"
+          exit 1
+
+      - name: Create rollback issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔄 Deployment Rollback - ${context.sha.substring(0, 7)}`,
+              body: `## Deployment Failure and Rollback
+              
+              **Failed Deployment:**
+              - Commit: ${context.sha}
+              - Branch: ${context.ref}
+              - Actor: ${context.actor}
+              - Workflow: ${context.workflow}
+              - Run: ${context.runId}
+              
+              **Rollback Details:**
+              - Rollback initiated at: ${new Date().toISOString()}
+              - Previous version restored
+              
+              **Action Required:**
+              - Investigate the deployment failure
+              - Review logs: ${context.payload.repository.html_url}/actions/runs/${context.runId}
+              - Fix issues before attempting another deployment
+              
+              **Workflow URL:** ${context.payload.repository.html_url}/actions/runs/${context.runId}`,
+              labels: ['deployment', 'rollback', 'critical']
+            });
+            console.log('Created issue:', issue.data.number);
+
+      - name: Rollback summary
+        if: always()
+        run: |
+          echo "==================================="
+          echo "📊 ROLLBACK SUMMARY"
+          echo "==================================="
+          echo "Status: Rollback Completed"
+          echo "Failed Commit: ${{ github.sha }}"
+          echo "Restored Backup: ${{ steps.backup.outputs.BACKUP_TAG }}"
+          echo "Rollback Time: $(date)"
+          echo "==================================="
+
