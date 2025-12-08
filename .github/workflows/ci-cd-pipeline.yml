@@ -113,6 +113,95 @@ jobs:
           fi
           echo "==================================="
 
+      - name: Display PHP and Node versions available
+        run: |
+          echo "==================================="
+          echo "🔧 LANGUAGE RUNTIMES"
+          echo "==================================="
+          echo "Available PHP versions:"
+          ls /usr/bin/php* 2>/dev/null || echo "PHP not found in /usr/bin"
+          echo ""
+          echo "Available Node versions:"
+          ls /usr/local/bin/node* 2>/dev/null || which node || echo "Node not found"
+          node --version 2>/dev/null || echo "Node not installed"
+          npm --version 2>/dev/null || echo "NPM not installed"
+          echo "==================================="
+
+      - name: Display network configuration
+        run: |
+          echo "==================================="
+          echo "🌐 NETWORK CONFIGURATION"
+          echo "==================================="
+          echo "Hostname: $(hostname)"
+          echo "IP Address:"
+          ip addr show | grep "inet " | grep -v 127.0.0.1
+          echo ""
+          echo "DNS Configuration:"
+          cat /etc/resolv.conf | grep nameserver
+          echo ""
+          echo "Internet connectivity test:"
+          ping -c 3 github.com || echo "Cannot reach github.com"
+          echo "==================================="
+
+      - name: Display environment variables
+        run: |
+          echo "==================================="
+          echo "🔐 ENVIRONMENT VARIABLES"
+          echo "==================================="
+          echo "GITHUB_* variables:"
+          env | grep "GITHUB_" | grep -v "TOKEN" | sort
+          echo ""
+          echo "PATH:"
+          echo $PATH | tr ':' '\n'
+          echo ""
+          echo "CI/CD specific:"
+          echo "CI: $CI"
+          echo "CONTINUOUS_INTEGRATION: $CONTINUOUS_INTEGRATION"
+          echo "==================================="
+
+      - name: Display installed tools
+        run: |
+          echo "==================================="
+          echo "🛠️ INSTALLED TOOLS & VERSIONS"
+          echo "==================================="
+          echo "Git: $(git --version)"
+          echo "Curl: $(curl --version | head -1)"
+          echo "Wget: $(wget --version | head -1)"
+          echo "Jq: $(jq --version 2>/dev/null || echo 'not installed')"
+          echo "Zip: $(zip --version | head -2 | tail -1)"
+          echo "Unzip: $(unzip -v | head -1)"
+          echo "Make: $(make --version | head -1)"
+          echo "==================================="
+
+      - name: Check for CI configuration files
+        run: |
+          echo "==================================="
+          echo "📋 CI CONFIGURATION FILES"
+          echo "==================================="
+          echo "Checking for configuration files..."
+          [ -f .env.example ] && echo "✅ .env.example found" || echo "❌ .env.example not found"
+          [ -f composer.json ] && echo "✅ composer.json found" || echo "❌ composer.json not found"
+          [ -f package.json ] && echo "✅ package.json found" || echo "❌ package.json not found"
+          [ -f phpunit.xml ] && echo "✅ phpunit.xml found" || echo "❌ phpunit.xml not found"
+          [ -f Dockerfile ] && echo "✅ Dockerfile found" || echo "❌ Dockerfile not found"
+          [ -f docker-compose.yml ] && echo "✅ docker-compose.yml found" || echo "❌ docker-compose.yml not found"
+          echo "==================================="
+
+      - name: Display project structure
+        run: |
+          echo "==================================="
+          echo "📁 PROJECT STRUCTURE"
+          echo "==================================="
+          echo "Top-level directories:"
+          ls -la | grep "^d" | awk '{print $9}' | grep -v "^\.$" | grep -v "^\.\.$"
+          echo ""
+          echo "File count by type:"
+          echo "PHP files: $(find . -name '*.php' -not -path './vendor/*' | wc -l)"
+          echo "Blade files: $(find . -name '*.blade.php' | wc -l)"
+          echo "JS files: $(find . -name '*.js' -not -path './node_modules/*' -not -path './vendor/*' | wc -l)"
+          echo "CSS files: $(find . -name '*.css' -not -path './node_modules/*' -not -path './vendor/*' | wc -l)"
+          echo "==================================="
+
   # Code Quality and Validation
   code-quality:
     name: 🔎 Code Quality Checks
