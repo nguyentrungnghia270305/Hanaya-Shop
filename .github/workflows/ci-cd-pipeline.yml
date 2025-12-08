@@ -332,6 +332,76 @@ jobs:
           DB_PASSWORD: root
         run: php artisan test --testsuite=Feature --parallel
 
+      - name: Generate test coverage report
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: |
+          echo "==================================="
+          echo "📊 GENERATING CODE COVERAGE REPORT"
+          echo "==================================="
+          php artisan test --coverage --min=80 --coverage-html coverage-html --coverage-clover coverage.xml
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-reports
+          path: |
+            coverage-html/
+            coverage.xml
+          retention-days: 30
+
+      - name: Display coverage summary
+        run: |
+          echo "==================================="
+          echo "📈 COVERAGE SUMMARY"
+          echo "==================================="
+          if [ -f coverage.xml ]; then
+            echo "Coverage report generated successfully"
+            # Extract coverage percentage from clover XML
+            COVERAGE=$(php -r "
+              \$xml = simplexml_load_file('coverage.xml');
+              \$metrics = \$xml->project->metrics;
+              \$statements = (int)\$metrics['statements'];
+              \$coveredstatements = (int)\$metrics['coveredstatements'];
+              if(\$statements > 0) {
+                echo round((\$coveredstatements / \$statements) * 100, 2);
+              } else {
+                echo '0';
+              }
+            ")
+            echo "Total Coverage: ${COVERAGE}%"
+            
+            # Check if coverage meets minimum threshold
+            THRESHOLD=80
+            if (( $(echo "$COVERAGE >= $THRESHOLD" | bc -l) )); then
+              echo "✅ Coverage meets minimum threshold of ${THRESHOLD}%"
+            else
+              echo "⚠️ Coverage below minimum threshold of ${THRESHOLD}%"
+            fi
+          else
+            echo "❌ Coverage report not found"
+          fi
+          echo "==================================="
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          message: |
+            ## 📊 Test Coverage Report
+            
+            Coverage report generated for commit ${{ github.sha }}
+            
+            **Download detailed coverage report from workflow artifacts**
+            
+            View full coverage details in the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
   # Docker Build Gating
   docker-build:
     name: 🐳 Docker Build & Validation
