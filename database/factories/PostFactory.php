@@ -2,25 +2,25 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
- */
 class PostFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = \App\Models\Post::class;
+
+    public function definition()
     {
+        $title = $this->faker->sentence;
+
         return [
-            'title' => $this->faker->sentence(6, true),
+            'title' => $title,
+            'slug' => Str::slug($title),
             'content' => $this->faker->paragraphs(3, true),
-            'author' => $this->faker->name(),
-            'published_at' => $this->faker->optional()->dateTimeThisYear(),
+            'image' => null,
+            'status' => true,
+            'user_id' => User::factory(),
         ];
     }
 }
