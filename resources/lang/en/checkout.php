@@ -43,6 +43,8 @@ return [
     'phone' => 'Phone:',
     'address' => 'Address:',
     'close' => 'Close',
+    'address_saved_successfully' => 'Address saved successfully',
+    'error_saving_address' => 'Error saving address:',
 
     // checkout success messages:
     'order_placed_successfully' => 'Order placed successfully!',
