@@ -557,3 +557,23 @@ Route::prefix('products')
         Route::post('/{id}/restore', [ProductController::class, 'restore'])->name('restore');
         Route::delete('/{id}/force', [ProductController::class, 'forceDelete'])->name('force-delete');
     });
+
+/**
+ * Category CRUD API
+ */
+use App\Http\Controllers\Api\CategoryController;
+
+Route::prefix('categories')
+    ->middleware(['auth:sanctum'])
+    ->name('api.categories.')
+    ->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
+        Route::get('/{id}', [CategoryController::class, 'show'])->name('show');
+        Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+
+        Route::post('/bulk-delete', [CategoryController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::post('/{id}/restore', [CategoryController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [CategoryController::class, 'forceDelete'])->name('force-delete');
+    });
