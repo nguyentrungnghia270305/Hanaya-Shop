@@ -231,6 +231,7 @@ return [
     'payment_status' => 'Trạng thái thanh toán',
     'confirm' => 'Xác nhận',
     'paid' => 'Đã thanh toán',
+    'search_order' => 'Tìm kiếm đơn hàng...',
 
     // order show
     'address' => 'Địa chỉ',

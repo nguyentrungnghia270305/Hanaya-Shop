@@ -72,6 +72,7 @@ return [
     'created_successfully' => 'Created successfully!',
     'updated_successfully' => 'Updated successfully!',
     'deleted_successfully' => 'Deleted successfully!',
+    'operation_successful' => 'Operation completed successfully!',
     'operation_failed' => 'Operation failed!',
     'confirm_delete' => 'Are you sure you want to delete this item?',
     'no_data' => 'No data available',
