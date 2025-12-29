@@ -577,3 +577,23 @@ Route::prefix('categories')
         Route::post('/{id}/restore', [CategoryController::class, 'restore'])->name('restore');
         Route::delete('/{id}/force', [CategoryController::class, 'forceDelete'])->name('force-delete');
     });
+
+/**
+ * Post CRUD API
+ */
+use App\Http\Controllers\Api\PostController;
+
+Route::prefix('posts')
+    ->middleware(['auth:sanctum'])
+    ->name('api.posts.')
+    ->group(function () {
+        Route::get('/', [PostController::class, 'index'])->name('index');
+        Route::post('/', [PostController::class, 'store'])->name('store');
+        Route::get('/{id}', [PostController::class, 'show'])->name('show');
+        Route::put('/{id}', [PostController::class, 'update'])->name('update');
+        Route::delete('/{id}', [PostController::class, 'destroy'])->name('destroy');
+
+        Route::post('/bulk-delete', [PostController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::post('/{id}/restore', [PostController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [PostController::class, 'forceDelete'])->name('force-delete');
+    });
