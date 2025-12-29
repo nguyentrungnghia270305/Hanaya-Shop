@@ -231,6 +231,7 @@ return [
     'payment_status' => '支払い状況',
     'confirm' => '確認',
     'paid' => '支払い済み',
+    'search_order' => '注文を検索...',
 
     // order show
     'address' => '住所',
