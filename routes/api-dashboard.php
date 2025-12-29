@@ -597,3 +597,21 @@ Route::prefix('posts')
         Route::post('/{id}/restore', [PostController::class, 'restore'])->name('restore');
         Route::delete('/{id}/force', [PostController::class, 'forceDelete'])->name('force-delete');
     });
+
+/**
+ * Admin Order Management API
+ */
+use App\Http\Controllers\Api\OrderController;
+
+Route::prefix('admin/orders')
+    ->middleware(['auth:sanctum', 'admin'])
+    ->name('api.admin.orders.')
+    ->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+        Route::put('/{id}', [OrderController::class, 'update'])->name('update');
+        Route::post('/{id}/change-status', [OrderController::class, 'changeStatus'])->name('change-status');
+        Route::post('/{id}/assign', [OrderController::class, 'assign'])->name('assign');
+        Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+        Route::post('/bulk-update-status', [OrderController::class, 'bulkUpdateStatus'])->name('bulk-update-status');
+    });
