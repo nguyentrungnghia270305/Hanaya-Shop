@@ -535,3 +535,25 @@ Route::get('dashboard/health', function () {
         ]
     ]);
 })->name('api.dashboard.health');
+
+/**
+ * Product CRUD API
+ *
+ * Lightweight product CRUD endpoints for quick testing.
+ */
+use App\Http\Controllers\Api\ProductController;
+
+Route::prefix('products')
+    ->middleware(['auth:sanctum'])
+    ->name('api.products.')
+    ->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('index');
+        Route::post('/', [ProductController::class, 'store'])->name('store');
+        Route::get('/{id}', [ProductController::class, 'show'])->name('show');
+        Route::put('/{id}', [ProductController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
+
+        Route::post('/bulk-delete', [ProductController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::post('/{id}/restore', [ProductController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [ProductController::class, 'forceDelete'])->name('force-delete');
+    });
