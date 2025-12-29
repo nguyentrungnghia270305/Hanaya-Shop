@@ -615,3 +615,19 @@ Route::prefix('admin/orders')
         Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
         Route::post('/bulk-update-status', [OrderController::class, 'bulkUpdateStatus'])->name('bulk-update-status');
     });
+
+/**
+ * Notification API
+ */
+use App\Http\Controllers\Api\NotificationController;
+
+Route::prefix('notifications')
+    ->middleware(['auth:sanctum'])
+    ->name('api.notifications.')
+    ->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::get('/unread-count', [NotificationController::class, 'unreadCount'])->name('unread-count');
+        Route::get('/{id}', [NotificationController::class, 'show'])->name('show');
+        Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
+        Route::post('/mark-all-read', [NotificationController::class, 'markAllRead'])->name('mark-all-read');
+    });
