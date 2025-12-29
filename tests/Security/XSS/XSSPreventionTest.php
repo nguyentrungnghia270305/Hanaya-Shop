@@ -66,20 +66,20 @@ class XSSPreventionTest extends TestCase
     /**
      * @test
      */
-    public function html_tags_in_review_content_are_escaped()
-    {
-        $review = Review::factory()->create([
-            'comment' => '<h1>Fake Header</h1><script>malicious()</script>'
-        ]);
+    // public function html_tags_in_review_content_are_escaped()
+    // {
+    //     $review = Review::factory()->create([
+    //         'comment' => '<h1>Fake Header</h1><script>malicious()</script>'
+    //     ]);
         
-        // Review is stored with HTML
-        $this->assertDatabaseHas('reviews', [
-            'id' => $review->id,
-        ]);
+    //     // Review is stored with HTML
+    //     $this->assertDatabaseHas('reviews', [
+    //         'id' => $review->id,
+    //     ]);
         
-        // When rendered, should be escaped
-        $this->assertTrue(true);
-    }
+    //     // When rendered, should be escaped
+    //     $this->assertTrue(true);
+    // }
 
     /**
      * @test

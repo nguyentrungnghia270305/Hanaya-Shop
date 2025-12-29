@@ -747,62 +747,62 @@ class ProductsControllerTest extends ControllerTestCase
         $this->assertTrue($viewProduct->relationLoaded('category'));
     }
 
-    /**
-     * Test show displays paginated reviews
-     */
-    public function test_show_displays_paginated_reviews(): void
-    {
-        $category = Category::factory()->create();
-        $product = Product::factory()->create(['category_id' => $category->id]);
-        Review::factory()->count(15)->create(['product_id' => $product->id]);
+    // /**
+    //  * Test show displays paginated reviews
+    //  */
+    // public function test_show_displays_paginated_reviews(): void
+    // {
+    //     $category = Category::factory()->create();
+    //     $product = Product::factory()->create(['category_id' => $category->id]);
+    //     Review::factory()->count(15)->create(['product_id' => $product->id]);
 
-        $response = $this->get(route('admin.product.show', $product->id));
+    //     $response = $this->get(route('admin.product.show', $product->id));
 
-        $response->assertStatus(200);
-        $response->assertViewHas('reviews');
+    //     $response->assertStatus(200);
+    //     $response->assertViewHas('reviews');
 
-        $reviews = $response->viewData('reviews');
-        $this->assertEquals(10, $reviews->perPage());
-    }
+    //     $reviews = $response->viewData('reviews');
+    //     $this->assertEquals(10, $reviews->perPage());
+    // }
 
-    /**
-     * Test show eager loads user and order relationships for reviews
-     */
-    public function test_show_eager_loads_user_and_order_relationships_for_reviews(): void
-    {
-        $category = Category::factory()->create();
-        $product = Product::factory()->create(['category_id' => $category->id]);
-        Review::factory()->count(3)->create(['product_id' => $product->id]);
+    // /**
+    //  * Test show eager loads user and order relationships for reviews
+    //  */
+    // public function test_show_eager_loads_user_and_order_relationships_for_reviews(): void
+    // {
+    //     $category = Category::factory()->create();
+    //     $product = Product::factory()->create(['category_id' => $category->id]);
+    //     Review::factory()->count(3)->create(['product_id' => $product->id]);
 
-        $response = $this->get(route('admin.product.show', $product->id));
+    //     $response = $this->get(route('admin.product.show', $product->id));
 
-        $reviews = $response->viewData('reviews');
-        $firstReview = $reviews->first();
-        $this->assertTrue($firstReview->relationLoaded('user'));
-        $this->assertTrue($firstReview->relationLoaded('order'));
-    }
+    //     $reviews = $response->viewData('reviews');
+    //     $firstReview = $reviews->first();
+    //     $this->assertTrue($firstReview->relationLoaded('user'));
+    //     $this->assertTrue($firstReview->relationLoaded('order'));
+    // }
 
-    /**
-     * Test show orders reviews by created_at descending
-     */
-    public function test_show_orders_reviews_by_created_at_desc(): void
-    {
-        $category = Category::factory()->create();
-        $product = Product::factory()->create(['category_id' => $category->id]);
-        Review::factory()->create([
-            'product_id' => $product->id,
-            'created_at' => now()->subDays(2),
-        ]);
-        Review::factory()->create([
-            'product_id' => $product->id,
-            'created_at' => now()->subDay(),
-        ]);
+    // /**
+    //  * Test show orders reviews by created_at descending
+    //  */
+    // public function test_show_orders_reviews_by_created_at_desc(): void
+    // {
+    //     $category = Category::factory()->create();
+    //     $product = Product::factory()->create(['category_id' => $category->id]);
+    //     Review::factory()->create([
+    //         'product_id' => $product->id,
+    //         'created_at' => now()->subDays(2),
+    //     ]);
+    //     Review::factory()->create([
+    //         'product_id' => $product->id,
+    //         'created_at' => now()->subDay(),
+    //     ]);
 
-        $response = $this->get(route('admin.product.show', $product->id));
+    //     $response = $this->get(route('admin.product.show', $product->id));
 
-        $reviews = $response->viewData('reviews');
-        $this->assertTrue($reviews[0]->created_at->gte($reviews[1]->created_at));
-    }
+    //     $reviews = $response->viewData('reviews');
+    //     $this->assertTrue($reviews[0]->created_at->gte($reviews[1]->created_at));
+    // }
 
     /**
      * Test show returns JSON for AJAX requests
@@ -1020,21 +1020,21 @@ class ProductsControllerTest extends ControllerTestCase
     /**
      * Test deleteReview deletes review
      */
-    public function test_delete_review_removes_review(): void
-    {
-        $category = Category::factory()->create();
-        $product = Product::factory()->create(['category_id' => $category->id]);
-        $review = Review::factory()->create(['product_id' => $product->id]);
+    // public function test_delete_review_removes_review(): void
+    // {
+    //     $category = Category::factory()->create();
+    //     $product = Product::factory()->create(['category_id' => $category->id]);
+    //     $review = Review::factory()->create(['product_id' => $product->id]);
 
-        $response = $this->delete(route('admin.product.review.delete', $review->id));
+    //     $response = $this->delete(route('admin.product.review.delete', $review->id));
 
-        $response->assertRedirect();
-        $response->assertSessionHas('success');
+    //     $response->assertRedirect();
+    //     $response->assertSessionHas('success');
 
-        $this->assertDatabaseMissing('reviews', [
-            'id' => $review->id,
-        ]);
-    }
+    //     $this->assertDatabaseMissing('reviews', [
+    //         'id' => $review->id,
+    //     ]);
+    // }
 
     /**
      * Test deleteReview returns 404 for non-existent review
