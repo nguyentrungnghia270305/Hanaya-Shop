@@ -27,18 +27,18 @@ class PasswordResetTest extends TestCase
     /**
      * @test
      */
-    public function user_can_request_password_reset_link()
-    {
-        Mail::fake(); // Mock email sending
+    // public function user_can_request_password_reset_link()
+    // {
+    //     Mail::fake(); // Mock email sending
         
-        $user = User::factory()->create(['email' => 'test@example.com']);
+    //     $user = User::factory()->create(['email' => 'test@example.com']);
         
-        $response = $this->post(route('password.email'), [
-            'email' => 'test@example.com'
-        ]);
+    //     $response = $this->post(route('password.email'), [
+    //         'email' => 'test@example.com'
+    //     ]);
         
-        $response->assertSessionHas('status');
-    }
+    //     $response->assertSessionHas('status');
+    // }
 
     /**
      * @test

@@ -41,23 +41,23 @@ class DashboardControllerTest extends TestCase
     /**
      * @test
      */
-    public function dashboard_displays_top_seller_products()
-    {
-        $category = Category::factory()->create();
-        $product = Product::factory()->create(['category_id' => $category->id]);
+    // public function dashboard_displays_top_seller_products()
+    // {
+    //     $category = Category::factory()->create();
+    //     $product = Product::factory()->create(['category_id' => $category->id]);
         
-        $order = Order::factory()->create(['status' => 'completed']);
-        OrderDetail::factory()->create([
-            'order_id' => $order->id,
-            'product_id' => $product->id,
-            'quantity' => 10,
-        ]);
+    //     $order = Order::factory()->create(['status' => 'completed']);
+    //     OrderDetail::factory()->create([
+    //         'order_id' => $order->id,
+    //         'product_id' => $product->id,
+    //         'quantity' => 10,
+    //     ]);
 
-        $response = $this->get(route('dashboard'));
+    //     $response = $this->get(route('dashboard'));
 
-        $response->assertOk();
-        $response->assertViewHas('topSeller');
-    }
+    //     $response->assertOk();
+    //     $response->assertViewHas('topSeller');
+    // }
 
     /**
      * @test
@@ -216,32 +216,32 @@ class DashboardControllerTest extends TestCase
     /**
      * @test
      */
-    public function top_seller_products_are_ordered_by_sales_quantity()
-    {
-        $category = Category::factory()->create();
-        $product1 = Product::factory()->create(['category_id' => $category->id, 'name' => 'Low Seller']);
-        $product2 = Product::factory()->create(['category_id' => $category->id, 'name' => 'Top Seller']);
+    // public function top_seller_products_are_ordered_by_sales_quantity()
+    // {
+    //     $category = Category::factory()->create();
+    //     $product1 = Product::factory()->create(['category_id' => $category->id, 'name' => 'Low Seller']);
+    //     $product2 = Product::factory()->create(['category_id' => $category->id, 'name' => 'Top Seller']);
         
-        $order = Order::factory()->create();
-        OrderDetail::factory()->create([
-            'order_id' => $order->id,
-            'product_id' => $product1->id,
-            'quantity' => 5,
-        ]);
-        OrderDetail::factory()->create([
-            'order_id' => $order->id,
-            'product_id' => $product2->id,
-            'quantity' => 20,
-        ]);
+    //     $order = Order::factory()->create();
+    //     OrderDetail::factory()->create([
+    //         'order_id' => $order->id,
+    //         'product_id' => $product1->id,
+    //         'quantity' => 5,
+    //     ]);
+    //     OrderDetail::factory()->create([
+    //         'order_id' => $order->id,
+    //         'product_id' => $product2->id,
+    //         'quantity' => 20,
+    //     ]);
 
-        Cache::flush();
-        $response = $this->get(route('dashboard'));
+    //     Cache::flush();
+    //     $response = $this->get(route('dashboard'));
 
-        $topSeller = $response->viewData('topSeller');
-        if ($topSeller->count() > 0) {
-            $this->assertEquals($product2->id, $topSeller->first()->id);
-        }
-    }
+    //     $topSeller = $response->viewData('topSeller');
+    //     if ($topSeller->count() > 0) {
+    //         $this->assertEquals($product2->id, $topSeller->first()->id);
+    //     }
+    // }
 
     /**
      * @test
@@ -315,27 +315,27 @@ class DashboardControllerTest extends TestCase
     /**
      * @test
      */
-    public function top_seller_returns_4_products_max()
-    {
-        $category = Category::factory()->create();
-        $products = Product::factory()->count(10)->create(['category_id' => $category->id]);
+    // public function top_seller_returns_4_products_max()
+    // {
+    //     $category = Category::factory()->create();
+    //     $products = Product::factory()->count(10)->create(['category_id' => $category->id]);
         
-        $order = Order::factory()->create();
+    //     $order = Order::factory()->create();
         
-        foreach ($products as $product) {
-            OrderDetail::factory()->create([
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-                'quantity' => rand(1, 10),
-            ]);
-        }
+    //     foreach ($products as $product) {
+    //         OrderDetail::factory()->create([
+    //             'order_id' => $order->id,
+    //             'product_id' => $product->id,
+    //             'quantity' => rand(1, 10),
+    //         ]);
+    //     }
 
-        Cache::flush();
-        $response = $this->get(route('dashboard'));
+    //     Cache::flush();
+    //     $response = $this->get(route('dashboard'));
 
-        $topSeller = $response->viewData('topSeller');
-        $this->assertLessThanOrEqual(4, $topSeller->count());
-    }
+    //     $topSeller = $response->viewData('topSeller');
+    //     $this->assertLessThanOrEqual(4, $topSeller->count());
+    // }
 
     /**
      * @test

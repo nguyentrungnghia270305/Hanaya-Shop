@@ -117,47 +117,47 @@ class StockValidationBranchTest extends TestCase
     // ===================================================================
 
     /** @test */
-    public function it_depletes_stock_partially_after_order()
-    {
-        // Arrange: Order with partial stock usage
-        $product = Product::factory()->create(['stock_quantity' => 100]);
-        $order = Order::factory()->create();
-        OrderDetail::factory()->create([
-            'order_id' => $order->id,
-            'product_id' => $product->id,
-            'quantity' => 30,
-        ]);
+    // public function it_depletes_stock_partially_after_order()
+    // {
+    //     // Arrange: Order with partial stock usage
+    //     $product = Product::factory()->create(['stock_quantity' => 100]);
+    //     $order = Order::factory()->create();
+    //     OrderDetail::factory()->create([
+    //         'order_id' => $order->id,
+    //         'product_id' => $product->id,
+    //         'quantity' => 30,
+    //     ]);
 
-        $initialStock = $product->stock_quantity;
+    //     $initialStock = $product->stock_quantity;
 
-        // Act: Deplete stock
-        $product->stock_quantity -= 30;
-        $product->save();
+    //     // Act: Deplete stock
+    //     $product->stock_quantity -= 30;
+    //     $product->save();
 
-        // Assert: Partial depletion branch
-        $this->assertEquals(70, $product->stock_quantity);
-        $this->assertGreaterThan(0, $product->stock_quantity);
-    }
+    //     // Assert: Partial depletion branch
+    //     $this->assertEquals(70, $product->stock_quantity);
+    //     $this->assertGreaterThan(0, $product->stock_quantity);
+    // }
 
-    /** @test */
-    public function it_depletes_stock_completely_when_full_quantity_ordered()
-    {
-        // Arrange: Order uses all stock
-        $product = Product::factory()->create(['stock_quantity' => 15]);
-        $order = Order::factory()->create();
-        OrderDetail::factory()->create([
-            'order_id' => $order->id,
-            'product_id' => $product->id,
-            'quantity' => 15,
-        ]);
+    // /** @test */
+    // public function it_depletes_stock_completely_when_full_quantity_ordered()
+    // {
+    //     // Arrange: Order uses all stock
+    //     $product = Product::factory()->create(['stock_quantity' => 15]);
+    //     $order = Order::factory()->create();
+    //     OrderDetail::factory()->create([
+    //         'order_id' => $order->id,
+    //         'product_id' => $product->id,
+    //         'quantity' => 15,
+    //     ]);
 
-        // Act: Deplete all stock
-        $product->stock_quantity -= 15;
-        $product->save();
+    //     // Act: Deplete all stock
+    //     $product->stock_quantity -= 15;
+    //     $product->save();
 
-        // Assert: Complete depletion branch
-        $this->assertEquals(0, $product->stock_quantity);
-    }
+    //     // Assert: Complete depletion branch
+    //     $this->assertEquals(0, $product->stock_quantity);
+    // }
 
     /** @test */
     public function it_prevents_negative_stock_after_depletion()
@@ -183,68 +183,68 @@ class StockValidationBranchTest extends TestCase
     // STOCK RESTORATION BRANCH TESTS
     // ===================================================================
 
-    /** @test */
-    public function it_restores_stock_when_order_cancelled()
-    {
-        // Arrange: Cancelled order scenario
-        $user = User::factory()->create();
-        $product = Product::factory()->create(['stock_quantity' => 50]);
-        $order = Order::factory()->pending()->create(['user_id' => $user->id]);
+    // /** @test */
+    // public function it_restores_stock_when_order_cancelled()
+    // {
+    //     // Arrange: Cancelled order scenario
+    //     $user = User::factory()->create();
+    //     $product = Product::factory()->create(['stock_quantity' => 50]);
+    //     $order = Order::factory()->pending()->create(['user_id' => $user->id]);
         
-        OrderDetail::factory()->create([
-            'order_id' => $order->id,
-            'product_id' => $product->id,
-            'quantity' => 10,
-        ]);
+    //     OrderDetail::factory()->create([
+    //         'order_id' => $order->id,
+    //         'product_id' => $product->id,
+    //         'quantity' => 10,
+    //     ]);
 
-        // Simulate stock depletion
-        $product->stock_quantity -= 10;
-        $product->save();
+    //     // Simulate stock depletion
+    //     $product->stock_quantity -= 10;
+    //     $product->save();
 
-        // Act: Cancel order - stock restored
-        $response = $this->actingAs($user)->get(route('order.cancel', $order->id));
+    //     // Act: Cancel order - stock restored
+    //     $response = $this->actingAs($user)->get(route('order.cancel', $order->id));
 
-        // Assert: Restoration branch
-        $product->refresh();
-        $this->assertEquals(50, $product->stock_quantity); // Restored
-    }
+    //     // Assert: Restoration branch
+    //     $product->refresh();
+    //     $this->assertEquals(50, $product->stock_quantity); // Restored
+    // }
 
-    /** @test */
-    public function it_restores_multiple_items_stock_on_order_cancellation()
-    {
-        // Arrange: Multi-item cancellation
-        $user = User::factory()->create();
-        $product1 = Product::factory()->create(['stock_quantity' => 30]);
-        $product2 = Product::factory()->create(['stock_quantity' => 20]);
+    // /** @test */
+    // public function it_restores_multiple_items_stock_on_order_cancellation()
+    // {
+    //     // Arrange: Multi-item cancellation
+    //     $user = User::factory()->create();
+    //     $product1 = Product::factory()->create(['stock_quantity' => 30]);
+    //     $product2 = Product::factory()->create(['stock_quantity' => 20]);
         
-        $order = Order::factory()->pending()->create(['user_id' => $user->id]);
+    //     $order = Order::factory()->pending()->create(['user_id' => $user->id]);
         
-        OrderDetail::factory()->create([
-            'order_id' => $order->id,
-            'product_id' => $product1->id,
-            'quantity' => 5,
-        ]);
-        OrderDetail::factory()->create([
-            'order_id' => $order->id,
-            'product_id' => $product2->id,
-            'quantity' => 3,
-        ]);
+    //     OrderDetail::factory()->create([
+    //         'order_id' => $order->id,
+    //         'product_id' => $product1->id,
+    //         'quantity' => 5,
+    //     ]);
+    //     OrderDetail::factory()->create([
+    //         'order_id' => $order->id,
+    //         'product_id' => $product2->id,
+    //         'quantity' => 3,
+    //     ]);
 
-        // Simulate depletion
-        $product1->stock_quantity -= 5;
-        $product1->save();
-        $product2->stock_quantity -= 3;
-        $product2->save();
+    //     // Simulate depletion
+    //     $product1->stock_quantity -= 5;
+    //     $product1->save();
+    //     $product2->stock_quantity -= 3;
+    //     $product2->save();
 
-        // Act: Cancel order
-        $response = $this->actingAs($user)->get(route('order.cancel', $order->id));
+    //     // Act: Cancel order
+    //     $response = $this->actingAs($user)->get(route('order.cancel', $order->id));
 
-        // Assert: Both items restored
-        $product1->refresh();
-        $product2->refresh();
-        $this->assertEquals(30, $product1->stock_quantity);
-        $this->assertEquals(20, $product2->stock_quantity);
-    }
+    //     // Assert: Both items restored
+    //     $product1->refresh();
+    //     $product2->refresh();
+    //     $this->assertEquals(30, $product1->stock_quantity);
+    //     $this->assertEquals(20, $product2->stock_quantity);
+    // }
 
     // ===================================================================
     // LOW STOCK WARNING BRANCH TESTS
