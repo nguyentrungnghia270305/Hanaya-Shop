@@ -44,8 +44,12 @@ WORKDIR /var/www/html
 # Copy dependency files first for better caching
 COPY composer.json composer.lock ./
 
+# Create bootstrap/cache directory before composer install
+RUN mkdir -p bootstrap/cache \
+    && chmod -R 775 bootstrap/cache
+
 # Install PHP dependencies
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
 # Copy source code
 COPY . .
