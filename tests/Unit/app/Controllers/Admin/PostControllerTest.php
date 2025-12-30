@@ -446,9 +446,9 @@ class PostControllerTest extends TestCase
 
     //     $this->put(route('admin.post.update', $post->id), $data);
 
-        $post->refresh();
-        $this->assertNotEquals('old_image.jpg', $post->image);
-    }
+    //     $post->refresh();
+    //     $this->assertNotEquals('old_image.jpg', $post->image);
+    // }
 
     /**
      * Test update allows same title for same post

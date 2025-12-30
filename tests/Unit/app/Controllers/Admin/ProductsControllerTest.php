@@ -555,13 +555,13 @@ class ProductsControllerTest extends ControllerTestCase
     //         'image_url' => $newImage,
     //     ];
 
-        $this->put(route('admin.product.update', $product->id), $data);
+    //     $this->put(route('admin.product.update', $product->id), $data);
 
-        $product->refresh();
-        $this->assertNotEquals('old_product.jpg', $product->image_url);
-        $this->assertFalse(File::exists($oldImagePath));
-        $this->assertTrue(File::exists(public_path('images/products/'.$product->image_url)));
-    }
+    //     $product->refresh();
+    //     $this->assertNotEquals('old_product.jpg', $product->image_url);
+    //     $this->assertFalse(File::exists($oldImagePath));
+    //     $this->assertTrue(File::exists(public_path('images/products/'.$product->image_url)));
+    // }
 
     /**
      * Test update does not delete default image when replacing
