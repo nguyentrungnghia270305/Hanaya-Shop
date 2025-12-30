@@ -10,6 +10,15 @@ return [
     'featured_posts' => '注目の投稿',
     'popular_posts' => '人気の投稿',
     'posts' => '投稿',
+    'post' => '投稿',
+    'blog' => 'ブログ',
+    'articles' => '記事',
+    'back_to_posts' => '投稿に戻る',
+    'by' => '作成者',
+    'clear' => 'クリア',
+    'search_results_for' => '検索結果：',
+    'no_posts_available' => '投稿がありません',
+    'news_type' => 'ニュース',
 
     // Post Details
     'read_more' => '続きを読む',

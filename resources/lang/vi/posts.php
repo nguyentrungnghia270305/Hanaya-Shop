@@ -37,11 +37,16 @@ return [
     'categories' => 'Danh mục',
     'post_categories' => 'Danh mục bài viết',
     'browse_by_category' => 'Duyệt theo danh mục',
+    'uncategorized' => 'Chưa phân loại',
     'tips_guides' => 'Mẹo & Hướng dẫn',
     'product_news' => 'Tin tức sản phẩm',
     'company_news' => 'Tin tức công ty',
     'tutorials' => 'Hướng dẫn',
     'announcements' => 'Thông báo',
+
+    // Post Types
+    'article' => 'Bài viết',
+    'news_type' => 'Tin tức',
 
     // Post Tags
     'tags' => 'Thẻ',

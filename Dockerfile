@@ -44,11 +44,18 @@ WORKDIR /var/www/html
 # Copy dependency files first for better caching
 COPY composer.json composer.lock ./
 
-# Install PHP dependencies
+# Create bootstrap/cache directory before composer install
+RUN mkdir -p bootstrap/cache \
+    && chmod -R 775 bootstrap/cache
+
+# Install PHP dependencies (skip scripts as artisan doesn't exist yet)
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
 # Copy source code
 COPY . .
+
+# Run composer scripts now that artisan file exists
+RUN composer run-script post-autoload-dump
 
 # Copy built frontend assets from frontend-builder stage
 COPY --from=frontend-builder /app/public/build ./public/build

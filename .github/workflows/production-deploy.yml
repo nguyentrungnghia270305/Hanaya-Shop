@@ -20,13 +20,13 @@ on:
       force_deploy:
         description: 'Force deployment even if no code changes detected'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 env:
   PHP_VERSION: '8.2'
   NODE_VERSION: '18'
-  DOCKER_IMAGE: 'assassincreed2k1/hanaya-shop'
+  DOCKER_IMAGE: 'assassincreed2k1/hanaya-shop-exe'
 
 jobs:
   # 🔍 Pre-flight validation
@@ -87,6 +87,11 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+
+      - name: Create bootstrap cache directory
+        run: |
+          mkdir -p bootstrap/cache storage/framework/{cache/data,sessions,views}
+          chmod -R 775 bootstrap/cache storage
 
       - name: Install dependencies and build
         run: |
