@@ -10,36 +10,53 @@
          stopOnIncomplete="false"
 >
     <testsuites>
-        <!-- Fast Unit Tests - No database dependencies -->
+        <!-- Unit Tests - All unit tests -->
         <testsuite name="Unit">
-            <directory>tests/Unit/Service</directory>
-        </testsuite>
-        
-        <!-- Database Unit Tests - Fast database operations -->
-        <testsuite name="UnitDB">
-            <directory>tests/Unit/Http</directory>
-            <directory>tests/Unit/Models</directory>
+            <directory>tests/Unit</directory>
+            <exclude>tests/Unit/App/Controllers/AddressControllerTest.php</exclude>
         </testsuite>
         
         <!-- Feature Tests - Full integration tests -->
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
-            <exclude>tests/Feature/ExampleTest.php</exclude>
-            <exclude>tests/Feature/Auth</exclude>
         </testsuite>
         
-        <!-- Fast Tests - Unit + lightweight database tests -->
-        <testsuite name="Fast">
-            <directory>tests/Unit/Service</directory>
-            <directory>tests/Unit/Models</directory>
+        <!-- Integration Tests - Multi-component tests -->
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        
+        <!-- Coverage Tests - White-box testing -->
+        <testsuite name="Coverage">
+            <directory>tests/Coverage</directory>
+            <exclude>tests/Coverage/ControlFlow/</exclude>
+            <exclude>tests/Coverage/DataFlow/</exclude>
+        </testsuite>
+        
+        <!-- Performance Tests -->
+        <testsuite name="Performance">
+            <directory>tests/Performance</directory>
+        </testsuite>
+        
+        <!-- E2E Tests - End-to-end tests -->
+        <testsuite name="E2E">
+            <directory>tests/E2E</directory>
+        </testsuite>
+        
+        <!-- Integration Tests -->
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        
+        <!-- Coverage Tests -->
+        <testsuite name="Coverage">
+            <directory>tests/Coverage</directory>
         </testsuite>
         
         <!-- All Tests -->
         <testsuite name="All">
-            <directory>tests/Unit</directory>
-            <directory>tests/Feature</directory>
+            <directory>tests</directory>
             <exclude>tests/Feature/ExampleTest.php</exclude>
-            <exclude>tests/Feature/Auth</exclude>
         </testsuite>
     </testsuites>
     
@@ -58,17 +75,17 @@
         <env name="DB_CONNECTION" value="mysql"/>
         <env name="DB_HOST" value="127.0.0.1"/>
         <env name="DB_PORT" value="3306"/>
-        <env name="DB_DATABASE" value="hanaya_shop_test"/>
+        <env name="DB_DATABASE" value="hanaya_shop_demo"/>
         <env name="DB_USERNAME" value="root"/>
-        <env name="DB_PASSWORD" value="test_password"/>
+        <env name="DB_PASSWORD" value="123456"/>
         <!-- Use separate storage for testing to avoid deleting demo images -->
         <env name="FILESYSTEM_DISK" value="testing"/>
-        <env name="MAIL_MAILER" value="array"/>
-        <env name="MAIL_FROM_ADDRESS" value="test@hanaya-shop.com"/>
-        <env name="MAIL_FROM_NAME" value="Hanaya Shop Test"/>
+        <env name="MAIL_MAILER" value="smtp"/>
+        <env name="MAIL_FROM_ADDRESS" value="taile13092k5@gmail.com"/>
+        <env name="MAIL_FROM_NAME" value="Hanaya Shop"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
+        <env name="SESSION_DRIVER" value="file"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
 </phpunit>

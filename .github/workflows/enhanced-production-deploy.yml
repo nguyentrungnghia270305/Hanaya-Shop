@@ -20,7 +20,7 @@ on:
       force_deploy:
         description: 'Force deployment even if no code changes detected'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 jobs:
@@ -156,8 +156,8 @@ jobs:
           context: .
           push: true
           tags: |
-            assassincreed2k1/hanaya-shop:latest
-            assassincreed2k1/hanaya-shop:${{ github.sha }}
+            assassincreed2k1/hanaya-shop-exe:latest
+            assassincreed2k1/hanaya-shop-exe:${{ github.sha }}
           labels: |
             git_sha=${{ github.sha }}
             build_date=${{ github.event.head_commit.timestamp }}
@@ -213,7 +213,7 @@ jobs:
             
             # Pull latest Docker images
             echo "📦 Pulling latest Docker images..."
-            docker pull assassincreed2k1/hanaya-shop:latest || { echo "❌ Failed to pull latest image"; exit 1; }
+            docker pull assassincreed2k1/hanaya-shop-exe:latest || { echo "❌ Failed to pull latest image"; exit 1; }
             
             # Execute deployment script (your proven logic)
             echo "🚀 Running deployment script..."

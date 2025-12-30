@@ -126,6 +126,11 @@ jobs:
           restore-keys: |
             dependencies-composer-${{ env.COMPOSER_CACHE_VERSION }}-
 
+      - name: Create bootstrap cache directory
+        run: |
+          mkdir -p bootstrap/cache
+          chmod -R 775 bootstrap/cache
+
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
@@ -158,7 +163,7 @@ jobs:
           MYSQL_DATABASE: hanaya_shop_test
           MYSQL_USER: test_user
           MYSQL_PASSWORD: test_password
-          MYSQL_ALLOW_EMPTY_PASSWORD: no
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=test_password --silent" --health-interval=15s --health-timeout=10s --health-retries=15 --health-start-period=60s
@@ -199,6 +204,10 @@ jobs:
       - name: Prepare test environment
         run: |
           echo "🔧 Setting up test environment..."
+          
+          # Create required directories FIRST
+          mkdir -p bootstrap/cache storage/framework/{cache/data,sessions,views}
+          chmod -R 775 bootstrap/cache storage
           
           # Create .env.testing from example
           cp .env.example .env.testing
