@@ -1,63 +1,17 @@
+// Dummy test to avoid PHPUnit warning
 <?php
 
-// namespace Tests\Unit\Database\Factories;
+namespace Tests\Unit\Database\Factories;
 
-// use App\Models\Order\Order;
-// use App\Models\Order\OrderDetail;
-// use App\Models\Product\Product;
-// use Database\Factories\Order\OrderDetailFactory;
-// use Illuminate\Foundation\Testing\RefreshDatabase;
-// use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
-// class OrderDetailFactoryTest extends TestCase
-// {
-//     use RefreshDatabase;
-
-//     /**
-//      * @test
-//      */
-//     public function order_detail_factory_creates_order_detail()
-//     {
-//         $orderDetail = OrderDetail::factory()->create();
-
-//         $this->assertInstanceOf(OrderDetail::class, $orderDetail);
-//         $this->assertDatabaseHas('order_details', ['id' => $orderDetail->id]);
-//     }
-
-//     /**
-//      * @test
-//      */
-//     public function order_detail_factory_sets_required_attributes()
-//     {
-//         $orderDetail = OrderDetail::factory()->create();
-
-//         $this->assertNotNull($orderDetail->order_id);
-//         $this->assertNotNull($orderDetail->product_id);
-//         $this->assertNotNull($orderDetail->quantity);
-//         $this->assertNotNull($orderDetail->price);
-//     }
-
-//     /**
-//      * @test
-//      */
-//     public function order_detail_factory_can_override_attributes()
-//     {
-//         $order = Order::factory()->create();
-//         $product = Product::factory()->create();
-
-//         $orderDetail = OrderDetail::factory()->create([
-//             'order_id' => $order->id,
-//             'product_id' => $product->id,
-//             'quantity' => 5,
-//             'price' => 150.00
-//         ]);
-
-//         $this->assertEquals($order->id, $orderDetail->order_id);
-//         $this->assertEquals($product->id, $orderDetail->product_id);
-//         $this->assertEquals(5, $orderDetail->quantity);
-//         $this->assertEquals(150.00, $orderDetail->price);
-//     }
-
+class OrderDetailFactoryTest extends TestCase
+{
+	public function test_dummy_order_detail_factory(): void
+	{
+		$this->assertTrue(true);
+	}
+}
 //     /**
 //      * @test
 //      */

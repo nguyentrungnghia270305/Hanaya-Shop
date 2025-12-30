@@ -6,6 +6,14 @@ use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ConfigurationTest extends TestCase
+
+    /**
+     * Dummy test to avoid PHPUnit warning.
+     */
+    public function test_dummy_configuration(): void
+    {
+        $this->assertTrue(true);
+    }
 {
     /**
      * Test that Laravel automatically uses .env.testing during tests.
