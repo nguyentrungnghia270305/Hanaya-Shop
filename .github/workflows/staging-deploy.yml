@@ -17,7 +17,7 @@ on:
       force_deploy:
         description: 'Force staging deployment'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 jobs:
