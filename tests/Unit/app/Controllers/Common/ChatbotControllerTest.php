@@ -305,8 +305,8 @@ class ChatbotControllerTest extends TestCase
     //     $response->assertStatus(500);
 
     //     $data = $response->json();
-        $this->assertStringContainsString(config('constants.shop_phone'), $data['response']);
-    }
+    //     $this->assertStringContainsString(config('constants.shop_phone'), $data['response']);
+    // }
 
     public function test_chat_vietnamese_language(): void
     {
