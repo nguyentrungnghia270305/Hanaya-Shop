@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Notification;
 
 use Tests\TestCase;
 
-class EmailVerificationNotificationControllerTest extends TestCase
+class NotificationControllerTest extends TestCase
 {
     public function test_dummy_notification_controller(): void
     {
