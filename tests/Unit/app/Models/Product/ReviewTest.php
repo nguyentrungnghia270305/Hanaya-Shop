@@ -6,10 +6,10 @@ use PHPUnit\Framework\TestCase;
 
 class ReviewTest extends TestCase
 {
-	public function test_dummy_review(): void
-	{
-		$this->assertTrue(true);
-	}
+    public function test_dummy_review(): void
+    {
+        $this->assertTrue(true);
+    }
 }
 //         $review = Review::factory()->create(['order_id' => $order->id]);
 

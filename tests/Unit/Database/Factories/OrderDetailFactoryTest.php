@@ -1,5 +1,5 @@
-// Dummy test to avoid PHPUnit warning
-<?php
+
+<?php // Dummy test to avoid PHPUnit warning
 
 namespace Tests\Unit\Database\Factories;
 
@@ -7,10 +7,10 @@ use PHPUnit\Framework\TestCase;
 
 class OrderDetailFactoryTest extends TestCase
 {
-	public function test_dummy_order_detail_factory(): void
-	{
-		$this->assertTrue(true);
-	}
+    public function test_dummy_order_detail_factory(): void
+    {
+        $this->assertTrue(true);
+    }
 }
 //     /**
 //      * @test
