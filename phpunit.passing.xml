@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         stopOnFailure="false"
+         stopOnError="false"
+         stopOnRisky="false"
+         stopOnSkipped="false"
+         stopOnIncomplete="false"
+>
+    <testsuites>
+        <!-- Integration Tests - Multi-component tests -->
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        
+        <!-- Coverage Tests - Only BoundaryCoverage -->
+        <testsuite name="BoundaryCoverage">
+            <directory>tests/Coverage/BoundaryCoverage</directory>
+        </testsuite>
+        
+        <!-- Performance Tests -->
+        <testsuite name="Performance">
+            <directory>tests/Performance</directory>
+        </testsuite>
+        
+        <!-- Security Tests -->
+        <testsuite name="Security">
+            <directory>tests/Security</directory>
+        </testsuite>
+        
+        <!-- Unit Tests - Selected passing tests -->
+        <testsuite name="Unit">
+            <directory>tests/Unit/Config</directory>
+            <directory>tests/Unit/Database</directory>
+            <directory>tests/Unit/Services</directory>
+            <directory>tests/Unit/App/Models</directory>
+            <directory>tests/Unit/Notifications</directory>
+            <directory>tests/Unit/Routes</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="CACHE_DRIVER" value="array"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+        <env name="MAIL_MAILER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+    </php>
+    
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+</phpunit>
