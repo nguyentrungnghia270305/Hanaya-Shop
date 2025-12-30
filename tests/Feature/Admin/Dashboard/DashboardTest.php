@@ -27,7 +27,7 @@ class DashboardTest extends TestCase
     {
         $response = $this->actingAs($this->admin)
             ->get(route('admin.dashboard'));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('admin.dashboard');
     }
@@ -38,10 +38,10 @@ class DashboardTest extends TestCase
     public function dashboard_displays_total_orders()
     {
         Order::factory()->count(10)->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.dashboard'));
-        
+
         $response->assertStatus(200);
         $response->assertSee('10');
     }
@@ -52,10 +52,10 @@ class DashboardTest extends TestCase
     public function dashboard_displays_total_products()
     {
         Product::factory()->count(25)->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.dashboard'));
-        
+
         $response->assertStatus(200);
     }
 
@@ -65,10 +65,10 @@ class DashboardTest extends TestCase
     public function dashboard_displays_recent_orders()
     {
         Order::factory()->count(5)->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.dashboard'));
-        
+
         $response->assertStatus(200);
     }
 
@@ -78,10 +78,10 @@ class DashboardTest extends TestCase
     public function non_admin_cannot_access_dashboard()
     {
         $user = User::factory()->create(['role' => 'user']);
-        
+
         $response = $this->actingAs($user)
             ->get(route('admin.dashboard'));
-        
+
         $response->assertStatus(403);
     }
 }

@@ -12,7 +12,7 @@ class AppConfigTest extends TestCase
     public function app_name_is_configured()
     {
         $name = config('app.name');
-        
+
         $this->assertNotEmpty($name);
         $this->assertIsString($name);
     }
@@ -23,7 +23,7 @@ class AppConfigTest extends TestCase
     public function app_environment_is_configured()
     {
         $env = config('app.env');
-        
+
         $this->assertNotEmpty($env);
         $this->assertContains($env, ['local', 'testing', 'production']);
     }
@@ -34,7 +34,7 @@ class AppConfigTest extends TestCase
     public function app_debug_mode_is_boolean()
     {
         $debug = config('app.debug');
-        
+
         $this->assertIsBool($debug);
     }
 
@@ -44,7 +44,7 @@ class AppConfigTest extends TestCase
     public function app_url_is_configured()
     {
         $url = config('app.url');
-        
+
         $this->assertNotEmpty($url);
         $this->assertIsString($url);
     }
@@ -55,7 +55,7 @@ class AppConfigTest extends TestCase
     public function app_timezone_is_configured()
     {
         $timezone = config('app.timezone');
-        
+
         $this->assertNotEmpty($timezone);
         $this->assertEquals('UTC', $timezone);
     }
@@ -66,7 +66,7 @@ class AppConfigTest extends TestCase
     public function app_locale_is_configured()
     {
         $locale = config('app.locale');
-        
+
         $this->assertNotEmpty($locale);
         $this->assertIsString($locale);
     }
@@ -77,7 +77,7 @@ class AppConfigTest extends TestCase
     public function app_fallback_locale_is_configured()
     {
         $fallbackLocale = config('app.fallback_locale');
-        
+
         $this->assertNotEmpty($fallbackLocale);
         $this->assertEquals('en', $fallbackLocale);
     }

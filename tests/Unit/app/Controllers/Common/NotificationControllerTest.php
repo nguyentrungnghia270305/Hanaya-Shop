@@ -3,7 +3,6 @@
 namespace Tests\Unit\App\Controllers\Common;
 
 use App\Models\User;
-use App\Notifications\CustomerOrderConfirmedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -233,10 +232,10 @@ class NotificationControllerTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-        
+
         $targetNotification->refresh();
         $this->assertNotNull($targetNotification->read_at);
-        
+
         // Other notifications should remain unread
         $this->assertEquals(4, $this->user->unreadNotifications->count());
     }
@@ -289,7 +288,7 @@ class NotificationControllerTest extends TestCase
         ]);
 
         $response->assertStatus(401);
-        
+
         $notification->refresh();
         $this->assertNull($notification->read_at);
     }

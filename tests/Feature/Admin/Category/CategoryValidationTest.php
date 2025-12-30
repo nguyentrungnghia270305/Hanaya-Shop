@@ -26,9 +26,9 @@ class CategoryValidationTest extends TestCase
     {
         $response = $this->actingAs($this->admin)
             ->post(route('admin.category.store'), [
-                'description' => 'Test description'
+                'description' => 'Test description',
             ]);
-        
+
         $response->assertSessionHasErrors('name');
     }
 
@@ -38,13 +38,13 @@ class CategoryValidationTest extends TestCase
     public function category_name_must_be_unique()
     {
         Category::factory()->create(['name' => 'Existing Category']);
-        
+
         $response = $this->actingAs($this->admin)
             ->post(route('admin.category.store'), [
                 'name' => 'Existing Category',
-                'description' => 'Test description'
+                'description' => 'Test description',
             ]);
-        
+
         $response->assertSessionHasErrors('name');
     }
 
@@ -56,9 +56,9 @@ class CategoryValidationTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->post(route('admin.category.store'), [
                 'name' => 'Test Category',
-                'image' => 'not-an-image'
+                'image' => 'not-an-image',
             ]);
-        
+
         $response->assertSessionHasErrors('image');
     }
 
@@ -69,9 +69,9 @@ class CategoryValidationTest extends TestCase
     {
         $response = $this->actingAs($this->admin)
             ->post(route('admin.category.store'), [
-                'name' => 'Test Category'
+                'name' => 'Test Category',
             ]);
-        
+
         $response->assertSessionDoesntHaveErrors('description');
     }
 }

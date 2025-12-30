@@ -12,7 +12,9 @@ class PostControllerTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $publishedPost;
+
     protected $unpublishedPost;
 
     protected function setUp(): void
@@ -196,7 +198,7 @@ class PostControllerTest extends TestCase
     {
         // Xóa các post có sẵn từ setUp
         Post::query()->delete();
-        
+
         $olderPost = Post::factory()->create([
             'title' => 'Older Post',
             'status' => true,
@@ -213,7 +215,7 @@ class PostControllerTest extends TestCase
 
         $response = $this->get(route('posts.index'));
 
-        $response->assertViewHas('posts', function ($posts) use ($newerPost, $olderPost) {
+        $response->assertViewHas('posts', function ($posts) use ($newerPost) {
             return $posts->first()->id === $newerPost->id;
         });
     }

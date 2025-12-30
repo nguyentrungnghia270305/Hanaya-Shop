@@ -29,7 +29,7 @@ class AdminRoutesIntegrationTest extends TestCase
     public function admin_routes_require_admin_role()
     {
         $user = User::factory()->create(['role' => 'user']);
-        
+
         $response = $this->actingAs($user)->get(route('admin.dashboard'));
         $response->assertStatus(403);
     }

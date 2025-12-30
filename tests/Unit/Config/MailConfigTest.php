@@ -12,7 +12,7 @@ class MailConfigTest extends TestCase
     public function default_mailer_is_configured()
     {
         $default = config('mail.default');
-        
+
         $this->assertNotEmpty($default);
         $this->assertIsString($default);
     }
@@ -23,7 +23,7 @@ class MailConfigTest extends TestCase
     public function mailers_are_configured()
     {
         $mailers = config('mail.mailers');
-        
+
         $this->assertIsArray($mailers);
         $this->assertNotEmpty($mailers);
     }
@@ -34,7 +34,7 @@ class MailConfigTest extends TestCase
     public function smtp_mailer_is_configured()
     {
         $smtp = config('mail.mailers.smtp');
-        
+
         $this->assertIsArray($smtp);
         $this->assertArrayHasKey('transport', $smtp);
     }
@@ -45,7 +45,7 @@ class MailConfigTest extends TestCase
     public function from_address_is_configured()
     {
         $from = config('mail.from');
-        
+
         $this->assertIsArray($from);
         $this->assertArrayHasKey('address', $from);
         $this->assertArrayHasKey('name', $from);
@@ -57,7 +57,7 @@ class MailConfigTest extends TestCase
     public function from_address_is_valid_email()
     {
         $fromAddress = config('mail.from.address');
-        
+
         $this->assertNotEmpty($fromAddress);
         $this->assertMatchesRegularExpression('/^[^@]+@[^@]+\.[^@]+$/', $fromAddress);
     }

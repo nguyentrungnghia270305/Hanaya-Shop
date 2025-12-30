@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\App\Controllers\Auth;
 
-use App\Http\Controllers\Auth\PasswordController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -18,13 +17,13 @@ class PasswordControllerTest extends TestCase
     public function user_can_update_password_with_valid_data()
     {
         $user = User::factory()->create([
-            'password' => Hash::make('OldPassword123!')
+            'password' => Hash::make('OldPassword123!'),
         ]);
 
         $response = $this->actingAs($user)->put(route('password.update'), [
             'current_password' => 'OldPassword123!',
             'password' => 'NewPassword123!',
-            'password_confirmation' => 'NewPassword123!'
+            'password_confirmation' => 'NewPassword123!',
         ]);
 
         $response->assertRedirect();
@@ -40,7 +39,7 @@ class PasswordControllerTest extends TestCase
 
         $response = $this->actingAs($user)->put(route('password.update'), [
             'password' => 'NewPassword123!',
-            'password_confirmation' => 'NewPassword123!'
+            'password_confirmation' => 'NewPassword123!',
         ]);
 
         $response->assertSessionHasErrorsIn('updatePassword', 'current_password');
@@ -52,13 +51,13 @@ class PasswordControllerTest extends TestCase
     public function update_password_requires_correct_current_password()
     {
         $user = User::factory()->create([
-            'password' => Hash::make('OldPassword123!')
+            'password' => Hash::make('OldPassword123!'),
         ]);
 
         $response = $this->actingAs($user)->put(route('password.update'), [
             'current_password' => 'WrongPassword123!',
             'password' => 'NewPassword123!',
-            'password_confirmation' => 'NewPassword123!'
+            'password_confirmation' => 'NewPassword123!',
         ]);
 
         $response->assertSessionHasErrorsIn('updatePassword', 'current_password');
@@ -70,12 +69,12 @@ class PasswordControllerTest extends TestCase
     public function update_password_requires_password_confirmation()
     {
         $user = User::factory()->create([
-            'password' => Hash::make('OldPassword123!')
+            'password' => Hash::make('OldPassword123!'),
         ]);
 
         $response = $this->actingAs($user)->put(route('password.update'), [
             'current_password' => 'OldPassword123!',
-            'password' => 'NewPassword123!'
+            'password' => 'NewPassword123!',
         ]);
 
         $response->assertSessionHasErrorsIn('updatePassword', 'password');
@@ -87,13 +86,13 @@ class PasswordControllerTest extends TestCase
     public function new_password_must_match_confirmation()
     {
         $user = User::factory()->create([
-            'password' => Hash::make('OldPassword123!')
+            'password' => Hash::make('OldPassword123!'),
         ]);
 
         $response = $this->actingAs($user)->put(route('password.update'), [
             'current_password' => 'OldPassword123!',
             'password' => 'NewPassword123!',
-            'password_confirmation' => 'DifferentPassword123!'
+            'password_confirmation' => 'DifferentPassword123!',
         ]);
 
         $response->assertSessionHasErrorsIn('updatePassword', 'password');
@@ -105,13 +104,13 @@ class PasswordControllerTest extends TestCase
     public function new_password_must_meet_complexity_requirements()
     {
         $user = User::factory()->create([
-            'password' => Hash::make('OldPassword123!')
+            'password' => Hash::make('OldPassword123!'),
         ]);
 
         $response = $this->actingAs($user)->put(route('password.update'), [
             'current_password' => 'OldPassword123!',
             'password' => 'simple',
-            'password_confirmation' => 'simple'
+            'password_confirmation' => 'simple',
         ]);
 
         $response->assertSessionHasErrorsIn('updatePassword', 'password');
@@ -125,7 +124,7 @@ class PasswordControllerTest extends TestCase
         $response = $this->put(route('password.update'), [
             'current_password' => 'OldPassword123!',
             'password' => 'NewPassword123!',
-            'password_confirmation' => 'NewPassword123!'
+            'password_confirmation' => 'NewPassword123!',
         ]);
 
         $response->assertRedirect(route('login'));
@@ -137,13 +136,13 @@ class PasswordControllerTest extends TestCase
     public function password_update_flashes_success_message()
     {
         $user = User::factory()->create([
-            'password' => Hash::make('OldPassword123!')
+            'password' => Hash::make('OldPassword123!'),
         ]);
 
         $response = $this->actingAs($user)->put(route('password.update'), [
             'current_password' => 'OldPassword123!',
             'password' => 'NewPassword123!',
-            'password_confirmation' => 'NewPassword123!'
+            'password_confirmation' => 'NewPassword123!',
         ]);
 
         $response->assertSessionHas('status');

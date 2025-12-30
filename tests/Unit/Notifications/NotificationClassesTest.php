@@ -16,7 +16,9 @@ class NotificationClassesTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $customer;
+
     protected Order $order;
 
     protected function setUp(): void
@@ -236,7 +238,7 @@ class NotificationClassesTest extends TestCase
     public function test_notifications_can_be_sent_to_users(): void
     {
         NotificationFacade::fake();
-        
+
         $adminNotification = new OrderPaidNotification($this->order);
         $this->admin->notify($adminNotification);
 

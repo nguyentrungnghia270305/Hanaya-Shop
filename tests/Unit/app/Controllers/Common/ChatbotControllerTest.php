@@ -22,7 +22,7 @@ class ChatbotControllerTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create();
-        
+
         Config::set('constants.shop_phone', '0123456789');
         Config::set('constants.shop_email', 'test@hanayashop.com');
     }
@@ -43,7 +43,7 @@ class ChatbotControllerTest extends TestCase
     {
         $category = Category::factory()->create();
         Product::factory()->create(['name' => 'Rose', 'category_id' => $category->id]);
-        
+
         $response = $this->postJson(route('chatbot.chat'), ['message' => 'show me rose']);
         $response->assertStatus(200);
     }
@@ -154,7 +154,7 @@ class ChatbotControllerTest extends TestCase
     public function test_chat_handles_exception_gracefully(): void
     {
         $this->markTestSkipped('Chatbot controller does not throw 500 errors, it catches exceptions');
-        
+
         // Force an exception by mocking Product model to throw
         $this->mock(Product::class, function ($mock) {
             $mock->shouldReceive('where')->andThrow(new \Exception('Database error'));
@@ -171,7 +171,7 @@ class ChatbotControllerTest extends TestCase
     public function test_chat_logs_error_on_exception(): void
     {
         $this->markTestSkipped('Chatbot controller does not log exceptions');
-        
+
         \Illuminate\Support\Facades\Log::shouldReceive('error')
             ->once()
             ->with(\Mockery::type('string'), \Mockery::type('array'));
@@ -299,14 +299,14 @@ class ChatbotControllerTest extends TestCase
     public function test_chat_response_includes_shop_phone_on_error(): void
     {
         $this->markTestSkipped('Chatbot controller does not throw 500 errors');
-        
+
         $this->mock(Product::class, function ($mock) {
             $mock->shouldReceive('where')->andThrow(new \Exception('Test error'));
         });
 
         $response = $this->postJson(route('chatbot.chat'), ['message' => 'products']);
         $response->assertStatus(500);
-        
+
         $data = $response->json();
         $this->assertStringContainsString(config('constants.shop_phone'), $data['response']);
     }

@@ -12,8 +12,8 @@ class AlertTest extends TestCase
      */
     public function component_can_be_instantiated()
     {
-        $component = new Alert();
-        
+        $component = new Alert;
+
         $this->assertInstanceOf(Alert::class, $component);
     }
 
@@ -22,8 +22,8 @@ class AlertTest extends TestCase
      */
     public function component_has_render_method()
     {
-        $component = new Alert();
-        
+        $component = new Alert;
+
         $this->assertTrue(method_exists($component, 'render'));
     }
 
@@ -32,10 +32,10 @@ class AlertTest extends TestCase
      */
     public function component_renders_correct_view()
     {
-        $component = new Alert();
-        
+        $component = new Alert;
+
         $view = $component->render();
-        
+
         $this->assertEquals('components.alert', $view->name());
     }
 
@@ -44,10 +44,10 @@ class AlertTest extends TestCase
      */
     public function component_can_be_rendered()
     {
-        $component = new Alert();
-        
+        $component = new Alert;
+
         $view = $component->render();
-        
+
         $this->assertNotNull($view);
     }
 

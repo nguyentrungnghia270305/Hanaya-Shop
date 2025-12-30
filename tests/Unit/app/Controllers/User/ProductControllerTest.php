@@ -2,15 +2,15 @@
 
 namespace Tests\Unit\App\Controllers\User;
 
-use Tests\ControllerTestCase;
-use App\Models\Product\Product;
-use App\Models\Product\Category;
-use App\Models\Product\Review;
 use App\Models\Order\Order;
 use App\Models\Order\OrderDetail;
+use App\Models\Product\Category;
+use App\Models\Product\Product;
+use App\Models\Product\Review;
 use App\Models\User;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+use Tests\ControllerTestCase;
 
 class ProductControllerTest extends ControllerTestCase
 {
@@ -109,12 +109,12 @@ class ProductControllerTest extends ControllerTestCase
         Product::factory()->create([
             'name' => 'Product 1',
             'descriptions' => 'Beautiful red roses',
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
         Product::factory()->create([
             'name' => 'Product 2',
             'descriptions' => 'Yellow sunflowers',
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
 
         $response = $this->get(route('product.index', ['q' => 'roses']));
@@ -217,22 +217,22 @@ class ProductControllerTest extends ControllerTestCase
         $category = Category::factory()->create();
         $product1 = Product::factory()->create(['category_id' => $category->id]);
         $product2 = Product::factory()->create(['category_id' => $category->id]);
-        
+
         $user = User::factory()->create();
         $order1 = Order::factory()->create(['user_id' => $user->id]);
         $order2 = Order::factory()->create(['user_id' => $user->id]);
-        
+
         OrderDetail::create([
             'order_id' => $order1->id,
             'product_id' => $product1->id,
             'quantity' => 10,
-            'price' => 100000
+            'price' => 100000,
         ]);
         OrderDetail::create([
             'order_id' => $order2->id,
             'product_id' => $product2->id,
             'quantity' => 5,
-            'price' => 100000
+            'price' => 100000,
         ]);
 
         $response = $this->get(route('product.index', ['sort' => 'bestseller']));
@@ -257,8 +257,6 @@ class ProductControllerTest extends ControllerTestCase
         $products = $response->viewData('products');
         $this->assertEquals($new->id, $products->first()->id);
     }
-
-
 
     /**
      * Test index passes categories to view
@@ -496,8 +494,7 @@ class ProductControllerTest extends ControllerTestCase
         $product = Product::factory()->create(['category_id' => $category->id]);
 
         $this->get(route('product.show', $product->id));
-        
+
         $this->assertNotNull(Cache::get("product_detail_{$product->id}"));
     }
 }
-

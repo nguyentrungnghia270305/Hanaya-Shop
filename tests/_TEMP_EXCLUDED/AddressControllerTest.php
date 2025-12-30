@@ -6,11 +6,9 @@ use App\Http\Controllers\AddressController;
 use App\Models\Address;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
-use Tests\TestCase;
 use Mockery;
+use Tests\TestCase;
 
 /**
  * AddressController Unit Test
@@ -28,6 +26,7 @@ class AddressControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected AddressController $controller;
 
     protected function setUp(): void
@@ -39,7 +38,7 @@ class AddressControllerTest extends TestCase
         $this->actingAs($this->user);
 
         // Initialize controller instance
-        $this->controller = new AddressController();
+        $this->controller = new AddressController;
     }
 
     /**
@@ -217,7 +216,7 @@ class AddressControllerTest extends TestCase
                 'line',
                 'file',
             ]);
-        
+
         // Verify the response contains error details
         $json = $response->json();
         $this->assertIsString($json['message']);
@@ -320,9 +319,9 @@ class AddressControllerTest extends TestCase
         $response = $this->postJson(route('addresses.store'), $data);
 
         $response->assertStatus(500);
-        
+
         $json = $response->json();
-        
+
         // Verify exception response structure
         $this->assertEquals('error', $json['status']);
         $this->assertArrayHasKey('message', $json);

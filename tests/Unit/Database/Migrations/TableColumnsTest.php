@@ -13,7 +13,7 @@ class TableColumnsTest extends TestCase
     public function users_table_has_required_columns()
     {
         $columns = ['id', 'name', 'email', 'password', 'role', 'created_at', 'updated_at'];
-        
+
         foreach ($columns as $column) {
             $this->assertTrue(Schema::hasColumn('users', $column));
         }
@@ -25,7 +25,7 @@ class TableColumnsTest extends TestCase
     public function products_table_has_required_columns()
     {
         $columns = ['id', 'name', 'price', 'category_id', 'stock_quantity', 'created_at', 'updated_at'];
-        
+
         foreach ($columns as $column) {
             $this->assertTrue(Schema::hasColumn('products', $column));
         }
@@ -37,7 +37,7 @@ class TableColumnsTest extends TestCase
     public function orders_table_has_required_columns()
     {
         $columns = ['id', 'user_id', 'total_price', 'status', 'created_at', 'updated_at'];
-        
+
         foreach ($columns as $column) {
             $this->assertTrue(Schema::hasColumn('orders', $column));
         }
@@ -49,7 +49,7 @@ class TableColumnsTest extends TestCase
     public function categories_table_has_required_columns()
     {
         $columns = ['id', 'name', 'created_at', 'updated_at'];
-        
+
         foreach ($columns as $column) {
             $this->assertTrue(Schema::hasColumn('categories', $column));
         }
@@ -61,7 +61,7 @@ class TableColumnsTest extends TestCase
     public function carts_table_has_required_columns()
     {
         $columns = ['id', 'product_id', 'quantity', 'created_at', 'updated_at'];
-        
+
         foreach ($columns as $column) {
             $this->assertTrue(Schema::hasColumn('carts', $column));
         }
@@ -73,7 +73,7 @@ class TableColumnsTest extends TestCase
     public function reviews_table_has_required_columns()
     {
         $columns = ['id', 'user_id', 'product_id', 'rating', 'created_at', 'updated_at'];
-        
+
         foreach ($columns as $column) {
             $this->assertTrue(Schema::hasColumn('reviews', $column));
         }

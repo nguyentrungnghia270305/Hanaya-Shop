@@ -20,9 +20,9 @@ class StarRatingTest extends TestCase
     public function component_can_be_rendered_with_default_rating()
     {
         $view = view('components.star-rating');
-        
+
         $rendered = $view->render();
-        
+
         $this->assertStringContainsString('★', $rendered);
     }
 
@@ -32,9 +32,9 @@ class StarRatingTest extends TestCase
     public function component_accepts_rating_prop()
     {
         $view = view('components.star-rating', ['rating' => 4]);
-        
+
         $rendered = $view->render();
-        
+
         $this->assertStringContainsString('★', $rendered);
     }
 
@@ -44,11 +44,11 @@ class StarRatingTest extends TestCase
     public function component_accepts_size_prop()
     {
         $sizes = ['sm', 'base', 'lg', 'xl'];
-        
+
         foreach ($sizes as $size) {
             $view = view('components.star-rating', ['size' => $size]);
             $rendered = $view->render();
-            
+
             $this->assertNotEmpty($rendered);
         }
     }
@@ -60,11 +60,11 @@ class StarRatingTest extends TestCase
     {
         $view = view('components.star-rating', [
             'rating' => 4.5,
-            'showText' => true
+            'showText' => true,
         ]);
-        
+
         $rendered = $view->render();
-        
+
         $this->assertNotEmpty($rendered);
     }
 
@@ -75,11 +75,11 @@ class StarRatingTest extends TestCase
     {
         $view = view('components.star-rating', [
             'rating' => 3,
-            'readonly' => true
+            'readonly' => true,
         ]);
-        
+
         $rendered = $view->render();
-        
+
         $this->assertStringContainsString('★', $rendered);
     }
 
@@ -90,11 +90,11 @@ class StarRatingTest extends TestCase
     {
         $view = view('components.star-rating', [
             'rating' => 3,
-            'maxRating' => 5
+            'maxRating' => 5,
         ]);
-        
+
         $rendered = $view->render();
-        
+
         $this->assertNotEmpty($rendered);
     }
 
@@ -104,9 +104,9 @@ class StarRatingTest extends TestCase
     public function component_handles_decimal_ratings()
     {
         $view = view('components.star-rating', ['rating' => 4.5]);
-        
+
         $rendered = $view->render();
-        
+
         $this->assertStringContainsString('★', $rendered);
     }
 
@@ -117,11 +117,11 @@ class StarRatingTest extends TestCase
     {
         $view = view('components.star-rating', [
             'rating' => 3,
-            'maxRating' => 5
+            'maxRating' => 5,
         ]);
-        
+
         $rendered = $view->render();
-        
+
         // Should contain star symbols
         $this->assertStringContainsString('★', $rendered);
     }

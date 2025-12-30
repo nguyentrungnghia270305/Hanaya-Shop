@@ -25,7 +25,7 @@ class ProductStockManagementTest extends TestCase
     public function admin_can_increase_product_stock()
     {
         $product = Product::factory()->create(['stock_quantity' => 10]);
-        
+
         $response = $this->actingAs($this->admin)
             ->put(route('admin.product.update', $product), [
                 'name' => $product->name,
@@ -33,13 +33,13 @@ class ProductStockManagementTest extends TestCase
                 'price' => $product->price,
                 'category_id' => $product->category_id,
                 'discount_percent' => $product->discount_percent,
-                'stock_quantity' => 20
+                'stock_quantity' => 20,
             ]);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
-            'stock_quantity' => 20
+            'stock_quantity' => 20,
         ]);
     }
 
@@ -49,7 +49,7 @@ class ProductStockManagementTest extends TestCase
     public function admin_can_decrease_product_stock()
     {
         $product = Product::factory()->create(['stock_quantity' => 50]);
-        
+
         $response = $this->actingAs($this->admin)
             ->put(route('admin.product.update', $product), [
                 'name' => $product->name,
@@ -57,13 +57,13 @@ class ProductStockManagementTest extends TestCase
                 'price' => $product->price,
                 'category_id' => $product->category_id,
                 'discount_percent' => $product->discount_percent,
-                'stock_quantity' => 30
+                'stock_quantity' => 30,
             ]);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
-            'stock_quantity' => 30
+            'stock_quantity' => 30,
         ]);
     }
 
@@ -73,7 +73,7 @@ class ProductStockManagementTest extends TestCase
     public function product_stock_cannot_be_negative()
     {
         $product = Product::factory()->create(['stock_quantity' => 10]);
-        
+
         $response = $this->actingAs($this->admin)
             ->put(route('admin.product.update', $product), [
                 'name' => $product->name,
@@ -81,9 +81,9 @@ class ProductStockManagementTest extends TestCase
                 'price' => $product->price,
                 'category_id' => $product->category_id,
                 'discount_percent' => $product->discount_percent,
-                'stock_quantity' => -5
+                'stock_quantity' => -5,
             ]);
-        
+
         $response->assertSessionHasErrors('stock_quantity');
     }
 
@@ -93,7 +93,7 @@ class ProductStockManagementTest extends TestCase
     public function out_of_stock_products_are_marked()
     {
         $product = Product::factory()->create(['stock_quantity' => 0]);
-        
+
         $this->assertEquals(0, $product->stock_quantity);
         $this->assertTrue($product->stock_quantity === 0);
     }
@@ -104,7 +104,7 @@ class ProductStockManagementTest extends TestCase
     public function low_stock_alert_for_products_below_threshold()
     {
         $product = Product::factory()->create(['stock_quantity' => 5]);
-        
+
         $this->assertLessThan(10, $product->stock_quantity);
     }
 }

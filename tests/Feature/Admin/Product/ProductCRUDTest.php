@@ -15,6 +15,7 @@ class ProductCRUDTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $category;
 
     protected function setUp(): void
@@ -30,10 +31,10 @@ class ProductCRUDTest extends TestCase
     public function admin_can_view_products_list()
     {
         Product::factory()->count(10)->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.product'));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('admin.products.index');
     }
@@ -44,9 +45,9 @@ class ProductCRUDTest extends TestCase
     public function admin_can_create_product()
     {
         Storage::fake('public');
-        
+
         $file = UploadedFile::fake()->create('product.jpg', 100, 'image/jpeg');
-        
+
         $response = $this->actingAs($this->admin)
             ->post(route('admin.product.store'), [
                 'name' => 'Test Product',
@@ -54,13 +55,13 @@ class ProductCRUDTest extends TestCase
                 'price' => 100,
                 'stock_quantity' => 50,
                 'category_id' => $this->category->id,
-                'image_url' => $file
+                'image_url' => $file,
             ]);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('products', [
             'name' => 'Test Product',
-            'price' => 100
+            'price' => 100,
         ]);
     }
 
@@ -70,10 +71,10 @@ class ProductCRUDTest extends TestCase
     public function admin_can_view_single_product()
     {
         $product = Product::factory()->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.product.show', $product));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('admin.products.show');
     }
@@ -84,21 +85,21 @@ class ProductCRUDTest extends TestCase
     public function admin_can_update_product()
     {
         $product = Product::factory()->create(['name' => 'Old Name']);
-        
+
         $response = $this->actingAs($this->admin)
             ->put(route('admin.product.update', $product), [
                 'name' => 'Updated Name',
                 'descriptions' => 'Updated description',
                 'price' => 150,
                 'stock_quantity' => 30,
-                'category_id' => $this->category->id
+                'category_id' => $this->category->id,
             ]);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
             'name' => 'Updated Name',
-            'price' => 150
+            'price' => 150,
         ]);
     }
 
@@ -108,13 +109,13 @@ class ProductCRUDTest extends TestCase
     public function admin_can_delete_product()
     {
         $product = Product::factory()->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->delete(route('admin.product.destroy', $product));
-        
+
         $response->assertRedirect();
         $this->assertDatabaseMissing('products', [
-            'id' => $product->id
+            'id' => $product->id,
         ]);
     }
 
@@ -124,10 +125,10 @@ class ProductCRUDTest extends TestCase
     public function non_admin_cannot_access_product_management()
     {
         $user = User::factory()->create(['role' => 'user']);
-        
+
         $response = $this->actingAs($user)
             ->get(route('admin.product'));
-        
+
         $response->assertStatus(403);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Routes;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
@@ -27,7 +26,7 @@ class WebRoutesIntegrationTest extends TestCase
     public function chatbot_endpoint_is_accessible()
     {
         $response = $this->post(route('chatbot.chat'), [
-            'message' => 'test message'
+            'message' => 'test message',
         ]);
 
         $response->assertOk();

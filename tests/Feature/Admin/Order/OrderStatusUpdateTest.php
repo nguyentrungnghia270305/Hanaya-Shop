@@ -27,16 +27,16 @@ class OrderStatusUpdateTest extends TestCase
     public function admin_can_update_order_status_to_confirmed()
     {
         $order = Order::factory()->create(['status' => 'pending']);
-        
+
         $response = $this->actingAs($this->admin)
             ->put(route('admin.order.confirm', $order), [
-                'status' => 'processing'
+                'status' => 'processing',
             ]);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
-            'status' => 'processing'
+            'status' => 'processing',
         ]);
     }
 
@@ -46,16 +46,16 @@ class OrderStatusUpdateTest extends TestCase
     public function admin_can_update_order_status_to_shipping()
     {
         $order = Order::factory()->create(['status' => 'processing']);
-        
+
         $response = $this->actingAs($this->admin)
             ->put(route('admin.order.shipped', $order), [
-                'status' => 'shipped'
+                'status' => 'shipped',
             ]);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
-            'status' => 'shipped'
+            'status' => 'shipped',
         ]);
     }
 
@@ -65,16 +65,16 @@ class OrderStatusUpdateTest extends TestCase
     public function admin_can_cancel_order()
     {
         $order = Order::factory()->create(['status' => 'pending']);
-        
+
         $response = $this->actingAs($this->admin)
             ->put(route('admin.orders.cancel', $order), [
-                'status' => 'cancelled'
+                'status' => 'cancelled',
             ]);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
-            'status' => 'cancelled'
+            'status' => 'cancelled',
         ]);
     }
 }

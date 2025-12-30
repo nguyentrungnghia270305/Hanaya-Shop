@@ -79,7 +79,7 @@ class WebRoutesTest extends TestCase
     {
         // Test some user routes with actual route names
         $this->assertTrue(
-            \Illuminate\Support\Facades\Route::has('product.index') || 
+            \Illuminate\Support\Facades\Route::has('product.index') ||
             \Illuminate\Support\Facades\Route::has('user.products.index'),
             'Product index route should exist'
         );

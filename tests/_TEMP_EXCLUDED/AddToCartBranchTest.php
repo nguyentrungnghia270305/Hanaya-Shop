@@ -105,7 +105,7 @@ class AddToCartBranchTest extends TestCase
 
         // Assert: Guest is redirected to login (auth middleware)
         $response->assertRedirect(route('login'));
-        
+
         // Verify no cart item created
         $this->assertDatabaseCount('carts', 0);
     }
@@ -142,11 +142,11 @@ class AddToCartBranchTest extends TestCase
         // Arrange: Product already in cart
         $user = User::factory()->create();
         $product = Product::factory()->create(['stock_quantity' => 20]);
-        
+
         // Start session and authenticate
         $this->actingAs($user);
         $sessionId = session()->getId();
-        
+
         // Create existing cart item with matching session
         Cart::factory()->create([
             'product_id' => $product->id,
@@ -163,11 +163,11 @@ class AddToCartBranchTest extends TestCase
         // Assert: Due to session handling in tests, verify cart logic works
         // In production, same session would update. In tests, new session creates new item.
         $response->assertRedirect();
-        
+
         // Verify both cart items exist (test limitation - different sessions)
         $carts = Cart::where('product_id', $product->id)->get();
         $this->assertGreaterThanOrEqual(1, $carts->count());
-        
+
         // Verify quantities are correct
         $totalQuantity = $carts->sum('quantity');
         $this->assertEquals(8, $totalQuantity); // 5 + 3
@@ -318,11 +318,11 @@ class AddToCartBranchTest extends TestCase
         // Arrange: Product already in cart
         $user = User::factory()->create();
         $product = Product::factory()->create(['stock_quantity' => 20]);
-        
+
         // Start session and authenticate
         $this->actingAs($user);
         $sessionId = session()->getId();
-        
+
         // Create existing cart item with matching session
         Cart::factory()->create([
             'product_id' => $product->id,
@@ -339,11 +339,11 @@ class AddToCartBranchTest extends TestCase
 
         // Assert: Due to session handling in tests, verify buy now logic works
         $response->assertRedirect(route('cart.index'));
-        
+
         // Verify cart items exist (test creates multiple due to session differences)
         $carts = Cart::where('product_id', $product->id)->get();
         $this->assertGreaterThanOrEqual(1, $carts->count());
-        
+
         // Verify total quantity matches expected
         $totalQuantity = $carts->sum('quantity');
         $this->assertEquals(7, $totalQuantity); // 3 + 4
@@ -399,11 +399,11 @@ class AddToCartBranchTest extends TestCase
         // Arrange: Authenticated user with exact remaining stock scenario
         $user = User::factory()->create();
         $product = Product::factory()->create(['stock_quantity' => 10]);
-        
+
         // Start session and authenticate
         $this->actingAs($user);
         $sessionId = session()->getId();
-        
+
         // Create existing cart item with matching session
         Cart::factory()->create([
             'product_id' => $product->id,
@@ -419,11 +419,11 @@ class AddToCartBranchTest extends TestCase
 
         // Assert: Exact remaining stock branch - verify correct total quantity
         $response->assertRedirect();
-        
+
         // Verify cart items exist (test may create multiple due to session differences)
         $carts = Cart::where('product_id', $product->id)->get();
         $this->assertGreaterThanOrEqual(1, $carts->count());
-        
+
         // Verify total quantity equals exact stock
         $totalQuantity = $carts->sum('quantity');
         $this->assertEquals(10, $totalQuantity); // 7 + 3 = exact stock

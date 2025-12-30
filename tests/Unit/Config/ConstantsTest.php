@@ -12,7 +12,7 @@ class ConstantsTest extends TestCase
     public function logo_path_is_configured()
     {
         $logoPath = config('constants.logo_path');
-        
+
         $this->assertNotEmpty($logoPath);
         $this->assertStringContainsString('logo', $logoPath);
     }
@@ -23,7 +23,7 @@ class ConstantsTest extends TestCase
     public function favicon_path_is_configured()
     {
         $faviconPath = config('constants.favicon_path');
-        
+
         $this->assertNotEmpty($faviconPath);
         $this->assertStringContainsString('favicon', $faviconPath);
     }
@@ -34,7 +34,7 @@ class ConstantsTest extends TestCase
     public function shop_name_is_configured()
     {
         $shopName = config('constants.shop_name');
-        
+
         $this->assertNotEmpty($shopName);
         $this->assertIsString($shopName);
     }
@@ -47,7 +47,7 @@ class ConstantsTest extends TestCase
         $email = config('constants.shop_email');
         $phone = config('constants.shop_phone');
         $address = config('constants.shop_address');
-        
+
         $this->assertNotEmpty($email);
         $this->assertNotEmpty($phone);
         $this->assertNotEmpty($address);
@@ -59,10 +59,10 @@ class ConstantsTest extends TestCase
     public function banners_are_configured()
     {
         $banners = config('constants.banners');
-        
+
         $this->assertIsArray($banners);
         $this->assertNotEmpty($banners);
-        
+
         foreach ($banners as $banner) {
             $this->assertArrayHasKey('image', $banner);
             $this->assertArrayHasKey('title_key', $banner);
@@ -75,7 +75,7 @@ class ConstantsTest extends TestCase
     public function social_links_are_configured()
     {
         $socialLinks = config('constants.social_links');
-        
+
         if ($socialLinks) {
             $this->assertIsArray($socialLinks);
         }
@@ -87,7 +87,7 @@ class ConstantsTest extends TestCase
     public function payment_methods_are_configured()
     {
         $paymentMethods = config('constants.payment_methods');
-        
+
         if ($paymentMethods) {
             $this->assertIsArray($paymentMethods);
         }

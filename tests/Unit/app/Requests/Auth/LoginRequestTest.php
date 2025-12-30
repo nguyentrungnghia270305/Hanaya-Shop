@@ -20,8 +20,8 @@ class LoginRequestTest extends TestCase
      */
     public function request_is_always_authorized()
     {
-        $request = new LoginRequest();
-        
+        $request = new LoginRequest;
+
         $this->assertTrue($request->authorize());
     }
 
@@ -30,9 +30,9 @@ class LoginRequestTest extends TestCase
      */
     public function request_has_validation_rules()
     {
-        $request = new LoginRequest();
+        $request = new LoginRequest;
         $rules = $request->rules();
-        
+
         $this->assertArrayHasKey('email', $rules);
         $this->assertArrayHasKey('password', $rules);
     }
@@ -42,9 +42,9 @@ class LoginRequestTest extends TestCase
      */
     public function email_is_required()
     {
-        $request = new LoginRequest();
+        $request = new LoginRequest;
         $validator = Validator::make(['password' => 'password'], $request->rules());
-        
+
         $this->assertTrue($validator->fails());
         $this->assertArrayHasKey('email', $validator->errors()->toArray());
     }
@@ -54,9 +54,9 @@ class LoginRequestTest extends TestCase
      */
     public function password_is_required()
     {
-        $request = new LoginRequest();
+        $request = new LoginRequest;
         $validator = Validator::make(['email' => 'test@example.com'], $request->rules());
-        
+
         $this->assertTrue($validator->fails());
         $this->assertArrayHasKey('password', $validator->errors()->toArray());
     }
@@ -66,12 +66,12 @@ class LoginRequestTest extends TestCase
      */
     public function email_must_be_valid_email_format()
     {
-        $request = new LoginRequest();
+        $request = new LoginRequest;
         $validator = Validator::make([
             'email' => 'invalid-email',
-            'password' => 'password'
+            'password' => 'password',
         ], $request->rules());
-        
+
         $this->assertTrue($validator->fails());
         $this->assertArrayHasKey('email', $validator->errors()->toArray());
     }
@@ -83,16 +83,16 @@ class LoginRequestTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
         ]);
-        
+
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
-        
+
         $request->authenticate();
-        
+
         $this->assertAuthenticatedAs($user);
     }
 
@@ -102,17 +102,17 @@ class LoginRequestTest extends TestCase
     public function authenticate_method_throws_exception_for_invalid_credentials()
     {
         $this->expectException(ValidationException::class);
-        
+
         User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('correct-password')
+            'password' => Hash::make('correct-password'),
         ]);
-        
+
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'wrong-password'
+            'password' => 'wrong-password',
         ]);
-        
+
         $request->authenticate();
     }
 
@@ -123,17 +123,17 @@ class LoginRequestTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
         ]);
-        
+
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
             'password' => 'password123',
-            'remember' => true
+            'remember' => true,
         ]);
-        
+
         $request->authenticate();
-        
+
         $this->assertAuthenticatedAs($user);
     }
 
@@ -143,9 +143,9 @@ class LoginRequestTest extends TestCase
     public function request_has_rate_limiting()
     {
         RateLimiter::clear('test-throttle-key');
-        
-        $request = new LoginRequest();
-        
+
+        $request = new LoginRequest;
+
         $this->assertTrue(method_exists($request, 'ensureIsNotRateLimited'));
         $this->assertTrue(method_exists($request, 'throttleKey'));
     }
@@ -155,12 +155,12 @@ class LoginRequestTest extends TestCase
      */
     public function valid_credentials_pass_validation()
     {
-        $request = new LoginRequest();
+        $request = new LoginRequest;
         $validator = Validator::make([
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ], $request->rules());
-        
+
         $this->assertTrue($validator->passes());
     }
 }

@@ -2,23 +2,23 @@
 
 namespace Tests\Coverage\BoundaryCoverage;
 
-use Tests\TestCase;
 use App\Models\Cart\Cart;
-use App\Models\Product\Product;
 use App\Models\Product\Category;
+use App\Models\Product\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * Quantity Boundary Coverage Test
- * 
+ *
  * Tests boundary conditions for quantity-related operations in cart:
  * - Minimum quantity values (0, 1)
  * - Maximum quantity values (practical limits)
  * - Negative quantity handling
  * - Quantity updates and modifications
  * - Edge cases in cart operations
- * 
+ *
  * Boundary Analysis:
  * - Quantity: 0, 1, 10, 50, 100, 999, 1000, MAX_INT
  * - Cart operations: add, update, remove
@@ -29,13 +29,15 @@ class QuantityBoundaryTest extends TestCase
     use RefreshDatabase;
 
     protected $user;
+
     protected $product;
+
     protected $category;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create();
         $this->category = Category::factory()->create();
         $this->product = Product::factory()->create([

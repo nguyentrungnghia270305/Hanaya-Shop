@@ -11,7 +11,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Tests\ControllerTestCase;
 
 class ProductsControllerTest extends ControllerTestCase
@@ -268,7 +267,7 @@ class ProductsControllerTest extends ControllerTestCase
     public function test_store_uploads_image_with_unique_filename(): void
     {
         $this->markTestSkipped('GD extension not available in test environment');
-        
+
         $category = Category::factory()->create();
         $image = UploadedFile::fake()->image('product.jpg', 640, 480);
 
@@ -403,7 +402,7 @@ class ProductsControllerTest extends ControllerTestCase
     public function test_store_validates_image_file_size(): void
     {
         $this->markTestSkipped('GD extension not available in test environment');
-        
+
         $category = Category::factory()->create();
         $image = UploadedFile::fake()->image('product.jpg')->size(3000);
 
@@ -537,7 +536,7 @@ class ProductsControllerTest extends ControllerTestCase
     public function test_update_replaces_image_with_new_upload(): void
     {
         $this->markTestSkipped('GD extension not available in test environment');
-        
+
         $category = Category::factory()->create();
         $oldImage = UploadedFile::fake()->image('old.jpg');
         $oldImagePath = public_path('images/products/old_product.jpg');
@@ -573,7 +572,7 @@ class ProductsControllerTest extends ControllerTestCase
     public function test_update_does_not_delete_default_image_when_replacing(): void
     {
         $this->markTestSkipped('GD extension not available in test environment');
-        
+
         $category = Category::factory()->create();
         $product = Product::factory()->create([
             'category_id' => $category->id,
@@ -662,7 +661,7 @@ class ProductsControllerTest extends ControllerTestCase
     public function test_destroy_deletes_associated_image_file(): void
     {
         $this->markTestSkipped('GD extension not available in test environment');
-        
+
         $category = Category::factory()->create();
         $image = UploadedFile::fake()->image('product.jpg');
         $imagePath = public_path('images/products/test_product.jpg');

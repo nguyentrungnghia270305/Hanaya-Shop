@@ -19,7 +19,7 @@ class PaymentCastServiceProviderTest extends TestCase
     public function provider_is_registered_in_application()
     {
         $providers = $this->app->getLoadedProviders();
-        
+
         $this->assertArrayHasKey(PaymentCastServiceProvider::class, $providers);
     }
 
@@ -29,17 +29,17 @@ class PaymentCastServiceProviderTest extends TestCase
     public function provider_validates_payment_method_on_creation()
     {
         $order = Order::factory()->create();
-        
+
         $payment = Payment::create([
             'order_id' => $order->id,
             'payment_method' => 'credit_card',
-            'payment_status' => 'pending'
+            'payment_status' => 'pending',
         ]);
-        
+
         $this->assertEquals('credit_card', $payment->payment_method);
         $this->assertDatabaseHas('payments', [
             'id' => $payment->id,
-            'payment_method' => 'credit_card'
+            'payment_method' => 'credit_card',
         ]);
     }
 
@@ -50,13 +50,13 @@ class PaymentCastServiceProviderTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invalid payment method');
-        
+
         $order = Order::factory()->create();
-        
+
         Payment::create([
             'order_id' => $order->id,
             'payment_method' => 'bitcoin',
-            'payment_status' => 'pending'
+            'payment_status' => 'pending',
         ]);
     }
 
@@ -67,14 +67,14 @@ class PaymentCastServiceProviderTest extends TestCase
     {
         $order = Order::factory()->create();
         $validMethods = ['credit_card', 'paypal', 'cash_on_delivery'];
-        
+
         foreach ($validMethods as $method) {
             $payment = Payment::create([
                 'order_id' => $order->id,
                 'payment_method' => $method,
-                'payment_status' => 'pending'
+                'payment_status' => 'pending',
             ]);
-            
+
             $this->assertEquals($method, $payment->payment_method);
         }
     }
@@ -85,13 +85,13 @@ class PaymentCastServiceProviderTest extends TestCase
     public function provider_sanitizes_payment_method_with_whitespace()
     {
         $order = Order::factory()->create();
-        
+
         $payment = Payment::create([
             'order_id' => $order->id,
             'payment_method' => '  paypal  ',
-            'payment_status' => 'pending'
+            'payment_status' => 'pending',
         ]);
-        
+
         $this->assertEquals('paypal', $payment->payment_method);
     }
 
@@ -101,9 +101,9 @@ class PaymentCastServiceProviderTest extends TestCase
     public function provider_configuration_exists()
     {
         $providersPath = base_path('bootstrap/providers.php');
-        
+
         $this->assertFileExists($providersPath);
-        
+
         $providers = require $providersPath;
         $this->assertContains(PaymentCastServiceProvider::class, $providers);
     }

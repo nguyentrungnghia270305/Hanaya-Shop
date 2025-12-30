@@ -5,7 +5,6 @@ namespace Tests\Unit\App\Models\User;
 use App\Models\Address;
 use App\Models\Cart\Cart;
 use App\Models\Order\Order;
-use App\Models\Post;
 use App\Models\Product\Review;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

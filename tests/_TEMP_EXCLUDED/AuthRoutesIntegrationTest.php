@@ -3,7 +3,6 @@
 namespace Tests\Feature\Routes;
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -100,7 +99,7 @@ class AuthRoutesIntegrationTest extends TestCase
                 'email' => 'test@example.com',
                 'verification_token' => 'test-token',
                 'created_at' => now(),
-            ]
+            ],
         ]);
 
         $response = $this->get(route('verification.notice'));
@@ -112,7 +111,7 @@ class AuthRoutesIntegrationTest extends TestCase
     {
         Notification::fake();
         Mail::fake(); // Mock Mail sending to avoid Gmail limits
-        
+
         // verification.resend is for guests with pending registration
         session([
             'pending_registration' => [
@@ -120,7 +119,7 @@ class AuthRoutesIntegrationTest extends TestCase
                 'email' => 'test@example.com',
                 'verification_token' => 'test-token',
                 'created_at' => now(),
-            ]
+            ],
         ]);
 
         $response = $this->post(route('verification.resend'));
@@ -140,7 +139,7 @@ class AuthRoutesIntegrationTest extends TestCase
     public function authenticated_user_can_update_password()
     {
         $user = User::factory()->create([
-            'password' => Hash::make('OldPassword123!@')
+            'password' => Hash::make('OldPassword123!@'),
         ]);
 
         $response = $this->actingAs($user)->put(route('password.update'), [

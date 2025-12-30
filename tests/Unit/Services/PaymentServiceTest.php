@@ -15,14 +15,16 @@ class PaymentServiceTest extends TestCase
     use RefreshDatabase;
 
     protected PaymentService $paymentService;
+
     protected User $user;
+
     protected Order $order;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->paymentService = new PaymentService();
+        $this->paymentService = new PaymentService;
         $this->user = User::factory()->create();
         $this->order = Order::factory()->create([
             'user_id' => $this->user->id,
@@ -190,7 +192,7 @@ class PaymentServiceTest extends TestCase
         $paymentData = ['last_digits' => '4242'];
 
         $result1 = $this->paymentService->processPayment('credit_card', $this->order, $paymentData);
-        
+
         $order2 = Order::factory()->create(['user_id' => $this->user->id]);
         $result2 = $this->paymentService->processPayment('credit_card', $order2, $paymentData);
 
@@ -205,7 +207,7 @@ class PaymentServiceTest extends TestCase
         $paymentData = ['paypal_email' => 'test@paypal.com'];
 
         $result1 = $this->paymentService->processPayment('paypal', $this->order, $paymentData);
-        
+
         $order2 = Order::factory()->create(['user_id' => $this->user->id]);
         $result2 = $this->paymentService->processPayment('paypal', $order2, $paymentData);
 
@@ -219,7 +221,7 @@ class PaymentServiceTest extends TestCase
     {
         $result = $this->paymentService->processPayment('cash_on_delivery', $this->order);
 
-        $expectedTransactionId = 'COD_' . $this->order->id;
+        $expectedTransactionId = 'COD_'.$this->order->id;
         $this->assertEquals($expectedTransactionId, $result['transaction_id']);
     }
 

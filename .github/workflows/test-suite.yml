@@ -205,6 +205,10 @@ jobs:
         run: |
           echo "🔧 Setting up test environment..."
           
+          # Create required directories FIRST
+          mkdir -p bootstrap/cache storage/framework/{cache/data,sessions,views}
+          chmod -R 775 bootstrap/cache storage
+          
           # Create .env.testing from example
           cp .env.example .env.testing
           php artisan key:generate --env=testing

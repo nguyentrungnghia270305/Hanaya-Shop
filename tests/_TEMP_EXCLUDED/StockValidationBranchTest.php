@@ -174,7 +174,7 @@ class StockValidationBranchTest extends TestCase
         if ($canDeplete) {
             $product->stock_quantity -= $requestedQuantity;
         }
-        
+
         // Stock remains unchanged
         $this->assertEquals(5, $product->stock_quantity);
     }
@@ -190,7 +190,7 @@ class StockValidationBranchTest extends TestCase
     //     $user = User::factory()->create();
     //     $product = Product::factory()->create(['stock_quantity' => 50]);
     //     $order = Order::factory()->pending()->create(['user_id' => $user->id]);
-        
+
     //     OrderDetail::factory()->create([
     //         'order_id' => $order->id,
     //         'product_id' => $product->id,
@@ -216,9 +216,9 @@ class StockValidationBranchTest extends TestCase
     //     $user = User::factory()->create();
     //     $product1 = Product::factory()->create(['stock_quantity' => 30]);
     //     $product2 = Product::factory()->create(['stock_quantity' => 20]);
-        
+
     //     $order = Order::factory()->pending()->create(['user_id' => $user->id]);
-        
+
     //     OrderDetail::factory()->create([
     //         'order_id' => $order->id,
     //         'product_id' => $product1->id,
@@ -345,7 +345,7 @@ class StockValidationBranchTest extends TestCase
         // Arrange: Existing cart + new quantity validation
         $user = User::factory()->create();
         $product = Product::factory()->create(['stock_quantity' => 15]);
-        
+
         Cart::factory()->create([
             'product_id' => $product->id,
             'user_id' => $user->id,
@@ -516,7 +516,7 @@ class StockValidationBranchTest extends TestCase
         $this->actingAs($user1)->post(route('cart.add', $product->id), [
             'quantity' => 6,
         ]);
-        
+
         $this->actingAs($user2)->post(route('cart.add', $product->id), [
             'quantity' => 5,
         ]);

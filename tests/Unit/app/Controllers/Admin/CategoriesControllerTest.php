@@ -42,7 +42,7 @@ class CategoriesControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('admin.categories.index');
         $response->assertViewHas('categories');
-        
+
         $categories = $response->viewData('categories');
         $this->assertEquals(20, $categories->perPage());
     }
@@ -85,7 +85,7 @@ class CategoriesControllerTest extends TestCase
 
         $response->assertRedirect(route('admin.category'));
         $response->assertSessionHas('success');
-        
+
         $this->assertDatabaseHas('categories', [
             'name' => 'Test Category',
             'description' => 'Test Description',
@@ -97,10 +97,10 @@ class CategoriesControllerTest extends TestCase
      */
     public function test_store_with_image_upload(): void
     {
-        if (!function_exists('imagecreatetruecolor')) {
+        if (! function_exists('imagecreatetruecolor')) {
             $this->markTestSkipped('GD extension is not installed.');
         }
-        
+
         Cache::shouldReceive('forget')->with('admin_categories_all')->once();
 
         $image = UploadedFile::fake()->image('category.jpg', 800, 600);
@@ -114,7 +114,7 @@ class CategoriesControllerTest extends TestCase
         $response = $this->post(route('admin.category.store'), $data);
 
         $response->assertRedirect(route('admin.category'));
-        
+
         $category = Category::where('name', 'Category with Image')->first();
         $this->assertNotNull($category);
         $this->assertNotNull($category->image_path);
@@ -193,10 +193,10 @@ class CategoriesControllerTest extends TestCase
      */
     public function test_store_validation_rejects_oversized_image(): void
     {
-        if (!function_exists('imagecreatetruecolor')) {
+        if (! function_exists('imagecreatetruecolor')) {
             $this->markTestSkipped('GD extension is not installed.');
         }
-        
+
         $image = UploadedFile::fake()->image('large.jpg')->size(3000);
 
         $data = [
@@ -272,7 +272,7 @@ class CategoriesControllerTest extends TestCase
 
         $response->assertRedirect(route('admin.category'));
         $response->assertSessionHas('success');
-        
+
         $this->assertDatabaseHas('categories', [
             'id' => $category->id,
             'name' => 'Updated Name',
@@ -285,10 +285,10 @@ class CategoriesControllerTest extends TestCase
      */
     public function test_update_with_new_image(): void
     {
-        if (!function_exists('imagecreatetruecolor')) {
+        if (! function_exists('imagecreatetruecolor')) {
             $this->markTestSkipped('GD extension is not installed.');
         }
-        
+
         Cache::shouldReceive('forget')->with('admin_categories_all')->once();
 
         $category = Category::factory()->create([
@@ -306,7 +306,7 @@ class CategoriesControllerTest extends TestCase
         $response = $this->put(route('admin.category.update', $category->id), $data);
 
         $response->assertRedirect(route('admin.category'));
-        
+
         $category->refresh();
         $this->assertStringEndsWith('.jpg', $category->image_path);
         $this->assertNotEquals('old_image.jpg', $category->image_path);
@@ -362,14 +362,14 @@ class CategoriesControllerTest extends TestCase
 
         // Create category với default image path để tránh file operations
         $category = Category::factory()->create([
-            'image_path' => 'fixed_resources/not_found.jpg' // Default image, không cần xóa
+            'image_path' => 'fixed_resources/not_found.jpg', // Default image, không cần xóa
         ]);
 
         $response = $this->delete(route('admin.category.destroy', $category->id));
-        
+
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
-        
+
         $this->assertDatabaseMissing('categories', [
             'id' => $category->id,
         ]);
@@ -558,7 +558,7 @@ class CategoriesControllerTest extends TestCase
         $response = $this->post(route('admin.category.store'), $data);
 
         $response->assertRedirect(route('admin.category'));
-        
+
         $this->assertDatabaseHas('categories', [
             'name' => 'Category Without Description',
             'description' => null,
@@ -582,7 +582,7 @@ class CategoriesControllerTest extends TestCase
         $response = $this->put(route('admin.category.update', $category->id), $data);
 
         $response->assertRedirect(route('admin.category'));
-        
+
         $category->refresh();
         $this->assertNull($category->description);
     }

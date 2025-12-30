@@ -15,8 +15,8 @@ class DatabaseSeederTest extends TestCase
      */
     public function database_seeder_runs_successfully()
     {
-        $seeder = new DatabaseSeeder();
-        
+        $seeder = new DatabaseSeeder;
+
         $this->assertNull($seeder->run());
     }
 
@@ -26,7 +26,7 @@ class DatabaseSeederTest extends TestCase
     public function database_seeder_creates_users()
     {
         $this->seed(DatabaseSeeder::class);
-        
+
         $this->assertGreaterThan(0, \App\Models\User::count());
     }
 
@@ -36,7 +36,7 @@ class DatabaseSeederTest extends TestCase
     public function database_seeder_creates_categories()
     {
         $this->seed(DatabaseSeeder::class);
-        
+
         $this->assertGreaterThan(0, \App\Models\Product\Category::count());
     }
 
@@ -46,7 +46,7 @@ class DatabaseSeederTest extends TestCase
     public function database_seeder_creates_products()
     {
         $this->seed(DatabaseSeeder::class);
-        
+
         $this->assertGreaterThan(0, \App\Models\Product\Product::count());
     }
 
@@ -56,7 +56,7 @@ class DatabaseSeederTest extends TestCase
     public function database_seeder_creates_posts()
     {
         $this->seed(DatabaseSeeder::class);
-        
+
         $this->assertGreaterThan(0, \App\Models\Post::count());
     }
 }

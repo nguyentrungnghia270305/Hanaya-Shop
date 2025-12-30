@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Controllers\User;
 
-use App\Http\Controllers\User\DashboardController;
 use App\Models\Order\Order;
 use App\Models\Order\OrderDetail;
 use App\Models\Post;
@@ -45,7 +44,7 @@ class DashboardControllerTest extends TestCase
     // {
     //     $category = Category::factory()->create();
     //     $product = Product::factory()->create(['category_id' => $category->id]);
-        
+
     //     $order = Order::factory()->create(['status' => 'completed']);
     //     OrderDetail::factory()->create([
     //         'order_id' => $order->id,
@@ -88,9 +87,9 @@ class DashboardControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewHas('onSale');
-        
+
         $onSaleProducts = $response->viewData('onSale');
-        $this->assertTrue($onSaleProducts->every(fn($p) => $p->discount_percent > 0));
+        $this->assertTrue($onSaleProducts->every(fn ($p) => $p->discount_percent > 0));
     }
 
     /**
@@ -117,7 +116,7 @@ class DashboardControllerTest extends TestCase
     {
         $category1 = Category::factory()->create(['name' => 'Soap Flower']);
         $category2 = Category::factory()->create(['name' => 'Fresh Flowers']);
-        
+
         Product::factory()->count(5)->create(['category_id' => $category1->id]);
         Product::factory()->count(3)->create(['category_id' => $category2->id]);
 
@@ -125,7 +124,7 @@ class DashboardControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewHas('categories');
-        
+
         $categories = $response->viewData('categories');
         $this->assertGreaterThan(0, $categories->count());
     }
@@ -136,12 +135,12 @@ class DashboardControllerTest extends TestCase
     public function dashboard_displays_latest_published_posts()
     {
         $author = User::factory()->create(['role' => 'admin']);
-        
+
         Post::factory()->count(5)->create([
             'status' => true,
             'user_id' => $author->id,
         ]);
-        
+
         Post::factory()->count(2)->create([
             'status' => false,
             'user_id' => $author->id,
@@ -151,10 +150,10 @@ class DashboardControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewHas('latestPosts');
-        
+
         $posts = $response->viewData('latestPosts');
         $this->assertLessThanOrEqual(3, $posts->count());
-        $this->assertTrue($posts->every(fn($p) => $p->status == true));
+        $this->assertTrue($posts->every(fn ($p) => $p->status == true));
     }
 
     /**
@@ -193,8 +192,8 @@ class DashboardControllerTest extends TestCase
      */
     public function dashboard_cache_key_includes_date_and_hour()
     {
-        $expectedKey = 'dashboard_data_' . date('Y-m-d-H');
-        
+        $expectedKey = 'dashboard_data_'.date('Y-m-d-H');
+
         Cache::shouldReceive('remember')
             ->once()
             ->withArgs(function ($key) use ($expectedKey) {
@@ -221,7 +220,7 @@ class DashboardControllerTest extends TestCase
     //     $category = Category::factory()->create();
     //     $product1 = Product::factory()->create(['category_id' => $category->id, 'name' => 'Low Seller']);
     //     $product2 = Product::factory()->create(['category_id' => $category->id, 'name' => 'Top Seller']);
-        
+
     //     $order = Order::factory()->create();
     //     OrderDetail::factory()->create([
     //         'order_id' => $order->id,
@@ -319,9 +318,9 @@ class DashboardControllerTest extends TestCase
     // {
     //     $category = Category::factory()->create();
     //     $products = Product::factory()->count(10)->create(['category_id' => $category->id]);
-        
+
     //     $order = Order::factory()->create();
-        
+
     //     foreach ($products as $product) {
     //         OrderDetail::factory()->create([
     //             'order_id' => $order->id,

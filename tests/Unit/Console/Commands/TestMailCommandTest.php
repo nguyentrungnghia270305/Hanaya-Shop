@@ -33,7 +33,7 @@ class TestMailCommandTest extends TestCase
     {
         $this->expectException(\Symfony\Component\Console\Exception\RuntimeException::class);
         $this->expectExceptionMessage('Not enough arguments (missing: "email")');
-        
+
         $this->artisan('test:mail');
     }
 
@@ -107,8 +107,8 @@ class TestMailCommandTest extends TestCase
      */
     public function test_mail_command_description_is_set()
     {
-        $command = new TestMailCommand();
-        
+        $command = new TestMailCommand;
+
         $this->assertEquals(
             'Test mail configuration by sending a test email',
             $command->getDescription()
@@ -120,8 +120,8 @@ class TestMailCommandTest extends TestCase
      */
     public function test_mail_command_signature_is_correct()
     {
-        $command = new TestMailCommand();
-        
+        $command = new TestMailCommand;
+
         // getName() only returns the command name without arguments
         $this->assertEquals('test:mail', $command->getName());
     }
@@ -134,7 +134,7 @@ class TestMailCommandTest extends TestCase
         Mail::fake();
 
         $email = 'specific@example.com';
-        
+
         $this->artisan('test:mail', ['email' => $email])
             ->expectsOutput("Test email sent successfully to {$email}");
     }

@@ -28,14 +28,16 @@ class OrdersControllerTest extends TestCase
     use RefreshDatabase;
 
     protected OrdersController $controller;
+
     protected User $admin;
+
     protected User $customer;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->controller = new OrdersController();
+        $this->controller = new OrdersController;
         $this->admin = User::factory()->create(['role' => 'admin']);
         $this->customer = User::factory()->create(['role' => 'user']);
     }
@@ -45,7 +47,7 @@ class OrdersControllerTest extends TestCase
     {
         Order::factory()->count(15)->create(['user_id' => $this->customer->id]);
 
-        $request = new Request();
+        $request = new Request;
         $response = $this->controller->index($request);
 
         $this->assertEquals('admin.orders.index', $response->name());
@@ -128,7 +130,7 @@ class OrdersControllerTest extends TestCase
             'created_at' => now()->subDay(),
         ]);
 
-        $response = $this->controller->index(new Request());
+        $response = $this->controller->index(new Request);
         $orders = $response->getData()['order'];
 
         $this->assertTrue($orders[0]->created_at->gte($orders[1]->created_at));
@@ -139,7 +141,7 @@ class OrdersControllerTest extends TestCase
     {
         Order::factory()->count(3)->create(['user_id' => $this->customer->id]);
 
-        $response = $this->controller->index(new Request());
+        $response = $this->controller->index(new Request);
         $orders = $response->getData()['order'];
 
         $this->assertTrue($orders->first()->relationLoaded('user'));

@@ -16,8 +16,8 @@ class DatabaseMigrationsTest extends TestCase
     public function users_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('users', [
-            'id', 'name', 'email', 'email_verified_at', 'password', 
-            'remember_token', 'role', 'created_at', 'updated_at'
+            'id', 'name', 'email', 'email_verified_at', 'password',
+            'remember_token', 'role', 'created_at', 'updated_at',
         ]));
     }
 
@@ -36,7 +36,7 @@ class DatabaseMigrationsTest extends TestCase
     public function categories_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('categories', [
-            'id', 'name', 'description', 'image_path', 'created_at', 'updated_at'
+            'id', 'name', 'description', 'image_path', 'created_at', 'updated_at',
         ]));
     }
 
@@ -46,8 +46,8 @@ class DatabaseMigrationsTest extends TestCase
     public function products_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('products', [
-            'id', 'name', 'descriptions', 'price', 'stock_quantity', 
-            'category_id', 'image_url', 'created_at', 'updated_at'
+            'id', 'name', 'descriptions', 'price', 'stock_quantity',
+            'category_id', 'image_url', 'created_at', 'updated_at',
         ]));
     }
 
@@ -57,8 +57,8 @@ class DatabaseMigrationsTest extends TestCase
     public function addresses_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('addresses', [
-            'id', 'user_id', 'phone_number', 'address', 
-            'latitude', 'longitude', 'created_at', 'updated_at'
+            'id', 'user_id', 'phone_number', 'address',
+            'latitude', 'longitude', 'created_at', 'updated_at',
         ]));
     }
 
@@ -68,8 +68,8 @@ class DatabaseMigrationsTest extends TestCase
     public function orders_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('orders', [
-            'id', 'user_id', 'status', 'total_price', 
-            'created_at', 'updated_at'
+            'id', 'user_id', 'status', 'total_price',
+            'created_at', 'updated_at',
         ]));
     }
 
@@ -79,8 +79,8 @@ class DatabaseMigrationsTest extends TestCase
     public function order_details_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('order_details', [
-            'id', 'order_id', 'product_id', 'quantity', 'price', 
-            'created_at', 'updated_at'
+            'id', 'order_id', 'product_id', 'quantity', 'price',
+            'created_at', 'updated_at',
         ]));
     }
 
@@ -90,8 +90,8 @@ class DatabaseMigrationsTest extends TestCase
     public function payments_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('payments', [
-            'id', 'order_id', 'payment_method', 'payment_status', 
-            'transaction_id', 'created_at', 'updated_at'
+            'id', 'order_id', 'payment_method', 'payment_status',
+            'transaction_id', 'created_at', 'updated_at',
         ]));
     }
 
@@ -101,8 +101,8 @@ class DatabaseMigrationsTest extends TestCase
     public function reviews_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('reviews', [
-            'id', 'user_id', 'product_id', 'order_id', 'rating', 'comment', 
-            'created_at', 'updated_at'
+            'id', 'user_id', 'product_id', 'order_id', 'rating', 'comment',
+            'created_at', 'updated_at',
         ]));
     }
 
@@ -112,8 +112,8 @@ class DatabaseMigrationsTest extends TestCase
     public function carts_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('carts', [
-            'id', 'user_id', 'product_id', 'quantity', 
-            'created_at', 'updated_at'
+            'id', 'user_id', 'product_id', 'quantity',
+            'created_at', 'updated_at',
         ]));
     }
 
@@ -123,8 +123,8 @@ class DatabaseMigrationsTest extends TestCase
     public function posts_table_has_correct_columns()
     {
         $this->assertTrue(Schema::hasColumns('posts', [
-            'id', 'title', 'slug', 'content', 'image', 'status', 'user_id', 
-            'created_at', 'updated_at'
+            'id', 'title', 'slug', 'content', 'image', 'status', 'user_id',
+            'created_at', 'updated_at',
         ]));
     }
 
@@ -168,7 +168,7 @@ class DatabaseMigrationsTest extends TestCase
     {
         $this->assertTrue(Schema::hasTable('notifications'));
         $this->assertTrue(Schema::hasColumns('notifications', [
-            'id', 'type', 'notifiable_type', 'notifiable_id', 'data', 'read_at', 'created_at', 'updated_at'
+            'id', 'type', 'notifiable_type', 'notifiable_id', 'data', 'read_at', 'created_at', 'updated_at',
         ]));
     }
 
@@ -179,7 +179,7 @@ class DatabaseMigrationsTest extends TestCase
     {
         $this->assertTrue(Schema::hasTable('jobs'));
         $this->assertTrue(Schema::hasColumns('jobs', [
-            'id', 'queue', 'payload', 'attempts', 'reserved_at', 'available_at', 'created_at'
+            'id', 'queue', 'payload', 'attempts', 'reserved_at', 'available_at', 'created_at',
         ]));
     }
 
@@ -206,7 +206,7 @@ class DatabaseMigrationsTest extends TestCase
     {
         $this->assertTrue(Schema::hasTable('password_reset_tokens'));
         $this->assertTrue(Schema::hasColumns('password_reset_tokens', [
-            'email', 'token', 'created_at'
+            'email', 'token', 'created_at',
         ]));
     }
 
@@ -237,7 +237,7 @@ class DatabaseMigrationsTest extends TestCase
             'users', 'cache', 'categories', 'products', 'addresses',
             'orders', 'order_details', 'payments', 'reviews', 'carts',
             'posts', 'notifications', 'jobs', 'password_reset_tokens',
-            'sessions'
+            'sessions',
         ];
 
         foreach ($tables as $table) {
@@ -274,7 +274,7 @@ class DatabaseMigrationsTest extends TestCase
     {
         $tablesWithTimestamps = [
             'users', 'categories', 'products', 'addresses', 'orders',
-            'order_details', 'payments', 'reviews', 'carts', 'posts'
+            'order_details', 'payments', 'reviews', 'carts', 'posts',
         ];
 
         foreach ($tablesWithTimestamps as $table) {

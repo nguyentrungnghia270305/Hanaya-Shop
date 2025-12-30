@@ -2,11 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
-use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class EmailVerificationTest extends TestCase
@@ -26,11 +22,11 @@ class EmailVerificationTest extends TestCase
                 'password' => bcrypt('Password123!@'),
                 'verification_token' => 'test-token',
                 'created_at' => now(),
-            ]
+            ],
         ]);
-        
+
         $response = $this->get(route('verification.notice'));
-        
+
         $response->assertStatus(200);
     }
 
@@ -48,16 +44,16 @@ class EmailVerificationTest extends TestCase
                 'password' => $password,
                 'verification_token' => 'valid-token',
                 'created_at' => now(),
-            ]
+            ],
         ]);
-        
+
         $response = $this->get(route('verification.verify', ['token' => 'valid-token']));
-        
+
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
             'name' => 'Test User',
         ]);
-        
+
         $this->assertAuthenticated();
     }
 
@@ -73,11 +69,11 @@ class EmailVerificationTest extends TestCase
                 'password' => bcrypt('Password123!@'),
                 'verification_token' => 'valid-token',
                 'created_at' => now(),
-            ]
+            ],
         ]);
-        
+
         $response = $this->get(route('verification.verify', ['token' => 'invalid-token']));
-        
+
         $this->assertDatabaseMissing('users', ['email' => 'test@example.com']);
         $this->assertGuest();
     }
@@ -89,7 +85,7 @@ class EmailVerificationTest extends TestCase
     {
         // When accessing verification.notice without pending registration
         $response = $this->get(route('verification.notice'));
-        
+
         $response->assertRedirect(route('register'));
     }
 }

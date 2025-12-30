@@ -12,7 +12,7 @@ class FilesystemsConfigTest extends TestCase
     public function default_disk_is_configured()
     {
         $default = config('filesystems.default');
-        
+
         $this->assertNotEmpty($default);
         $this->assertIsString($default);
     }
@@ -23,7 +23,7 @@ class FilesystemsConfigTest extends TestCase
     public function disks_are_configured()
     {
         $disks = config('filesystems.disks');
-        
+
         $this->assertIsArray($disks);
         $this->assertNotEmpty($disks);
     }
@@ -34,7 +34,7 @@ class FilesystemsConfigTest extends TestCase
     public function public_disk_is_configured()
     {
         $publicDisk = config('filesystems.disks.public');
-        
+
         $this->assertIsArray($publicDisk);
         $this->assertArrayHasKey('driver', $publicDisk);
         $this->assertEquals('local', $publicDisk['driver']);
@@ -46,7 +46,7 @@ class FilesystemsConfigTest extends TestCase
     public function local_disk_is_configured()
     {
         $localDisk = config('filesystems.disks.local');
-        
+
         $this->assertIsArray($localDisk);
         $this->assertArrayHasKey('driver', $localDisk);
     }
@@ -57,7 +57,7 @@ class FilesystemsConfigTest extends TestCase
     public function public_disk_has_visibility()
     {
         $visibility = config('filesystems.disks.public.visibility');
-        
+
         $this->assertEquals('public', $visibility);
     }
 }

@@ -18,11 +18,11 @@ class TransactionTest extends TestCase
     public function transaction_commits_on_success()
     {
         DB::beginTransaction();
-        
+
         $user = User::factory()->create(['name' => 'Test User']);
-        
+
         DB::commit();
-        
+
         $this->assertDatabaseHas('users', ['name' => 'Test User']);
     }
 
@@ -33,14 +33,14 @@ class TransactionTest extends TestCase
     {
         try {
             DB::beginTransaction();
-            
+
             User::factory()->create(['name' => 'User To Rollback']);
-            
+
             throw new \Exception('Simulated error');
         } catch (\Exception $e) {
             DB::rollBack();
         }
-        
+
         $this->assertDatabaseMissing('users', ['name' => 'User To Rollback']);
     }
 
@@ -50,17 +50,17 @@ class TransactionTest extends TestCase
     public function nested_transactions_work_correctly()
     {
         DB::beginTransaction();
-        
+
         $user = User::factory()->create(['name' => 'Outer Transaction']);
-        
+
         DB::beginTransaction();
-        
+
         $product = Product::factory()->create(['name' => 'Inner Transaction Product']);
-        
+
         DB::commit();
-        
+
         DB::commit();
-        
+
         $this->assertDatabaseHas('users', ['name' => 'Outer Transaction']);
         $this->assertDatabaseHas('products', ['name' => 'Inner Transaction Product']);
     }
@@ -72,9 +72,10 @@ class TransactionTest extends TestCase
     {
         $result = DB::transaction(function () {
             $user = User::factory()->create(['name' => 'Callback User']);
+
             return $user;
         });
-        
+
         $this->assertInstanceOf(User::class, $result);
         $this->assertDatabaseHas('users', ['name' => 'Callback User']);
     }
@@ -87,13 +88,13 @@ class TransactionTest extends TestCase
         try {
             DB::transaction(function () {
                 User::factory()->create(['name' => 'Failed User']);
-                
+
                 throw new \Exception('Transaction error');
             });
         } catch (\Exception $e) {
             // Expected exception
         }
-        
+
         $this->assertDatabaseMissing('users', ['name' => 'Failed User']);
     }
 }
