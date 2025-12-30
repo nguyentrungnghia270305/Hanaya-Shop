@@ -88,6 +88,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
+      - name: Create bootstrap cache directory
+        run: |
+          mkdir -p bootstrap/cache storage/framework/{cache/data,sessions,views}
+          chmod -R 775 bootstrap/cache storage
+
       - name: Install dependencies and build
         run: |
           # Install with dev dependencies for testing phase (includes Faker, PHPUnit)
