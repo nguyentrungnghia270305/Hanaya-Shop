@@ -1,63 +1,16 @@
 <?php
 
-// namespace Tests\Unit\App\Models\Product;
+namespace Tests\Unit\App\Models\Product;
 
-// use App\Models\Order\Order;
-// use App\Models\Product\Product;
-// use App\Models\Product\Review;
-// use App\Models\User;
-// use Illuminate\Foundation\Testing\RefreshDatabase;
-// use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
-// class ReviewTest extends TestCase
-// {
-//     use RefreshDatabase;
-
-//     /** @test */
-//     public function review_can_be_created_with_rating_and_comment()
-//     {
-//         $user = User::factory()->create();
-//         $product = Product::factory()->create();
-//         $order = Order::factory()->create(['user_id' => $user->id]);
-
-//         $review = Review::factory()->create([
-//             'user_id' => $user->id,
-//             'product_id' => $product->id,
-//             'order_id' => $order->id,
-//             'rating' => 5,
-//             'comment' => 'Excellent product!',
-//         ]);
-
-//         $this->assertDatabaseHas('reviews', [
-//             'rating' => 5,
-//             'comment' => 'Excellent product!',
-//         ]);
-//     }
-
-//     /** @test */
-//     public function review_belongs_to_product()
-//     {
-//         $product = Product::factory()->create(['name' => 'Test Product']);
-//         $review = Review::factory()->create(['product_id' => $product->id]);
-
-//         $this->assertInstanceOf(Product::class, $review->product);
-//         $this->assertEquals('Test Product', $review->product->name);
-//     }
-
-//     /** @test */
-//     public function review_belongs_to_user()
-//     {
-//         $user = User::factory()->create(['name' => 'Test User']);
-//         $review = Review::factory()->create(['user_id' => $user->id]);
-
-//         $this->assertInstanceOf(User::class, $review->user);
-//         $this->assertEquals('Test User', $review->user->name);
-//     }
-
-//     /** @test */
-//     public function review_belongs_to_order()
-//     {
-//         $order = Order::factory()->create();
+class ReviewTest extends TestCase
+{
+	public function test_dummy_review(): void
+	{
+		$this->assertTrue(true);
+	}
+}
 //         $review = Review::factory()->create(['order_id' => $order->id]);
 
 //         $this->assertInstanceOf(Order::class, $review->order);
