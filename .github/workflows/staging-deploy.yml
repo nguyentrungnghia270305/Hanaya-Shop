@@ -56,8 +56,8 @@ jobs:
           context: .
           push: true
           tags: |
-            assassincreed2k1/hanaya-shop:staging
-            assassincreed2k1/hanaya-shop:staging-${{ github.sha }}
+            assassincreed2k1/hanaya-shop-exe:staging
+            assassincreed2k1/hanaya-shop-exe:staging-${{ github.sha }}
           labels: |
             git_sha=${{ github.sha }}
             build_date=${{ github.event.head_commit.timestamp }}
@@ -69,7 +69,7 @@ jobs:
       - name: Deploy to Staging Server (if configured)
         run: |
           echo "🌱 Staging deployment completed!"
-          echo "🐳 Docker image: assassincreed2k1/hanaya-shop:staging"
+          echo "🐳 Docker image: assassincreed2k1/hanaya-shop-exe:staging"
           echo "🔄 Ready for testing before production deployment"
           echo ""
           echo "📋 Next Steps:"
@@ -84,5 +84,5 @@ jobs:
         run: |
           echo "✅ Staging deployment completed successfully!"
           echo "🌱 Environment: Staging"
-          echo "🐳 Docker image: assassincreed2k1/hanaya-shop:staging-${{ github.sha }}"
+          echo "🐳 Docker image: assassincreed2k1/hanaya-shop-exe:staging-${{ github.sha }}"
           echo "🎯 Purpose: Pre-production testing and validation"
