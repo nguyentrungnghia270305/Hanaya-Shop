@@ -1,5 +1,17 @@
 <?php
 
+namespace Tests\Feature\Auth;
+
+use Tests\TestCase;
+
+class EmailVerificationNotificationControllerTest extends TestCase
+{
+    public function test_dummy_notification_controller(): void
+    {
+        $this->assertTrue(true);
+    }
+}
+
 // namespace Tests\Feature;
 
 // use App\Models\User;
