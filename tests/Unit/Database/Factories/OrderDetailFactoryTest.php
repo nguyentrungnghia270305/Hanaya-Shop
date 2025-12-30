@@ -1,5 +1,4 @@
-
-<?php // Dummy test to avoid PHPUnit warning
+<?php
 
 namespace Tests\Unit\Database\Factories;
 
