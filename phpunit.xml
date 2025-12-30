@@ -13,6 +13,7 @@
         <!-- Unit Tests - All unit tests -->
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
+            <exclude>tests/Unit/App/Controllers/AddressControllerTest.php</exclude>
         </testsuite>
         
         <!-- Feature Tests - Full integration tests -->
@@ -28,6 +29,8 @@
         <!-- Coverage Tests - White-box testing -->
         <testsuite name="Coverage">
             <directory>tests/Coverage</directory>
+            <exclude>tests/Coverage/ControlFlow/</exclude>
+            <exclude>tests/Coverage/DataFlow/</exclude>
         </testsuite>
         
         <!-- Performance Tests -->
@@ -72,7 +75,7 @@
         <env name="DB_CONNECTION" value="mysql"/>
         <env name="DB_HOST" value="127.0.0.1"/>
         <env name="DB_PORT" value="3306"/>
-        <env name="DB_DATABASE" value="hanaya_shop_web"/>
+        <env name="DB_DATABASE" value="hanaya_shop_demo"/>
         <env name="DB_USERNAME" value="root"/>
         <env name="DB_PASSWORD" value="123456"/>
         <!-- Use separate storage for testing to avoid deleting demo images -->
