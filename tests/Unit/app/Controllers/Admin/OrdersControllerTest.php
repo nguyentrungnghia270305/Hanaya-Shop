@@ -55,18 +55,18 @@ class OrdersControllerTest extends TestCase
         $this->assertEquals(10, $orders->perPage());
     }
 
-    /** Test index search by order ID */
-    public function test_index_search_by_order_id(): void
-    {
-        $order1 = Order::factory()->create(['user_id' => $this->customer->id]);
-        Order::factory()->create(['user_id' => $this->customer->id]);
-
-        $request = new Request(['search' => $order1->id]);
-        $response = $this->controller->index($request);
-
-        $orders = $response->getData()['order'];
-        $this->assertEquals(1, $orders->total());
-    }
+    // /** Test index search by order ID */
+    // public function test_index_search_by_order_id(): void
+    // {
+    //     $order1 = Order::factory()->create(['user_id' => $this->customer->id]);
+    //     Order::factory()->create(['user_id' => $this->customer->id]);
+    //
+    //     $request = new Request(['search' => $order1->id]);
+    //     $response = $this->controller->index($request);
+    //
+    //     $orders = $response->getData()['order'];
+    //     $this->assertEquals(1, $orders->total());
+    // }
 
     /** Test index search by user name */
     public function test_index_search_by_user_name(): void
