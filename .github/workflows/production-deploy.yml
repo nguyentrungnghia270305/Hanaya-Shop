@@ -435,7 +435,8 @@ jobs:
     name: 🚀 Deploy to Production
     runs-on: ubuntu-latest
     needs: [validation, comprehensive-tests, docker-build]
-    # Only deploy if should-deploy=true AND docker-build succeeded (or was skipped)
+    # Auto-pass: Server deployment disabled, only Docker Hub push is active
+    # To enable real deployment: configure server and add PRODUCTION_SSH_KEY, PRODUCTION_HOST, PRODUCTION_USER secrets
     if: |
       needs.validation.outputs.should-deploy == 'true' && 
       (needs.docker-build.result == 'success' || needs.docker-build.result == 'skipped')
@@ -444,7 +445,23 @@ jobs:
       url: ${{ needs.validation.outputs.deploy-env == 'production' && 'http://www.hanayashop.com' || 'http://staging.hanayashop.com' }}
     
     steps:
+      - name: Deployment Status (Server deployment disabled)
+        run: |
+          echo "✅ Deployment step is enabled but server deployment is disabled"
+          echo "🐳 Docker image has been successfully pushed to Docker Hub"
+          echo "📦 Image: ${{ env.DOCKER_IMAGE }}:latest"
+          echo ""
+          echo "ℹ️ Server deployment is currently disabled (auto-pass mode)"
+          echo "💡 To enable real server deployment:"
+          echo "   1. Configure server with Docker and docker-compose"
+          echo "   2. Add GitHub Secrets: PRODUCTION_SSH_KEY, PRODUCTION_HOST, PRODUCTION_USER"
+          echo "   3. Uncomment the deployment steps below"
+          echo ""
+          echo "✅ Deployment pipeline completed successfully!"
+          exit 0
+
       - name: Setup SSH Authentication
+        if: false
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
@@ -454,6 +471,7 @@ jobs:
           chmod 644 ~/.ssh/known_hosts
 
       - name: Deploy to Production Server
+        if: false
         run: |
           ssh -i ~/.ssh/deploy_key -o ConnectTimeout=30 -o StrictHostKeyChecking=yes \
               ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_HOST }} << 'DEPLOYMENT_SCRIPT'
@@ -554,6 +572,7 @@ jobs:
           DEPLOYMENT_SCRIPT
 
       - name: Post-deployment validation
+        if: false
         run: |
           echo "✅ Deployment pipeline completed!"
           echo "🐳 Docker Image: ${{ env.DOCKER_IMAGE }}:latest"
