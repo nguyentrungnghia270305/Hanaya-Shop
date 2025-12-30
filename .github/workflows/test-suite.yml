@@ -126,6 +126,11 @@ jobs:
           restore-keys: |
             dependencies-composer-${{ env.COMPOSER_CACHE_VERSION }}-
 
+      - name: Create bootstrap cache directory
+        run: |
+          mkdir -p bootstrap/cache
+          chmod -R 775 bootstrap/cache
+
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
