@@ -44,7 +44,7 @@
 //     {
 //         $order = Order::factory()->create();
 //         $product = Product::factory()->create();
-        
+
 //         $orderDetail = OrderDetail::factory()->create([
 //             'order_id' => $order->id,
 //             'product_id' => $product->id,

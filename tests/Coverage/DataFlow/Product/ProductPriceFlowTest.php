@@ -13,7 +13,6 @@
  * - Price data consistency across operations
  *
  * @category Testing
- * @package  Tests\Coverage\DataFlow\Product
  */
 
 namespace Tests\Coverage\DataFlow\Product;

@@ -27,10 +27,10 @@ class CategoryCRUDTest extends TestCase
     public function admin_can_view_categories_list()
     {
         Category::factory()->count(5)->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.category'));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('admin.categories.index');
     }
@@ -41,20 +41,20 @@ class CategoryCRUDTest extends TestCase
     public function admin_can_create_category()
     {
         Storage::fake('public');
-        
+
         // Create a real temp file instead of using fake()->image() which requires GD
         $file = UploadedFile::fake()->create('category.jpg', 100, 'image/jpeg');
-        
+
         $response = $this->actingAs($this->admin)
             ->post(route('admin.category.store'), [
                 'name' => 'Test Category',
                 'description' => 'Test description',
-                'image' => $file
+                'image' => $file,
             ]);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('categories', [
-            'name' => 'Test Category'
+            'name' => 'Test Category',
         ]);
     }
 
@@ -64,17 +64,17 @@ class CategoryCRUDTest extends TestCase
     public function admin_can_update_category()
     {
         $category = Category::factory()->create(['name' => 'Old Name']);
-        
+
         $response = $this->actingAs($this->admin)
             ->put(route('admin.category.update', $category), [
                 'name' => 'Updated Name',
-                'description' => 'Updated description'
+                'description' => 'Updated description',
             ]);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('categories', [
             'id' => $category->id,
-            'name' => 'Updated Name'
+            'name' => 'Updated Name',
         ]);
     }
 
@@ -84,14 +84,14 @@ class CategoryCRUDTest extends TestCase
     public function admin_can_delete_category()
     {
         $category = Category::factory()->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->delete(route('admin.category.destroy', $category));
-        
+
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
         $this->assertDatabaseMissing('categories', [
-            'id' => $category->id
+            'id' => $category->id,
         ]);
     }
 
@@ -101,10 +101,10 @@ class CategoryCRUDTest extends TestCase
     public function non_admin_cannot_access_category_management()
     {
         $user = User::factory()->create(['role' => 'user']);
-        
+
         $response = $this->actingAs($user)
             ->get(route('admin.category'));
-        
+
         $response->assertStatus(403);
     }
 }

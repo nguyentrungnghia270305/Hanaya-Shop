@@ -14,7 +14,7 @@ class LocaleControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Set up available locales
         Config::set('app.available_locales', [
             'en' => 'English',
@@ -206,7 +206,7 @@ class LocaleControllerTest extends TestCase
 
         foreach (array_keys($locales) as $locale) {
             Session::forget('locale');
-            
+
             $response = $this->get(route('locale.set', ['locale' => $locale]));
 
             $response->assertRedirect();

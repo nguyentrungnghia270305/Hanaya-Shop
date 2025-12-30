@@ -8,8 +8,6 @@ use App\Models\Product\Product;
 use App\Models\Product\Review;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Tests\ControllerTestCase;
 
 class ReviewControllerTest extends ControllerTestCase
@@ -24,43 +22,43 @@ class ReviewControllerTest extends ControllerTestCase
         $product = Product::factory()->create();
         $order = Order::factory()->create([
             'user_id' => $user->id,
-            'status' => 'completed'
+            'status' => 'completed',
         ]);
-        
+
         OrderDetail::create([
             'order_id' => $order->id,
             'product_id' => $product->id,
             'quantity' => 1,
-            'price' => 100
+            'price' => 100,
         ]);
-        
+
         $response = $this->actingAs($user)
             ->post(route('review.store'), [
                 'product_id' => $product->id,
                 'order_id' => $order->id,
                 'rating' => 5,
-                'comment' => 'Great product!'
+                'comment' => 'Great product!',
             ]);
-        
+
         $response->assertRedirect();
         $response->assertSessionHas('success');
-        
+
         $this->assertDatabaseHas('reviews', [
             'user_id' => $user->id,
             'product_id' => $product->id,
             'order_id' => $order->id,
             'rating' => 5,
-            'comment' => 'Great product!'
+            'comment' => 'Great product!',
         ]);
     }
 
     public function test_store_validates_required_fields()
     {
         $user = User::factory()->create();
-        
+
         $response = $this->actingAs($user)
             ->post(route('review.store'), []);
-        
+
         $response->assertSessionHasErrors(['product_id', 'order_id', 'rating']);
     }
 
@@ -69,14 +67,14 @@ class ReviewControllerTest extends ControllerTestCase
         $user = User::factory()->create();
         $product = Product::factory()->create();
         $order = Order::factory()->create(['user_id' => $user->id]);
-        
+
         $response = $this->actingAs($user)
             ->post(route('review.store'), [
                 'product_id' => $product->id,
                 'order_id' => $order->id,
-                'rating' => 6
+                'rating' => 6,
             ]);
-        
+
         $response->assertSessionHasErrors('rating');
     }
 
@@ -84,14 +82,14 @@ class ReviewControllerTest extends ControllerTestCase
     {
         $user = User::factory()->create();
         $order = Order::factory()->create(['user_id' => $user->id]);
-        
+
         $response = $this->actingAs($user)
             ->post(route('review.store'), [
                 'product_id' => 99999,
                 'order_id' => $order->id,
-                'rating' => 5
+                'rating' => 5,
             ]);
-        
+
         $response->assertSessionHasErrors('product_id');
     }
 
@@ -99,14 +97,14 @@ class ReviewControllerTest extends ControllerTestCase
     {
         $user = User::factory()->create();
         $product = Product::factory()->create();
-        
+
         $response = $this->actingAs($user)
             ->post(route('review.store'), [
                 'product_id' => $product->id,
                 'order_id' => 99999,
-                'rating' => 5
+                'rating' => 5,
             ]);
-        
+
         $response->assertSessionHasErrors('order_id');
     }
 
@@ -117,23 +115,23 @@ class ReviewControllerTest extends ControllerTestCase
         $product = Product::factory()->create();
         $order = Order::factory()->create([
             'user_id' => $user2->id,
-            'status' => 'completed'
+            'status' => 'completed',
         ]);
-        
+
         OrderDetail::create([
             'order_id' => $order->id,
             'product_id' => $product->id,
             'quantity' => 1,
-            'price' => 100
+            'price' => 100,
         ]);
-        
+
         $response = $this->actingAs($user1)
             ->post(route('review.store'), [
                 'product_id' => $product->id,
                 'order_id' => $order->id,
-                'rating' => 5
+                'rating' => 5,
             ]);
-        
+
         $response->assertRedirect();
         $response->assertSessionHas('error');
     }
@@ -144,23 +142,23 @@ class ReviewControllerTest extends ControllerTestCase
         $product = Product::factory()->create();
         $order = Order::factory()->create([
             'user_id' => $user->id,
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
-        
+
         OrderDetail::create([
             'order_id' => $order->id,
             'product_id' => $product->id,
             'quantity' => 1,
-            'price' => 100
+            'price' => 100,
         ]);
-        
+
         $response = $this->actingAs($user)
             ->post(route('review.store'), [
                 'product_id' => $product->id,
                 'order_id' => $order->id,
-                'rating' => 5
+                'rating' => 5,
             ]);
-        
+
         $response->assertRedirect();
         $response->assertSessionHas('error');
     }
@@ -172,23 +170,23 @@ class ReviewControllerTest extends ControllerTestCase
         $product2 = Product::factory()->create();
         $order = Order::factory()->create([
             'user_id' => $user->id,
-            'status' => 'completed'
+            'status' => 'completed',
         ]);
-        
+
         OrderDetail::create([
             'order_id' => $order->id,
             'product_id' => $product1->id,
             'quantity' => 1,
-            'price' => 100
+            'price' => 100,
         ]);
-        
+
         $response = $this->actingAs($user)
             ->post(route('review.store'), [
                 'product_id' => $product2->id,
                 'order_id' => $order->id,
-                'rating' => 5
+                'rating' => 5,
             ]);
-        
+
         $response->assertRedirect();
         $response->assertSessionHas('error');
     }
@@ -201,27 +199,27 @@ class ReviewControllerTest extends ControllerTestCase
     //         'user_id' => $user->id,
     //         'status' => 'completed'
     //     ]);
-        
+
     //     OrderDetail::create([
     //         'order_id' => $order->id,
     //         'product_id' => $product->id,
     //         'quantity' => 1,
     //         'price' => 100
     //     ]);
-        
+
     //     Review::factory()->create([
     //         'user_id' => $user->id,
     //         'product_id' => $product->id,
     //         'order_id' => $order->id
     //     ]);
-        
+
     //     $response = $this->actingAs($user)
     //         ->post(route('review.store'), [
     //             'product_id' => $product->id,
     //             'order_id' => $order->id,
     //             'rating' => 5
     //         ]);
-        
+
     //     $response->assertRedirect();
     //     $response->assertSessionHas('error');
     // }
@@ -230,13 +228,13 @@ class ReviewControllerTest extends ControllerTestCase
     {
         $product = Product::factory()->create();
         $order = Order::factory()->create();
-        
+
         $response = $this->post(route('review.store'), [
             'product_id' => $product->id,
             'order_id' => $order->id,
-            'rating' => 5
+            'rating' => 5,
         ]);
-        
+
         $response->assertRedirect(route('login'));
     }
 
@@ -246,22 +244,22 @@ class ReviewControllerTest extends ControllerTestCase
     // {
     //     $user = User::factory()->create();
     //     $product = Product::factory()->create();
-        
+
     //     Review::factory()->count(15)->create([
     //         'product_id' => $product->id,
     //         'user_id' => $user->id
     //     ]);
-        
+
     //     $response = $this->actingAs($user)
     //         ->get(route('product.reviews', $product->id));
-        
+
     //     $response->assertOk();
     //     $response->assertJsonStructure([
     //         'data',
     //         'current_page',
     //         'per_page'
     //     ]);
-        
+
     //     $data = $response->json();
     //     $this->assertEquals(10, count($data['data']));
     // }
@@ -270,15 +268,15 @@ class ReviewControllerTest extends ControllerTestCase
     // {
     //     $user = User::factory()->create(['name' => 'John Doe']);
     //     $product = Product::factory()->create();
-        
+
     //     Review::factory()->create([
     //         'product_id' => $product->id,
     //         'user_id' => $user->id
     //     ]);
-        
+
     //     $response = $this->actingAs($user)
     //         ->get(route('product.reviews', $product->id));
-        
+
     //     $response->assertOk();
     //     $data = $response->json();
     //     $this->assertArrayHasKey('user', $data['data'][0]);
@@ -288,22 +286,22 @@ class ReviewControllerTest extends ControllerTestCase
     // {
     //     $user = User::factory()->create();
     //     $product = Product::factory()->create();
-        
+
     //     $oldReview = Review::factory()->create([
     //         'product_id' => $product->id,
     //         'user_id' => $user->id,
     //         'created_at' => now()->subDays(5)
     //     ]);
-        
+
     //     $newReview = Review::factory()->create([
     //         'product_id' => $product->id,
     //         'user_id' => $user->id,
     //         'created_at' => now()
     //     ]);
-        
+
     //     $response = $this->actingAs($user)
     //         ->get(route('product.reviews', $product->id));
-        
+
     //     $data = $response->json();
     //     $this->assertEquals($newReview->id, $data['data'][0]['id']);
     // }
@@ -313,20 +311,20 @@ class ReviewControllerTest extends ControllerTestCase
     //     $user = User::factory()->create();
     //     $product1 = Product::factory()->create();
     //     $product2 = Product::factory()->create();
-        
+
     //     Review::factory()->create([
     //         'product_id' => $product1->id,
     //         'user_id' => $user->id
     //     ]);
-        
+
     //     Review::factory()->create([
     //         'product_id' => $product2->id,
     //         'user_id' => $user->id
     //     ]);
-        
+
     //     $response = $this->actingAs($user)
     //         ->get(route('product.reviews', $product1->id));
-        
+
     //     $data = $response->json();
     //     $this->assertEquals(1, count($data['data']));
     //     $this->assertEquals($product1->id, $data['data'][0]['product_id']);
@@ -340,22 +338,22 @@ class ReviewControllerTest extends ControllerTestCase
         $product = Product::factory()->create();
         $order = Order::factory()->create([
             'user_id' => $user->id,
-            'status' => 'completed'
+            'status' => 'completed',
         ]);
-        
+
         OrderDetail::create([
             'order_id' => $order->id,
             'product_id' => $product->id,
             'quantity' => 1,
-            'price' => 100
+            'price' => 100,
         ]);
-        
+
         $response = $this->actingAs($user)
             ->get(route('review.create', [
                 'product_id' => $product->id,
-                'order_id' => $order->id
+                'order_id' => $order->id,
             ]));
-        
+
         if ($response->status() == 200) {
             $response->assertOk();
             $response->assertViewIs('page.reviews.create');
@@ -371,13 +369,13 @@ class ReviewControllerTest extends ControllerTestCase
         $user2 = User::factory()->create();
         $product = Product::factory()->create();
         $order = Order::factory()->create(['user_id' => $user2->id]);
-        
+
         $response = $this->actingAs($user1)
             ->get(route('review.create', [
                 'product_id' => $product->id,
-                'order_id' => $order->id
+                'order_id' => $order->id,
             ]));
-        
+
         $response->assertRedirect(route('order.index'));
         $response->assertSessionHas('error');
     }
@@ -386,13 +384,13 @@ class ReviewControllerTest extends ControllerTestCase
     {
         $user = User::factory()->create();
         $order = Order::factory()->create(['user_id' => $user->id]);
-        
+
         $response = $this->actingAs($user)
             ->get(route('review.create', [
                 'product_id' => 99999,
-                'order_id' => $order->id
+                'order_id' => $order->id,
             ]));
-        
+
         $response->assertRedirect(route('order.index'));
         $response->assertSessionHas('error');
     }
@@ -403,20 +401,20 @@ class ReviewControllerTest extends ControllerTestCase
         $product1 = Product::factory()->create();
         $product2 = Product::factory()->create();
         $order = Order::factory()->create(['user_id' => $user->id]);
-        
+
         OrderDetail::create([
             'order_id' => $order->id,
             'product_id' => $product1->id,
             'quantity' => 1,
-            'price' => 100
+            'price' => 100,
         ]);
-        
+
         $response = $this->actingAs($user)
             ->get(route('review.create', [
                 'product_id' => $product2->id,
-                'order_id' => $order->id
+                'order_id' => $order->id,
             ]));
-        
+
         $response->assertRedirect(route('order.index'));
         $response->assertSessionHas('error');
     }
@@ -429,26 +427,26 @@ class ReviewControllerTest extends ControllerTestCase
     //         'user_id' => $user->id,
     //         'status' => 'completed'
     //     ]);
-        
+
     //     OrderDetail::create([
     //         'order_id' => $order->id,
     //         'product_id' => $product->id,
     //         'quantity' => 1,
     //         'price' => 100
     //     ]);
-        
+
     //     Review::factory()->create([
     //         'user_id' => $user->id,
     //         'product_id' => $product->id,
     //         'order_id' => $order->id
     //     ]);
-        
+
     //     $response = $this->actingAs($user)
     //         ->get(route('review.create', [
     //             'product_id' => $product->id,
     //             'order_id' => $order->id
     //         ]));
-        
+
     //     $response->assertRedirect(route('order.index'));
     //     $response->assertSessionHas('error');
     // }
@@ -457,12 +455,12 @@ class ReviewControllerTest extends ControllerTestCase
     {
         $product = Product::factory()->create();
         $order = Order::factory()->create();
-        
+
         $response = $this->get(route('review.create', [
             'product_id' => $product->id,
-            'order_id' => $order->id
+            'order_id' => $order->id,
         ]));
-        
+
         $response->assertRedirect(route('login'));
     }
 }

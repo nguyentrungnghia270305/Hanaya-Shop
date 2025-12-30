@@ -13,7 +13,9 @@ class NotificationTestControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $customer;
+
     protected Order $order;
 
     protected function setUp(): void
@@ -120,9 +122,9 @@ class NotificationTestControllerTest extends TestCase
             ->getJson(route('admin.test.notifications'));
 
         $response->assertStatus(200);
-        
+
         $adminNotifications = $response->json('results.admin_notifications');
-        
+
         $this->assertEquals('SUCCESS', $adminNotifications['new_order']);
         $this->assertEquals('SUCCESS', $adminNotifications['confirmed']);
         $this->assertEquals('SUCCESS', $adminNotifications['shipped']);
@@ -137,9 +139,9 @@ class NotificationTestControllerTest extends TestCase
             ->getJson(route('admin.test.notifications'));
 
         $response->assertStatus(200);
-        
+
         $customerNotifications = $response->json('results.customer_notifications');
-        
+
         $this->assertEquals('SUCCESS', $customerNotifications['new_order']);
         $this->assertEquals('SUCCESS', $customerNotifications['confirmed']);
         $this->assertEquals('SUCCESS', $customerNotifications['shipped']);
@@ -171,14 +173,14 @@ class NotificationTestControllerTest extends TestCase
     {
         // Delete all admins except the one used for authentication
         User::where('role', 'admin')->where('id', '!=', $this->admin->id)->delete();
-        
+
         // Delete the current admin too (controller uses first() so won't find any)
         $this->admin->delete();
-        
+
         // Create a new admin just for authentication (but it will be the "first" admin found)
         // So we need to test when User::where('role', 'admin')->first() returns null
         // This scenario is impossible with middleware, so we test customer missing instead
-        
+
         // Actually, let's just verify this test scenario is not realistic
         // Skip this test or change the approach
         $this->markTestSkipped('Cannot test missing admin scenario with admin middleware requirement');
@@ -211,7 +213,7 @@ class NotificationTestControllerTest extends TestCase
     {
         // Temporarily disable notification fake for this test
         Notification::swap(new \Illuminate\Notifications\ChannelManager(app()));
-        
+
         $initialCount = $this->admin->notifications()->count();
 
         $this->actingAs($this->admin)

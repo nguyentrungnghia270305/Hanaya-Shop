@@ -12,8 +12,8 @@ class ProductCardTest extends TestCase
      */
     public function component_can_be_instantiated()
     {
-        $component = new ProductCard();
-        
+        $component = new ProductCard;
+
         $this->assertInstanceOf(ProductCard::class, $component);
     }
 
@@ -22,8 +22,8 @@ class ProductCardTest extends TestCase
      */
     public function component_has_render_method()
     {
-        $component = new ProductCard();
-        
+        $component = new ProductCard;
+
         $this->assertTrue(method_exists($component, 'render'));
     }
 
@@ -32,10 +32,10 @@ class ProductCardTest extends TestCase
      */
     public function component_renders_correct_view()
     {
-        $component = new ProductCard();
-        
+        $component = new ProductCard;
+
         $view = $component->render();
-        
+
         $this->assertEquals('components.product-card', $view->name());
     }
 
@@ -44,10 +44,10 @@ class ProductCardTest extends TestCase
      */
     public function component_can_be_rendered()
     {
-        $component = new ProductCard();
-        
+        $component = new ProductCard;
+
         $view = $component->render();
-        
+
         $this->assertNotNull($view);
     }
 

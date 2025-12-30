@@ -97,7 +97,7 @@
 //         $user = User::factory()->create();
 //         $category = Category::factory()->create();
 //         $product = Product::factory()->create(['category_id' => $category->id]);
-        
+
 //         $cart = Cart::factory()->create([
 //             'user_id' => $user->id,
 //             'product_id' => $product->id,

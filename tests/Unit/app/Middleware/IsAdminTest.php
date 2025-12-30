@@ -19,7 +19,7 @@ class IsAdminTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->middleware = new IsAdmin();
+        $this->middleware = new IsAdmin;
     }
 
     /**
@@ -29,15 +29,16 @@ class IsAdminTest extends TestCase
     {
         $admin = User::factory()->create(['role' => 'admin']);
         Auth::login($admin);
-        
+
         $request = Request::create('/', 'GET');
         $called = false;
-        
+
         $response = $this->middleware->handle($request, function ($req) use (&$called) {
             $called = true;
+
             return response('OK');
         });
-        
+
         $this->assertTrue($called);
         $this->assertEquals('OK', $response->getContent());
     }
@@ -48,12 +49,12 @@ class IsAdminTest extends TestCase
     public function test_blocks_non_admin_user(): void
     {
         $this->expectException(HttpException::class);
-        
+
         $user = User::factory()->create(['role' => 'user']);
         Auth::login($user);
-        
+
         $request = Request::create('/', 'GET');
-        
+
         $this->middleware->handle($request, function ($req) {
             return response('OK');
         });
@@ -65,11 +66,11 @@ class IsAdminTest extends TestCase
     public function test_blocks_unauthenticated_user(): void
     {
         $this->expectException(HttpException::class);
-        
+
         Auth::logout();
-        
+
         $request = Request::create('/', 'GET');
-        
+
         $this->middleware->handle($request, function ($req) {
             return response('OK');
         });
@@ -83,13 +84,13 @@ class IsAdminTest extends TestCase
         try {
             $user = User::factory()->create(['role' => 'user']);
             Auth::login($user);
-            
+
             $request = Request::create('/', 'GET');
-            
+
             $this->middleware->handle($request, function ($req) {
                 return response('OK');
             });
-            
+
             $this->fail('Expected HttpException was not thrown');
         } catch (HttpException $e) {
             $this->assertEquals(403, $e->getStatusCode());
@@ -103,13 +104,13 @@ class IsAdminTest extends TestCase
     {
         try {
             Auth::logout();
-            
+
             $request = Request::create('/', 'GET');
-            
+
             $this->middleware->handle($request, function ($req) {
                 return response('OK');
             });
-            
+
             $this->fail('Expected HttpException was not thrown');
         } catch (HttpException $e) {
             $this->assertEquals(403, $e->getStatusCode());
@@ -123,15 +124,16 @@ class IsAdminTest extends TestCase
     {
         $admin = User::factory()->create(['role' => 'admin']);
         Auth::login($admin);
-        
+
         $request = Request::create('/', 'GET');
         $passedRequest = null;
-        
+
         $this->middleware->handle($request, function ($req) use (&$passedRequest) {
             $passedRequest = $req;
+
             return response('OK');
         });
-        
+
         $this->assertSame($request, $passedRequest);
     }
 
@@ -141,13 +143,13 @@ class IsAdminTest extends TestCase
     public function test_checks_exact_role_match(): void
     {
         $this->expectException(HttpException::class);
-        
+
         // Create user with role that contains 'admin' but is not exactly 'admin'
         $user = User::factory()->create(['role' => 'user']);
         Auth::login($user);
-        
+
         $request = Request::create('/', 'GET');
-        
+
         $this->middleware->handle($request, function ($req) {
             return response('OK');
         });
@@ -159,12 +161,12 @@ class IsAdminTest extends TestCase
     public function test_verifies_authentication_before_role_check(): void
     {
         $this->expectException(HttpException::class);
-        
+
         // Ensure no user is authenticated
         $this->assertFalse(Auth::check());
-        
+
         $request = Request::create('/', 'GET');
-        
+
         $this->middleware->handle($request, function ($req) {
             return response('OK');
         });

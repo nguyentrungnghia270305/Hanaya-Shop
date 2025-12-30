@@ -18,11 +18,11 @@ class CartFactoryTest extends TestCase
     public function factory_creates_cart_with_required_fields()
     {
         $cart = Cart::factory()->create();
-        
+
         $this->assertNotNull($cart->product_id);
         $this->assertNotNull($cart->quantity);
         $this->assertDatabaseHas('carts', [
-            'id' => $cart->id
+            'id' => $cart->id,
         ]);
     }
 
@@ -32,7 +32,7 @@ class CartFactoryTest extends TestCase
     public function factory_sets_quantity()
     {
         $cart = Cart::factory()->create();
-        
+
         $this->assertIsInt($cart->quantity);
         $this->assertGreaterThan(0, $cart->quantity);
     }
@@ -43,7 +43,7 @@ class CartFactoryTest extends TestCase
     public function factory_creates_product_automatically()
     {
         $cart = Cart::factory()->create();
-        
+
         $this->assertInstanceOf(Product::class, $cart->product);
     }
 
@@ -53,7 +53,7 @@ class CartFactoryTest extends TestCase
     public function factory_can_create_cart_with_user()
     {
         $cart = Cart::factory()->create(['user_id' => User::factory()->create()->id]);
-        
+
         $this->assertNotNull($cart->user_id);
         $this->assertInstanceOf(User::class, $cart->user);
     }
@@ -64,12 +64,12 @@ class CartFactoryTest extends TestCase
     public function factory_can_override_attributes()
     {
         $product = Product::factory()->create();
-        
+
         $cart = Cart::factory()->create([
             'product_id' => $product->id,
-            'quantity' => 10
+            'quantity' => 10,
         ]);
-        
+
         $this->assertEquals($product->id, $cart->product_id);
         $this->assertEquals(10, $cart->quantity);
     }
@@ -80,7 +80,7 @@ class CartFactoryTest extends TestCase
     public function factory_can_create_multiple_carts()
     {
         $carts = Cart::factory()->count(5)->create();
-        
+
         $this->assertCount(5, $carts);
         $this->assertEquals(5, Cart::count());
     }

@@ -13,7 +13,7 @@ class AppServiceProviderTest extends TestCase
     public function provider_is_registered_in_application()
     {
         $providers = $this->app->getLoadedProviders();
-        
+
         $this->assertArrayHasKey(AppServiceProvider::class, $providers);
     }
 
@@ -23,7 +23,7 @@ class AppServiceProviderTest extends TestCase
     public function provider_has_register_method()
     {
         $provider = new AppServiceProvider($this->app);
-        
+
         $this->assertTrue(method_exists($provider, 'register'));
     }
 
@@ -33,7 +33,7 @@ class AppServiceProviderTest extends TestCase
     public function provider_has_boot_method()
     {
         $provider = new AppServiceProvider($this->app);
-        
+
         $this->assertTrue(method_exists($provider, 'boot'));
     }
 
@@ -43,7 +43,7 @@ class AppServiceProviderTest extends TestCase
     public function provider_can_be_instantiated()
     {
         $provider = new AppServiceProvider($this->app);
-        
+
         $this->assertInstanceOf(AppServiceProvider::class, $provider);
     }
 
@@ -53,9 +53,9 @@ class AppServiceProviderTest extends TestCase
     public function provider_configuration_exists()
     {
         $providersPath = base_path('bootstrap/providers.php');
-        
+
         $this->assertFileExists($providersPath);
-        
+
         $providers = require $providersPath;
         $this->assertContains(AppServiceProvider::class, $providers);
     }

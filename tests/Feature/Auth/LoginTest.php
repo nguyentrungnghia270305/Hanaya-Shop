@@ -16,7 +16,7 @@ class LoginTest extends TestCase
     public function user_can_view_login_page()
     {
         $response = $this->get(route('login'));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('auth.login');
     }
@@ -29,14 +29,14 @@ class LoginTest extends TestCase
         $user = User::factory()->create([
             'email' => 'test@example.com',
             'password' => bcrypt('password123'),
-            'role' => 'user'  // Ensure regular user role
+            'role' => 'user',  // Ensure regular user role
         ]);
-        
+
         $response = $this->post(route('login'), [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
-        
+
         $response->assertRedirect(route('dashboard'));
         $this->assertAuthenticatedAs($user);
     }
@@ -48,14 +48,14 @@ class LoginTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => bcrypt('password123')
+            'password' => bcrypt('password123'),
         ]);
-        
+
         $response = $this->post(route('login'), [
             'email' => 'test@example.com',
-            'password' => 'wrongpassword'
+            'password' => 'wrongpassword',
         ]);
-        
+
         $response->assertSessionHasErrors();
         $this->assertGuest();
     }
@@ -67,9 +67,9 @@ class LoginTest extends TestCase
     {
         $response = $this->post(route('login'), [
             'email' => 'nonexistent@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
-        
+
         $response->assertSessionHasErrors();
         $this->assertGuest();
     }
@@ -80,11 +80,11 @@ class LoginTest extends TestCase
     public function authenticated_user_can_logout()
     {
         $user = User::factory()->create();
-        
+
         $this->actingAs($user);
-        
+
         $response = $this->post(route('logout'));
-        
+
         $response->assertRedirect(route('dashboard'));
         $this->assertGuest();
     }
@@ -95,7 +95,7 @@ class LoginTest extends TestCase
     public function login_requires_email_and_password()
     {
         $response = $this->post(route('login'), []);
-        
+
         $response->assertSessionHasErrors(['email', 'password']);
     }
 }

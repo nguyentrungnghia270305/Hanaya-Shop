@@ -5,7 +5,6 @@ namespace Tests\Feature\Admin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ImageUploadControllerTest extends TestCase
@@ -13,7 +12,7 @@ class ImageUploadControllerTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
-    
+
     // Helper method to create fake files without GD extension
     protected function createFakeImage($filename, $mimeType = 'image/jpeg')
     {
@@ -25,9 +24,9 @@ class ImageUploadControllerTest extends TestCase
         parent::setUp();
 
         $this->admin = User::factory()->create(['role' => 'admin']);
-        
+
         // Create images directory for testing
-        if (!file_exists(public_path('images/posts'))) {
+        if (! file_exists(public_path('images/posts'))) {
             mkdir(public_path('images/posts'), 0755, true);
         }
     }
@@ -176,7 +175,7 @@ class ImageUploadControllerTest extends TestCase
 
         $response1 = $this->actingAs($this->admin)
             ->post(route('admin.upload.ckeditor.image'), ['upload' => $file1]);
-        
+
         $response2 = $this->actingAs($this->admin)
             ->post(route('admin.upload.ckeditor.image'), ['upload' => $file2]);
 
@@ -371,7 +370,7 @@ class ImageUploadControllerTest extends TestCase
     {
         // Mock file system error
         $file = UploadedFile::fake()->create('test.jpg', 100, 'image/jpeg');
-        
+
         // Make directory read-only to force error (may not work on Windows)
         chmod(public_path('images'), 0444);
 
@@ -403,7 +402,7 @@ class ImageUploadControllerTest extends TestCase
             ]);
 
         $json = $response->json();
-        
+
         $this->assertArrayHasKey('url', $json);
         $this->assertArrayHasKey('filename', $json);
         $this->assertStringContainsString($json['filename'], $json['url']);
@@ -465,7 +464,7 @@ class ImageUploadControllerTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->postJson(route('admin.upload.tinymce.image'), []);
 
-        // Controller returns 400 when no file, or 500 on validation error  
+        // Controller returns 400 when no file, or 500 on validation error
         $this->assertContains($response->status(), [400, 500]);
         $response->assertJsonStructure(['error']);
     }
@@ -554,7 +553,7 @@ class ImageUploadControllerTest extends TestCase
     public function tinymce_upload_handles_exceptions_gracefully()
     {
         $file = UploadedFile::fake()->create('test.jpg', 100, 'image/jpeg');
-        
+
         // Make directory read-only to force error (may not work on Windows)
         chmod(public_path('images'), 0444);
 
@@ -612,7 +611,7 @@ class ImageUploadControllerTest extends TestCase
 
         $url = $response->json('url');
         $filename = basename($url);
-        
+
         // Filename should contain timestamp in YmdHis format
         $this->assertMatchesRegularExpression('/\d{14}/', $filename);
     }
@@ -631,7 +630,7 @@ class ImageUploadControllerTest extends TestCase
 
         $url = $response->json('url');
         $filename = basename($url);
-        
+
         // Filename should have sufficient length (timestamp + random + extension)
         $this->assertGreaterThan(25, strlen($filename));
     }

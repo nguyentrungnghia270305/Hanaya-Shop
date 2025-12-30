@@ -596,10 +596,10 @@ class CheckoutDecisionTest extends TestCase
         // Arrange: Multiple items, all valid
         $user = User::factory()->create();
         $address = Address::factory()->create(['user_id' => $user->id]);
-        
+
         $product1 = Product::factory()->create(['stock_quantity' => 10]);
         $product2 = Product::factory()->create(['stock_quantity' => 20]);
-        
+
         $cart1 = Cart::factory()->create([
             'product_id' => $product1->id,
             'user_id' => $user->id,
@@ -654,10 +654,10 @@ class CheckoutDecisionTest extends TestCase
     {
         // Arrange: Multiple items, one invalid (out of stock)
         $user = User::factory()->create();
-        
+
         $product1 = Product::factory()->create(['stock_quantity' => 10]);
         $product2 = Product::factory()->create(['stock_quantity' => 0]); // Out of stock
-        
+
         $cart1 = Cart::factory()->create([
             'product_id' => $product1->id,
             'user_id' => $user->id,

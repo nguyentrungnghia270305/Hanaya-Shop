@@ -25,10 +25,10 @@ class OrderManagementTest extends TestCase
     public function admin_can_view_all_orders()
     {
         Order::factory()->count(10)->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.order'));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('admin.orders.index');
     }
@@ -39,10 +39,10 @@ class OrderManagementTest extends TestCase
     public function admin_can_view_order_details()
     {
         $order = Order::factory()->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.order.show', $order));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('admin.orders.show');
     }
@@ -54,10 +54,10 @@ class OrderManagementTest extends TestCase
     {
         Order::factory()->create(['status' => 'pending']);
         Order::factory()->create(['status' => 'completed']);
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.order', ['status' => 'pending']));
-        
+
         $response->assertStatus(200);
     }
 
@@ -67,10 +67,10 @@ class OrderManagementTest extends TestCase
     public function admin_can_search_orders()
     {
         $order = Order::factory()->create();
-        
+
         $response = $this->actingAs($this->admin)
             ->get(route('admin.order', ['search' => $order->id]));
-        
+
         $response->assertStatus(200);
     }
 
@@ -80,10 +80,10 @@ class OrderManagementTest extends TestCase
     public function non_admin_cannot_access_order_management()
     {
         $user = User::factory()->create(['role' => 'user']);
-        
+
         $response = $this->actingAs($user)
             ->get(route('admin.order'));
-        
+
         $response->assertStatus(403);
     }
 }

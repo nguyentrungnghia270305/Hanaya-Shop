@@ -258,9 +258,9 @@
 //         $user = User::factory()->create();
 //         $product1 = Product::factory()->create(['stock_quantity' => 10]);
 //         $product2 = Product::factory()->create(['stock_quantity' => 5]);
-        
+
 //         $order = Order::factory()->pending()->create(['user_id' => $user->id]);
-        
+
 //         OrderDetail::factory()->create([
 //             'order_id' => $order->id,
 //             'product_id' => $product1->id,
@@ -294,7 +294,7 @@
 //         $user = User::factory()->create();
 //         $product = Product::factory()->create(['stock_quantity' => 10]);
 //         $order = Order::factory()->shipped()->create(['user_id' => $user->id]);
-        
+
 //         OrderDetail::factory()->create([
 //             'order_id' => $order->id,
 //             'product_id' => $product->id,
@@ -325,7 +325,7 @@
 //         $order = Order::factory()->pending()->create(['user_id' => $user->id]);
 
 //         // Act & Assert: Follow complete lifecycle
-        
+
 //         // Step 1: pending → processing
 //         $this->actingAs($admin)->put(route('admin.order.confirm', $order->id));
 //         $order->refresh();
@@ -349,7 +349,7 @@
 //         $user = User::factory()->create();
 //         $product = Product::factory()->create(['stock_quantity' => 50]);
 //         $order = Order::factory()->pending()->create(['user_id' => $user->id]);
-        
+
 //         OrderDetail::factory()->create([
 //             'order_id' => $order->id,
 //             'product_id' => $product->id,
@@ -375,7 +375,7 @@
 //         $user = User::factory()->create();
 //         $product = Product::factory()->create(['stock_quantity' => 30]);
 //         $order = Order::factory()->processing()->create(['user_id' => $user->id]);
-        
+
 //         OrderDetail::factory()->create([
 //             'order_id' => $order->id,
 //             'product_id' => $product->id,
@@ -405,7 +405,7 @@
 //         $user = User::factory()->create();
 //         $product = Product::factory()->create(['stock_quantity' => 100]);
 //         $order = Order::factory()->pending()->create(['user_id' => $user->id]);
-        
+
 //         OrderDetail::factory()->create([
 //             'order_id' => $order->id,
 //             'product_id' => $product->id,
@@ -451,10 +451,10 @@
 
 //         // Act: Two admins confirm simultaneously (simulated)
 //         $this->actingAs($admin1)->put(route('admin.order.confirm', $order->id));
-        
+
 //         $order->refresh();
 //         $currentStatus = $order->status;
-        
+
 //         $this->actingAs($admin2)->put(route('admin.order.confirm', $order->id));
 
 //         // Assert: Final status is consistent

@@ -19,7 +19,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_signature_is_defined(): void
     {
         $commands = Artisan::all();
-        
+
         $this->assertArrayHasKey('test:email-config', $commands);
     }
 
@@ -29,7 +29,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_has_description(): void
     {
         $command = Artisan::all()['test:email-config'];
-        
+
         $this->assertNotEmpty($command->getDescription());
         $this->assertStringContainsString('email', strtolower($command->getDescription()));
     }
@@ -40,7 +40,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_displays_app_url(): void
     {
         Config::set('app.url', 'http://hanayashop.test');
-        
+
         $this->artisan('test:email-config')
             ->expectsOutput('Testing email configuration...')
             ->expectsOutput('Current APP_URL: http://hanayashop.test')
@@ -72,7 +72,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_displays_generated_admin_order_url(): void
     {
         Config::set('app.url', 'https://hanayashop.com');
-        
+
         $this->artisan('test:email-config')
             ->expectsOutput('Generated URL for admin orders: https://hanayashop.com/admin/orders/1')
             ->assertExitCode(0);
@@ -86,7 +86,7 @@ class TestEmailConfigCommandTest extends TestCase
         // Create admin users
         User::factory()->count(3)->create(['role' => 'admin']);
         User::factory()->count(2)->create(['role' => 'user']);
-        
+
         $this->artisan('test:email-config')
             ->expectsOutput('Found 3 admin users')
             ->assertExitCode(0);
@@ -98,7 +98,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_with_no_admin_users(): void
     {
         User::factory()->count(2)->create(['role' => 'user']);
-        
+
         $this->artisan('test:email-config')
             ->expectsOutput('Found 0 admin users')
             ->assertExitCode(0);
@@ -111,7 +111,7 @@ class TestEmailConfigCommandTest extends TestCase
     {
         $user = User::factory()->create();
         $order = Order::factory()->create(['user_id' => $user->id]);
-        
+
         $this->artisan('test:email-config')
             ->expectsOutputToContain('Found sample order with ID: '.$order->id)
             ->assertExitCode(0);
@@ -133,7 +133,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_returns_success_exit_code(): void
     {
         $exitCode = $this->artisan('test:email-config')->run();
-        
+
         $this->assertEquals(0, $exitCode);
     }
 
@@ -144,7 +144,7 @@ class TestEmailConfigCommandTest extends TestCase
     {
         Config::set('mail.mailers.smtp.host', null);
         Config::set('mail.from.address', null);
-        
+
         $this->artisan('test:email-config')
             ->assertExitCode(0);
     }
@@ -156,7 +156,7 @@ class TestEmailConfigCommandTest extends TestCase
     {
         $user = User::factory()->create();
         Order::factory()->count(5)->create(['user_id' => $user->id]);
-        
+
         $this->artisan('test:email-config')
             ->expectsOutputToContain('Found sample order with ID:')
             ->assertExitCode(0);
@@ -169,7 +169,7 @@ class TestEmailConfigCommandTest extends TestCase
     {
         Config::set('app.url', 'http://test.com');
         User::factory()->create(['role' => 'admin']);
-        
+
         $this->artisan('test:email-config')
             ->expectsOutput('Testing email configuration...')
             ->expectsOutputToContain('Current APP_URL:')
@@ -185,7 +185,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_with_localhost_app_url(): void
     {
         Config::set('app.url', 'http://localhost:8000');
-        
+
         $this->artisan('test:email-config')
             ->expectsOutput('Current APP_URL: http://localhost:8000')
             ->expectsOutput('Generated URL for admin orders: http://localhost:8000/admin/orders/1')
@@ -200,7 +200,7 @@ class TestEmailConfigCommandTest extends TestCase
         Config::set('app.env', 'production');
         Config::set('app.url', 'https://hanayashop.com');
         Config::set('mail.mailers.smtp.host', 'smtp.gmail.com');
-        
+
         $this->artisan('test:email-config')
             ->assertExitCode(0);
     }
@@ -211,7 +211,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_can_be_called_programmatically(): void
     {
         $result = $this->artisan('test:email-config');
-        
+
         $result->assertSuccessful();
     }
 
@@ -221,7 +221,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_with_sendmail_driver(): void
     {
         Config::set('mail.default', 'sendmail');
-        
+
         $this->artisan('test:email-config')
             ->expectsOutput('- MAIL_MAILER: sendmail')
             ->assertExitCode(0);
@@ -233,7 +233,7 @@ class TestEmailConfigCommandTest extends TestCase
     public function test_command_with_log_driver(): void
     {
         Config::set('mail.default', 'log');
-        
+
         $this->artisan('test:email-config')
             ->expectsOutput('- MAIL_MAILER: log')
             ->assertExitCode(0);

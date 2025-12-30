@@ -6,7 +6,6 @@ use App\Models\Address;
 use App\Models\Order\Order;
 use App\Models\Order\OrderDetail;
 use App\Models\Product\Product;
-use App\Models\Product\Review;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -59,7 +58,7 @@ class OrderTest extends TestCase
     {
         $order = Order::factory()->create();
         $product = Product::factory()->create();
-        
+
         // Create order details manually since factory doesn't exist
         $orderDetail1 = OrderDetail::create([
             'order_id' => $order->id,
@@ -67,7 +66,7 @@ class OrderTest extends TestCase
             'quantity' => 2,
             'price' => 100.00,
         ]);
-        
+
         $product2 = Product::factory()->create();
         $orderDetail2 = OrderDetail::create([
             'order_id' => $order->id,

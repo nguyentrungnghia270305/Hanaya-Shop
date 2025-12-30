@@ -40,11 +40,11 @@ class AddressFactoryTest extends TestCase
     public function address_factory_can_override_attributes()
     {
         $user = User::factory()->create();
-        
+
         $address = Address::factory()->create([
             'user_id' => $user->id,
             'phone_number' => '0123456789',
-            'address' => '123 Test Street'
+            'address' => '123 Test Street',
         ]);
 
         $this->assertEquals($user->id, $address->user_id);
@@ -59,7 +59,7 @@ class AddressFactoryTest extends TestCase
     {
         $address = Address::factory()->create([
             'latitude' => 10.7756,
-            'longitude' => 106.7019
+            'longitude' => 106.7019,
         ]);
 
         $this->assertEquals(10.7756, $address->latitude);

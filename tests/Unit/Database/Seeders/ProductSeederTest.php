@@ -15,8 +15,8 @@ class ProductSeederTest extends TestCase
      */
     public function product_seeder_runs_successfully()
     {
-        $seeder = new ProductSeeder();
-        
+        $seeder = new ProductSeeder;
+
         $this->assertNull($seeder->run());
     }
 
@@ -26,7 +26,7 @@ class ProductSeederTest extends TestCase
     public function product_seeder_creates_products()
     {
         $this->seed(ProductSeeder::class);
-        
+
         $this->assertGreaterThan(0, \App\Models\Product\Product::count());
     }
 
@@ -36,7 +36,7 @@ class ProductSeederTest extends TestCase
     public function product_seeder_creates_categories()
     {
         $this->seed(ProductSeeder::class);
-        
+
         $this->assertGreaterThan(0, \App\Models\Product\Category::count());
     }
 
@@ -46,9 +46,9 @@ class ProductSeederTest extends TestCase
     public function product_seeder_products_have_valid_prices()
     {
         $this->seed(ProductSeeder::class);
-        
+
         $products = \App\Models\Product\Product::all();
-        
+
         foreach ($products as $product) {
             $this->assertGreaterThan(0, $product->price);
         }
@@ -60,9 +60,9 @@ class ProductSeederTest extends TestCase
     public function product_seeder_products_linked_to_categories()
     {
         $this->seed(ProductSeeder::class);
-        
+
         $products = \App\Models\Product\Product::all();
-        
+
         foreach ($products as $product) {
             $this->assertNotNull($product->category_id);
             $this->assertInstanceOf(\App\Models\Product\Category::class, $product->category);

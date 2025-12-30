@@ -22,18 +22,18 @@ class StripeIntegrationTest extends TestCase
                 'id' => 'pi_123456',
                 'status' => 'requires_payment_method',
                 'amount' => 10000,
-                'currency' => 'usd'
-            ], 200)
+                'currency' => 'usd',
+            ], 200),
         ]);
-        
+
         $user = User::factory()->create();
         $order = Order::factory()->create(['user_id' => $user->id, 'total_amount' => 100]);
-        
+
         $response = Http::post('https://api.stripe.com/v1/payment_intents', [
             'amount' => $order->total_amount * 100,
-            'currency' => 'usd'
+            'currency' => 'usd',
         ]);
-        
+
         $this->assertEquals(200, $response->status());
         $this->assertEquals('requires_payment_method', $response->json('status'));
     }
@@ -47,14 +47,14 @@ class StripeIntegrationTest extends TestCase
             'api.stripe.com/*' => Http::response([
                 'id' => 'pi_123456',
                 'status' => 'succeeded',
-                'amount' => 10000
-            ], 200)
+                'amount' => 10000,
+            ], 200),
         ]);
-        
+
         $response = Http::post('https://api.stripe.com/v1/payment_intents/pi_123456/confirm', [
-            'payment_method' => 'pm_card_visa'
+            'payment_method' => 'pm_card_visa',
         ]);
-        
+
         $this->assertEquals(200, $response->status());
         $this->assertEquals('succeeded', $response->json('status'));
     }
@@ -70,11 +70,11 @@ class StripeIntegrationTest extends TestCase
                 'object' => [
                     'id' => 'pi_123456',
                     'status' => 'succeeded',
-                    'amount' => 10000
-                ]
-            ]
+                    'amount' => 10000,
+                ],
+            ],
         ];
-        
+
         $this->assertIsArray($webhookData);
         $this->assertEquals('payment_intent.succeeded', $webhookData['type']);
         $this->assertEquals('succeeded', $webhookData['data']['object']['status']);
@@ -90,13 +90,13 @@ class StripeIntegrationTest extends TestCase
                 'error' => [
                     'type' => 'card_error',
                     'code' => 'card_declined',
-                    'message' => 'Your card was declined'
-                ]
-            ], 402)
+                    'message' => 'Your card was declined',
+                ],
+            ], 402),
         ]);
-        
+
         $response = Http::post('https://api.stripe.com/v1/payment_intents/pi_123456/confirm');
-        
+
         $this->assertEquals(402, $response->status());
         $this->assertEquals('card_declined', $response->json('error.code'));
     }
@@ -110,14 +110,14 @@ class StripeIntegrationTest extends TestCase
             'api.stripe.com/*' => Http::response([
                 'id' => 're_123456',
                 'status' => 'succeeded',
-                'amount' => 10000
-            ], 200)
+                'amount' => 10000,
+            ], 200),
         ]);
-        
+
         $response = Http::post('https://api.stripe.com/v1/refunds', [
-            'payment_intent' => 'pi_123456'
+            'payment_intent' => 'pi_123456',
         ]);
-        
+
         $this->assertEquals(200, $response->status());
         $this->assertEquals('succeeded', $response->json('status'));
     }

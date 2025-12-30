@@ -17,7 +17,7 @@ class PaymentServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new PaymentService();
+        $this->service = new PaymentService;
     }
 
     /**
@@ -34,18 +34,18 @@ class PaymentServiceTest extends TestCase
     public function can_process_credit_card_payment()
     {
         $order = Order::factory()->create();
-        
+
         $result = $this->service->processPayment('credit_card', $order, [
-            'last_digits' => '1234'
+            'last_digits' => '1234',
         ]);
-        
+
         $this->assertTrue($result['success']);
         $this->assertArrayHasKey('transaction_id', $result);
         $this->assertStringStartsWith('CC_', $result['transaction_id']);
         $this->assertDatabaseHas('payments', [
             'order_id' => $order->id,
             'payment_method' => 'credit_card',
-            'payment_status' => 'completed'
+            'payment_status' => 'completed',
         ]);
     }
 
@@ -55,16 +55,16 @@ class PaymentServiceTest extends TestCase
     public function can_process_paypal_payment()
     {
         $order = Order::factory()->create();
-        
+
         $result = $this->service->processPayment('paypal', $order);
-        
+
         $this->assertTrue($result['success']);
         $this->assertArrayHasKey('transaction_id', $result);
         $this->assertStringStartsWith('PP_', $result['transaction_id']);
         $this->assertDatabaseHas('payments', [
             'order_id' => $order->id,
             'payment_method' => 'paypal',
-            'payment_status' => 'completed'
+            'payment_status' => 'completed',
         ]);
     }
 
@@ -74,16 +74,16 @@ class PaymentServiceTest extends TestCase
     public function can_process_cash_on_delivery_payment()
     {
         $order = Order::factory()->create();
-        
+
         $result = $this->service->processPayment('cash_on_delivery', $order);
-        
+
         $this->assertTrue($result['success']);
         $this->assertArrayHasKey('transaction_id', $result);
-        $this->assertEquals('COD_' . $order->id, $result['transaction_id']);
+        $this->assertEquals('COD_'.$order->id, $result['transaction_id']);
         $this->assertDatabaseHas('payments', [
             'order_id' => $order->id,
             'payment_method' => 'cash_on_delivery',
-            'payment_status' => 'pending'
+            'payment_status' => 'pending',
         ]);
     }
 
@@ -93,9 +93,9 @@ class PaymentServiceTest extends TestCase
     public function rejects_invalid_payment_method()
     {
         $order = Order::factory()->create();
-        
+
         $result = $this->service->processPayment('bitcoin', $order);
-        
+
         $this->assertFalse($result['success']);
         $this->assertArrayHasKey('message', $result);
     }
@@ -106,11 +106,11 @@ class PaymentServiceTest extends TestCase
     public function updates_order_status_after_payment()
     {
         $order = Order::factory()->create(['status' => 'pending']);
-        
+
         $this->service->processPayment('credit_card', $order, [
-            'last_digits' => '1234'
+            'last_digits' => '1234',
         ]);
-        
+
         $this->assertEquals('pending', $order->fresh()->status);
     }
 
@@ -123,11 +123,11 @@ class PaymentServiceTest extends TestCase
         $payment = Payment::create([
             'order_id' => $order->id,
             'payment_method' => 'credit_card',
-            'payment_status' => 'pending'
+            'payment_status' => 'pending',
         ]);
-        
+
         $result = $this->service->updatePaymentStatus($payment, 'completed');
-        
+
         $this->assertTrue($result);
         $this->assertEquals('completed', $payment->fresh()->payment_status);
     }
@@ -141,11 +141,11 @@ class PaymentServiceTest extends TestCase
         $payment = Payment::create([
             'order_id' => $order->id,
             'payment_method' => 'credit_card',
-            'payment_status' => 'pending'
+            'payment_status' => 'pending',
         ]);
-        
+
         $result = $this->service->updatePaymentStatus($payment, 'invalid_status');
-        
+
         $this->assertFalse($result);
         $this->assertEquals('pending', $payment->fresh()->payment_status);
     }
@@ -156,9 +156,9 @@ class PaymentServiceTest extends TestCase
     public function credit_card_payment_requires_card_info()
     {
         $order = Order::factory()->create();
-        
+
         $result = $this->service->processPayment('credit_card', $order, []);
-        
+
         $this->assertFalse($result['success']);
     }
 
@@ -168,9 +168,9 @@ class PaymentServiceTest extends TestCase
     public function payment_creates_transaction_id()
     {
         $order = Order::factory()->create();
-        
+
         $result = $this->service->processPayment('paypal', $order);
-        
+
         $payment = Payment::where('order_id', $order->id)->first();
         $this->assertNotNull($payment->transaction_id);
         $this->assertEquals($result['transaction_id'], $payment->transaction_id);

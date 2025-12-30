@@ -17,14 +17,14 @@ class MemoryUsageTest extends TestCase
     public function loading_large_collection_uses_acceptable_memory()
     {
         Product::factory()->count(500)->create();
-        
+
         $memoryBefore = memory_get_usage();
-        
+
         $products = Product::all();
-        
+
         $memoryAfter = memory_get_usage();
         $memoryUsed = ($memoryAfter - $memoryBefore) / 1024 / 1024; // Convert to MB
-        
+
         // Should use less than 10MB for 500 products
         $this->assertLessThan(10, $memoryUsed, "Memory used: {$memoryUsed}MB");
         $this->assertCount(500, $products);
@@ -36,17 +36,17 @@ class MemoryUsageTest extends TestCase
     public function chunk_processing_reduces_memory_footprint()
     {
         Product::factory()->count(1000)->create();
-        
+
         // Process all at once
         $memoryBefore1 = memory_get_usage();
         $allProducts = Product::all();
         $count1 = $allProducts->count();
         $memoryAfter1 = memory_get_usage();
         $memoryAll = ($memoryAfter1 - $memoryBefore1) / 1024 / 1024;
-        
+
         unset($allProducts);
         gc_collect_cycles();
-        
+
         // Process in chunks
         $memoryBefore2 = memory_get_usage();
         $count2 = 0;
@@ -55,7 +55,7 @@ class MemoryUsageTest extends TestCase
         });
         $memoryAfter2 = memory_get_usage();
         $memoryChunk = ($memoryAfter2 - $memoryBefore2) / 1024 / 1024;
-        
+
         // Chunking should use less memory
         $this->assertLessThan($memoryAll, $memoryChunk);
         $this->assertEquals(1000, $count1);
@@ -68,10 +68,10 @@ class MemoryUsageTest extends TestCase
     public function cursor_iteration_is_memory_efficient()
     {
         Product::factory()->count(500)->create();
-        
+
         $memoryBefore = memory_get_usage();
         $peakMemory = $memoryBefore;
-        
+
         $count = 0;
         foreach (Product::cursor() as $product) {
             $count++;
@@ -80,9 +80,9 @@ class MemoryUsageTest extends TestCase
                 $peakMemory = $currentMemory;
             }
         }
-        
+
         $memoryIncrease = ($peakMemory - $memoryBefore) / 1024 / 1024;
-        
+
         // Cursor should use minimal additional memory (under 5MB)
         $this->assertLessThan(5, $memoryIncrease);
         $this->assertEquals(500, $count);
@@ -95,17 +95,17 @@ class MemoryUsageTest extends TestCase
     {
         User::factory()->count(100)->create();
         Product::factory()->count(200)->create();
-        
+
         $memoryBefore = memory_get_peak_usage();
-        
+
         // Perform multiple operations
         $users = User::with('addresses')->get();
         $products = Product::with('category')->get();
         $featured = Product::where('stock_quantity', '>', 10)->get();
-        
+
         $memoryAfter = memory_get_peak_usage();
         $peakIncrease = ($memoryAfter - $memoryBefore) / 1024 / 1024;
-        
+
         // Peak memory increase should be under 20MB
         $this->assertLessThan(20, $peakIncrease, "Peak memory increase: {$peakIncrease}MB");
     }

@@ -123,7 +123,7 @@ class UserRoutesIntegrationTest extends TestCase
         // Address management is done through profile and addresses.store route
         $response = $this->actingAs($this->user)->get(route('profile.edit'));
         $response->assertOk();
-        
+
         // Verify addresses.store route exists
         $this->assertTrue(\Illuminate\Support\Facades\Route::has('addresses.store'));
     }

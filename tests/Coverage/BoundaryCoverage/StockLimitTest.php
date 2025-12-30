@@ -2,18 +2,17 @@
 
 namespace Tests\Coverage\BoundaryCoverage;
 
-use Tests\TestCase;
-use App\Models\Product\Product;
-use App\Models\Product\Category;
 use App\Models\Cart\Cart;
-use App\Models\User;
 use App\Models\Order\Order;
-use App\Models\Order\OrderDetail;
+use App\Models\Product\Category;
+use App\Models\Product\Product;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * Stock Limit Boundary Coverage Test
- * 
+ *
  * Tests boundary conditions for stock quantity management:
  * - Minimum stock values (0, 1)
  * - Maximum stock values (practical limits)
@@ -22,7 +21,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  * - Out of stock handling
  * - Stock vs cart quantity validation
  * - Stock updates after orders
- * 
+ *
  * Boundary Analysis:
  * - Stock: 0, 1, 10, 50, 100, 500, 1000, 10000, MAX_VALUE
  * - Order quantity vs available stock
@@ -34,12 +33,13 @@ class StockLimitTest extends TestCase
     use RefreshDatabase;
 
     protected $user;
+
     protected $category;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create();
         $this->category = Category::factory()->create();
     }

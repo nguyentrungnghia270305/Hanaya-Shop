@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\App\Models\Product;
 
-use App\Models\Cart\Cart;
-use App\Models\Order\OrderDetail;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
 use App\Models\Product\Review;

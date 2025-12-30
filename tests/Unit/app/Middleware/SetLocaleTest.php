@@ -19,7 +19,7 @@ class SetLocaleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->middleware = new SetLocale();
+        $this->middleware = new SetLocale;
     }
 
     /**
@@ -28,12 +28,13 @@ class SetLocaleTest extends TestCase
     public function test_sets_locale_from_url_parameter(): void
     {
         Config::set('app.available_locales', ['en' => 'English', 'vi' => 'Vietnamese']);
-        
+
         $request = Request::create('/', 'GET', ['locale' => 'vi']);
-        
+
         $this->middleware->handle($request, function ($req) {
             $this->assertEquals('vi', App::getLocale());
             $this->assertEquals('vi', Session::get('locale'));
+
             return response('OK');
         });
     }
@@ -45,11 +46,12 @@ class SetLocaleTest extends TestCase
     {
         Config::set('app.available_locales', ['en' => 'English', 'vi' => 'Vietnamese']);
         Session::put('locale', 'vi');
-        
+
         $request = Request::create('/', 'GET');
-        
+
         $this->middleware->handle($request, function ($req) {
             $this->assertEquals('vi', App::getLocale());
+
             return response('OK');
         });
     }
@@ -62,11 +64,12 @@ class SetLocaleTest extends TestCase
         Config::set('app.locale', 'en');
         Config::set('app.available_locales', ['en' => 'English', 'vi' => 'Vietnamese']);
         Session::forget('locale');
-        
+
         $request = Request::create('/', 'GET');
-        
+
         $this->middleware->handle($request, function ($req) {
             $this->assertEquals('en', App::getLocale());
+
             return response('OK');
         });
     }
@@ -78,11 +81,12 @@ class SetLocaleTest extends TestCase
     {
         Config::set('app.locale', 'en');
         Config::set('app.available_locales', ['en' => 'English', 'vi' => 'Vietnamese']);
-        
+
         $request = Request::create('/', 'GET', ['locale' => 'invalid']);
-        
+
         $this->middleware->handle($request, function ($req) {
             $this->assertEquals('en', App::getLocale());
+
             return response('OK');
         });
     }
@@ -93,13 +97,13 @@ class SetLocaleTest extends TestCase
     public function test_stores_locale_in_session(): void
     {
         Config::set('app.available_locales', ['en' => 'English', 'vi' => 'Vietnamese']);
-        
+
         $request = Request::create('/', 'GET', ['locale' => 'vi']);
-        
+
         $this->middleware->handle($request, function ($req) {
             return response('OK');
         });
-        
+
         $this->assertEquals('vi', Session::get('locale'));
     }
 
@@ -109,15 +113,16 @@ class SetLocaleTest extends TestCase
     public function test_passes_request_to_next_middleware(): void
     {
         Config::set('app.available_locales', ['en' => 'English', 'vi' => 'Vietnamese']);
-        
+
         $request = Request::create('/', 'GET', ['locale' => 'en']);
         $called = false;
-        
+
         $this->middleware->handle($request, function ($req) use (&$called) {
             $called = true;
+
             return response('OK');
         });
-        
+
         $this->assertTrue($called);
     }
 
@@ -128,12 +133,13 @@ class SetLocaleTest extends TestCase
     {
         Config::set('app.available_locales', ['en' => 'English', 'vi' => 'Vietnamese']);
         Session::put('locale', 'en');
-        
+
         $request = Request::create('/', 'GET', ['locale' => 'vi']);
-        
+
         $this->middleware->handle($request, function ($req) {
             $this->assertEquals('vi', App::getLocale());
             $this->assertEquals('vi', Session::get('locale'));
+
             return response('OK');
         });
     }
@@ -145,11 +151,12 @@ class SetLocaleTest extends TestCase
     {
         Config::set('app.locale', 'en');
         Config::set('app.available_locales', ['en' => 'English']);
-        
+
         $request = Request::create('/', 'GET', ['locale' => 'vi']);
-        
+
         $this->middleware->handle($request, function ($req) {
             $this->assertEquals('en', App::getLocale());
+
             return response('OK');
         });
     }

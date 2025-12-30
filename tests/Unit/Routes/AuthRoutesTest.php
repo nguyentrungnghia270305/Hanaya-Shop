@@ -100,7 +100,9 @@ class AuthRoutesTest extends TestCase
         });
 
         $this->assertGreaterThan(0, $loginRoutes->count());
-    }    /**
+    }
+
+    /**
      * @test
      */
     public function logout_route_uses_post_method()
@@ -131,7 +133,9 @@ class AuthRoutesTest extends TestCase
         });
 
         $this->assertGreaterThan(0, $registerRoutes->count());
-    }    /**
+    }
+
+    /**
      * @test
      */
     public function password_update_route_exists()

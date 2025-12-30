@@ -28,7 +28,7 @@
 //     {
 //         // Create a notification for the user WITHOUT faking
 //         $this->user->notify(new \App\Notifications\ResetPassword('test-token'));
-        
+
 //         $notification = $this->user->notifications()->first();
 
 //         $response = $this->actingAs($this->user)->post(route('notifications.markAsRead', $notification->id));
@@ -57,7 +57,7 @@
 //     {
 //         $otherUser = User::factory()->create();
 //         $otherUser->notify(new \App\Notifications\ResetPassword('test-token'));
-        
+
 //         $notification = $otherUser->notifications()->first();
 
 //         $response = $this->actingAs($this->user)->post(route('notifications.markAsRead', $notification->id));
@@ -81,7 +81,7 @@
 //     public function marking_already_read_notification_still_succeeds()
 //     {
 //         $this->user->notify(new \App\Notifications\ResetPassword('test-token'));
-        
+
 //         $notification = $this->user->notifications()->first();
 //         $notification->markAsRead();
 
@@ -97,7 +97,7 @@
 //     public function notification_read_timestamp_is_updated()
 //     {
 //         $this->user->notify(new \App\Notifications\ResetPassword('test-token'));
-        
+
 //         $notification = $this->user->notifications()->first();
 
 //         $this->assertNull($notification->read_at);
@@ -114,7 +114,7 @@
 //     public function response_includes_success_message()
 //     {
 //         $this->user->notify(new \App\Notifications\ResetPassword('test-token'));
-        
+
 //         $notification = $this->user->notifications()->first();
 
 //         $response = $this->actingAs($this->user)->post(route('notifications.markAsRead', $notification->id));

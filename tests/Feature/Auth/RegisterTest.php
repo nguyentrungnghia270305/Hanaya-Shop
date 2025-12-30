@@ -24,7 +24,7 @@ class RegisterTest extends TestCase
     public function user_can_view_registration_page()
     {
         $response = $this->get(route('register'));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('auth.register');
     }
@@ -38,9 +38,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'Password123!@',
-            'password_confirmation' => 'Password123!@'
+            'password_confirmation' => 'Password123!@',
         ]);
-        
+
         $response->assertRedirect(route('verification.notice'));
         $this->assertTrue(session()->has('pending_registration'));
         $this->assertGuest();
@@ -54,9 +54,9 @@ class RegisterTest extends TestCase
         $response = $this->post(route('register'), [
             'email' => 'test@example.com',
             'password' => 'password123',
-            'password_confirmation' => 'password123'
+            'password_confirmation' => 'password123',
         ]);
-        
+
         $response->assertSessionHasErrors('name');
     }
 
@@ -69,9 +69,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'invalid-email',
             'password' => 'password123',
-            'password_confirmation' => 'password123'
+            'password_confirmation' => 'password123',
         ]);
-        
+
         $response->assertSessionHasErrors('email');
     }
 
@@ -81,14 +81,14 @@ class RegisterTest extends TestCase
     public function registration_requires_unique_email()
     {
         User::factory()->create(['email' => 'existing@example.com']);
-        
+
         $response = $this->post(route('register'), [
             'name' => 'Test User',
             'email' => 'existing@example.com',
             'password' => 'password123',
-            'password_confirmation' => 'password123'
+            'password_confirmation' => 'password123',
         ]);
-        
+
         $response->assertSessionHasErrors('email');
     }
 
@@ -101,9 +101,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password123',
-            'password_confirmation' => 'differentpassword'
+            'password_confirmation' => 'differentpassword',
         ]);
-        
+
         $response->assertSessionHasErrors('password');
     }
 
@@ -116,11 +116,11 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'Password123!@',
-            'password_confirmation' => 'Password123!@'
+            'password_confirmation' => 'Password123!@',
         ]);
-        
+
         $pendingReg = session('pending_registration');
-        
+
         $this->assertNotNull($pendingReg);
         $this->assertTrue(Hash::check('Password123!@', $pendingReg['password']));
     }
@@ -134,9 +134,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'Password123!@',
-            'password_confirmation' => 'Password123!@'
+            'password_confirmation' => 'Password123!@',
         ]);
-        
+
         $this->assertTrue(session()->has('pending_registration'));
         $pendingReg = session('pending_registration');
         $this->assertEquals('Test User', $pendingReg['name']);
@@ -153,9 +153,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'Password123!@',
-            'password_confirmation' => 'Password123!@'
+            'password_confirmation' => 'Password123!@',
         ]);
-        
+
         $response->assertRedirect(route('verification.notice'));
     }
 
@@ -170,11 +170,11 @@ class RegisterTest extends TestCase
                 'email' => 'test@example.com',
                 'verification_token' => 'test-token',
                 'created_at' => now(),
-            ]
+            ],
         ]);
 
         $response = $this->get(route('verification.notice'));
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('auth.verification-notice');
     }
@@ -185,7 +185,7 @@ class RegisterTest extends TestCase
     public function verification_notice_redirects_without_pending_registration()
     {
         $response = $this->get(route('verification.notice'));
-        
+
         $response->assertRedirect(route('register'));
     }
 
@@ -201,11 +201,11 @@ class RegisterTest extends TestCase
                 'password' => Hash::make('Password123!@'),
                 'verification_token' => 'valid-token-123',
                 'created_at' => now(),
-            ]
+            ],
         ]);
 
         $response = $this->get(route('verification.verify', ['token' => 'valid-token-123']));
-        
+
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
             'name' => 'Test User',
@@ -225,11 +225,11 @@ class RegisterTest extends TestCase
                 'password' => Hash::make('Password123!@'),
                 'verification_token' => 'valid-token',
                 'created_at' => now(),
-            ]
+            ],
         ]);
 
         $response = $this->get(route('verification.verify', ['token' => 'invalid-token']));
-        
+
         $response->assertRedirect(route('register'));
         $response->assertSessionHas('error');
         $this->assertDatabaseMissing('users', ['email' => 'test@example.com']);
@@ -247,11 +247,11 @@ class RegisterTest extends TestCase
                 'password' => Hash::make('Password123!@'),
                 'verification_token' => 'expired-token',
                 'created_at' => now()->subHours(25), // 25 hours ago - expired
-            ]
+            ],
         ]);
 
         $response = $this->get(route('verification.verify', ['token' => 'expired-token']));
-        
+
         $response->assertRedirect(route('register'));
         $response->assertSessionHas('error');
         $this->assertFalse(session()->has('pending_registration'));
@@ -266,9 +266,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'PASSWORD123!',
-            'password_confirmation' => 'PASSWORD123!'
+            'password_confirmation' => 'PASSWORD123!',
         ]);
-        
+
         $response->assertSessionHasErrors('password');
     }
 
@@ -281,9 +281,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password123!',
-            'password_confirmation' => 'password123!'
+            'password_confirmation' => 'password123!',
         ]);
-        
+
         $response->assertSessionHasErrors('password');
     }
 
@@ -296,9 +296,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'Password!@#',
-            'password_confirmation' => 'Password!@#'
+            'password_confirmation' => 'Password!@#',
         ]);
-        
+
         $response->assertSessionHasErrors('password');
     }
 
@@ -311,9 +311,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'Password123',
-            'password_confirmation' => 'Password123'
+            'password_confirmation' => 'Password123',
         ]);
-        
+
         $response->assertSessionHasErrors('password');
     }
 
@@ -326,9 +326,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'Pass word123!',
-            'password_confirmation' => 'Pass word123!'
+            'password_confirmation' => 'Pass word123!',
         ]);
-        
+
         $response->assertSessionHasErrors('password');
     }
 
@@ -341,9 +341,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'Pass1!',
-            'password_confirmation' => 'Pass1!'
+            'password_confirmation' => 'Pass1!',
         ]);
-        
+
         $response->assertSessionHasErrors('password');
     }
 
@@ -356,9 +356,9 @@ class RegisterTest extends TestCase
             'name' => 'Test User',
             'email' => 'TEST@EXAMPLE.COM',
             'password' => 'Password123!@',
-            'password_confirmation' => 'Password123!@'
+            'password_confirmation' => 'Password123!@',
         ]);
-        
+
         // Should fail with validation error for uppercase email
         $response->assertSessionHasErrors('email');
     }

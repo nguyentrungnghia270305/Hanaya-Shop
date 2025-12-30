@@ -19,7 +19,7 @@ class CheckRoleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->middleware = new CheckRole();
+        $this->middleware = new CheckRole;
     }
 
     /**
@@ -29,15 +29,16 @@ class CheckRoleTest extends TestCase
     {
         $user = User::factory()->create(['role' => 'admin']);
         Auth::login($user);
-        
+
         $request = Request::create('/', 'GET');
         $called = false;
-        
+
         $response = $this->middleware->handle($request, function ($req) use (&$called) {
             $called = true;
+
             return response('OK');
         }, 'admin');
-        
+
         $this->assertTrue($called);
         $this->assertEquals('OK', $response->getContent());
     }
@@ -49,15 +50,16 @@ class CheckRoleTest extends TestCase
     {
         $user = User::factory()->create(['role' => 'admin']);
         Auth::login($user);
-        
+
         $request = Request::create('/', 'GET');
         $called = false;
-        
+
         $response = $this->middleware->handle($request, function ($req) use (&$called) {
             $called = true;
+
             return response('OK');
         }, 'admin', 'user');
-        
+
         $this->assertTrue($called);
     }
 
@@ -68,12 +70,12 @@ class CheckRoleTest extends TestCase
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Unauthorized access.');
-        
+
         $user = User::factory()->create(['role' => 'user']);
         Auth::login($user);
-        
+
         $request = Request::create('/', 'GET');
-        
+
         $this->middleware->handle($request, function ($req) {
             return response('OK');
         }, 'admin');
@@ -86,11 +88,11 @@ class CheckRoleTest extends TestCase
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Unauthorized access.');
-        
+
         Auth::logout();
-        
+
         $request = Request::create('/', 'GET');
-        
+
         $this->middleware->handle($request, function ($req) {
             return response('OK');
         }, 'admin');
@@ -103,15 +105,16 @@ class CheckRoleTest extends TestCase
     {
         $user = User::factory()->create(['role' => 'user']);
         Auth::login($user);
-        
+
         $request = Request::create('/', 'GET');
         $called = false;
-        
+
         $response = $this->middleware->handle($request, function ($req) use (&$called) {
             $called = true;
+
             return response('OK');
         }, 'admin', 'user', 'moderator');
-        
+
         $this->assertTrue($called);
     }
 
@@ -121,12 +124,12 @@ class CheckRoleTest extends TestCase
     public function test_blocks_when_role_not_in_allowed_list(): void
     {
         $this->expectException(HttpException::class);
-        
+
         $user = User::factory()->create(['role' => 'user']);
         Auth::login($user);
-        
+
         $request = Request::create('/', 'GET');
-        
+
         $this->middleware->handle($request, function ($req) {
             return response('OK');
         }, 'admin', 'moderator');
@@ -140,13 +143,13 @@ class CheckRoleTest extends TestCase
         try {
             $user = User::factory()->create(['role' => 'user']);
             Auth::login($user);
-            
+
             $request = Request::create('/', 'GET');
-            
+
             $this->middleware->handle($request, function ($req) {
                 return response('OK');
             }, 'admin');
-            
+
             $this->fail('Expected HttpException was not thrown');
         } catch (HttpException $e) {
             $this->assertEquals(403, $e->getStatusCode());
@@ -160,15 +163,16 @@ class CheckRoleTest extends TestCase
     {
         $user = User::factory()->create(['role' => 'admin']);
         Auth::login($user);
-        
+
         $request = Request::create('/', 'GET');
         $passedRequest = null;
-        
+
         $this->middleware->handle($request, function ($req) use (&$passedRequest) {
             $passedRequest = $req;
+
             return response('OK');
         }, 'admin');
-        
+
         $this->assertSame($request, $passedRequest);
     }
 }

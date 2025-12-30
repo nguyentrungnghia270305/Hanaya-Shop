@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Notifications\CustomerOrderCancelledNotification;
 use App\Notifications\CustomerOrderCompletedNotification;
 use App\Notifications\CustomerOrderConfirmedNotification;
-use App\Notifications\CustomerOrderShippedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;

@@ -19,7 +19,6 @@ use App\Notifications\OrderShippedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class NotificationTestControllerTest extends TestCase
@@ -27,7 +26,9 @@ class NotificationTestControllerTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $customer;
+
     protected $order;
 
     protected function setUp(): void
@@ -37,12 +38,12 @@ class NotificationTestControllerTest extends TestCase
         // Create test users with unique emails using timestamp
         $timestamp = now()->format('His');
         $this->admin = User::factory()->create([
-            'role' => 'admin', 
-            'email' => "admin{$timestamp}@test.com"
+            'role' => 'admin',
+            'email' => "admin{$timestamp}@test.com",
         ]);
         $this->customer = User::factory()->create([
-            'role' => 'user', 
-            'email' => "customer{$timestamp}@test.com"
+            'role' => 'user',
+            'email' => "customer{$timestamp}@test.com",
         ]);
         $this->order = Order::factory()->create(['user_id' => $this->customer->id]);
 
@@ -56,7 +57,7 @@ class NotificationTestControllerTest extends TestCase
     {
         User::where('role', 'admin')->delete();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $this->assertEquals(400, $response->getStatusCode());
@@ -72,7 +73,7 @@ class NotificationTestControllerTest extends TestCase
     {
         User::where('role', 'user')->delete();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $this->assertEquals(400, $response->getStatusCode());
@@ -88,7 +89,7 @@ class NotificationTestControllerTest extends TestCase
         // Delete all orders instead of truncate to avoid foreign key issues
         Order::query()->delete();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $this->assertEquals(400, $response->getStatusCode());
@@ -103,12 +104,12 @@ class NotificationTestControllerTest extends TestCase
     {
         Notification::fake();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $this->assertEquals(200, $response->getStatusCode());
         $json = $response->getData(true);
-        
+
         $this->assertTrue($json['success']);
         $this->assertArrayHasKey('admin_notifications', $json['results']);
         $this->assertEquals('SUCCESS', $json['results']['admin_notifications']['new_order']);
@@ -121,12 +122,12 @@ class NotificationTestControllerTest extends TestCase
     {
         Notification::fake();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $this->assertEquals(200, $response->getStatusCode());
         $json = $response->getData(true);
-        
+
         $this->assertArrayHasKey('customer_notifications', $json['results']);
         $this->assertEquals('SUCCESS', $json['results']['customer_notifications']['new_order']);
     }
@@ -138,12 +139,12 @@ class NotificationTestControllerTest extends TestCase
     {
         Notification::fake();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $json = $response->getData(true);
         $adminNotifs = $json['results']['admin_notifications'];
-        
+
         $this->assertArrayHasKey('new_order', $adminNotifs);
         $this->assertArrayHasKey('confirmed', $adminNotifs);
         $this->assertArrayHasKey('shipped', $adminNotifs);
@@ -159,12 +160,12 @@ class NotificationTestControllerTest extends TestCase
     {
         Notification::fake();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $json = $response->getData(true);
         $customerNotifs = $json['results']['customer_notifications'];
-        
+
         $this->assertArrayHasKey('new_order', $customerNotifs);
         $this->assertArrayHasKey('confirmed', $customerNotifs);
         $this->assertArrayHasKey('shipped', $customerNotifs);
@@ -179,11 +180,11 @@ class NotificationTestControllerTest extends TestCase
     {
         Notification::fake();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $json = $response->getData(true);
-        
+
         $this->assertEquals($this->admin->email, $json['admin_email']);
         $this->assertEquals($this->customer->email, $json['customer_email']);
     }
@@ -196,11 +197,11 @@ class NotificationTestControllerTest extends TestCase
         Notification::fake();
         Session::put('locale', 'vi');
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $json = $response->getData(true);
-        
+
         $this->assertEquals('vi', $json['locale']);
     }
 
@@ -211,17 +212,17 @@ class NotificationTestControllerTest extends TestCase
     {
         // Skip this test as mocking Order::first() doesn't work as expected in this context
         $this->markTestSkipped('Mocking static methods is complex and test behavior is inconsistent');
-        
+
         // Force an exception by deleting order after initial check
-        $controller = new NotificationTestController();
-        
+        $controller = new NotificationTestController;
+
         // Mock to throw exception
         $this->mock(Order::class, function ($mock) {
             $mock->shouldReceive('first')->andThrow(new \Exception('Test exception'));
         });
 
         $response = $controller->test();
-        
+
         // Should return 500 or handle error
         $this->assertContains($response->getStatusCode(), [400, 500]);
     }
@@ -233,11 +234,11 @@ class NotificationTestControllerTest extends TestCase
     {
         Notification::fake();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         $json = $response->getData(true);
-        
+
         $this->assertEquals('All notifications tested successfully', $json['message']);
     }
 
@@ -251,7 +252,7 @@ class NotificationTestControllerTest extends TestCase
         foreach (['en', 'vi', 'ja'] as $locale) {
             Session::put('locale', $locale);
 
-            $controller = new NotificationTestController();
+            $controller = new NotificationTestController;
             $response = $controller->test();
 
             $json = $response->getData(true);
@@ -263,16 +264,16 @@ class NotificationTestControllerTest extends TestCase
     /**
      * @test
      */
-    public function test_notification_testNotification_method_catches_exceptions()
+    public function test_notification_test_notification_method_catches_exceptions()
     {
         Notification::fake();
 
-        $controller = new NotificationTestController();
-        
+        $controller = new NotificationTestController;
+
         // Just test that the method returns successfully
         // No need to force exception as it's hard to mock properly
         $result = $controller->test();
-        
+
         $this->assertNotNull($result);
         $this->assertEquals(200, $result->getStatusCode());
     }
@@ -284,7 +285,7 @@ class NotificationTestControllerTest extends TestCase
     {
         Notification::fake();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         // Verify all notification classes are tested
@@ -294,7 +295,7 @@ class NotificationTestControllerTest extends TestCase
         Notification::assertSentTo($this->admin, OrderCompletedNotification::class);
         Notification::assertSentTo($this->admin, OrderPaidNotification::class);
         Notification::assertSentTo($this->admin, OrderCancelledNotification::class);
-        
+
         Notification::assertSentTo($this->customer, CustomerNewOrderPending::class);
         Notification::assertSentTo($this->customer, CustomerOrderConfirmedNotification::class);
         Notification::assertSentTo($this->customer, CustomerOrderShippedNotification::class);
@@ -309,7 +310,7 @@ class NotificationTestControllerTest extends TestCase
     {
         Notification::fake();
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         Notification::assertSentTo($this->admin, NewOrderPending::class, function ($notification) {
@@ -329,7 +330,7 @@ class NotificationTestControllerTest extends TestCase
         Notification::fake();
         Session::put('locale', 'ja');
 
-        $controller = new NotificationTestController();
+        $controller = new NotificationTestController;
         $response = $controller->test();
 
         Notification::assertSentTo($this->customer, CustomerNewOrderPending::class, function ($notification) {

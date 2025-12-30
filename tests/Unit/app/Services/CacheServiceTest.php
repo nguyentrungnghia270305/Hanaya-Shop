@@ -31,9 +31,9 @@ class CacheServiceTest extends TestCase
     {
         Cache::put('dashboard_stats', 'test_data', 60);
         Cache::put('dashboard_recent_products', 'test_data', 60);
-        
+
         CacheService::clearProductCaches();
-        
+
         $this->assertNull(Cache::get('dashboard_stats'));
         $this->assertNull(Cache::get('dashboard_recent_products'));
     }
@@ -47,15 +47,15 @@ class CacheServiceTest extends TestCase
             'dashboard_stats',
             'dashboard_recent_products',
             'dashboard_categories',
-            'dashboard_recent_orders'
+            'dashboard_recent_orders',
         ];
-        
+
         foreach ($keys as $key) {
             Cache::put($key, 'test_data', 60);
         }
-        
+
         CacheService::clearDashboardCache();
-        
+
         foreach ($keys as $key) {
             $this->assertNull(Cache::get($key));
         }
@@ -70,9 +70,9 @@ class CacheServiceTest extends TestCase
         Cache::put("product_detail_{$productId}", 'test_data', 60);
         Cache::put("related_products_{$productId}", 'test_data', 60);
         Cache::put('dashboard_stats', 'test_data', 60);
-        
+
         CacheService::clearProductCache($productId);
-        
+
         $this->assertNull(Cache::get("product_detail_{$productId}"));
         $this->assertNull(Cache::get("related_products_{$productId}"));
         $this->assertNull(Cache::get('dashboard_stats'));
@@ -84,10 +84,10 @@ class CacheServiceTest extends TestCase
     public function generates_products_index_cache_key()
     {
         $params = ['category' => 1, 'sort' => 'price'];
-        
+
         $key1 = CacheService::getProductsIndexCacheKey($params);
         $key2 = CacheService::getProductsIndexCacheKey($params);
-        
+
         $this->assertEquals($key1, $key2);
         $this->assertStringStartsWith('products_index_', $key1);
     }
@@ -98,9 +98,9 @@ class CacheServiceTest extends TestCase
     public function generates_product_detail_cache_key()
     {
         $productId = 123;
-        
+
         $key = CacheService::getProductDetailCacheKey($productId);
-        
+
         $this->assertEquals("product_detail_{$productId}", $key);
     }
 
@@ -110,9 +110,9 @@ class CacheServiceTest extends TestCase
     public function generates_related_products_cache_key()
     {
         $productId = 456;
-        
+
         $key = CacheService::getRelatedProductsCacheKey($productId);
-        
+
         $this->assertEquals("related_products_{$productId}", $key);
     }
 
@@ -123,10 +123,10 @@ class CacheServiceTest extends TestCase
     {
         $params1 = ['category' => 1];
         $params2 = ['category' => 2];
-        
+
         $key1 = CacheService::getProductsIndexCacheKey($params1);
         $key2 = CacheService::getProductsIndexCacheKey($params2);
-        
+
         $this->assertNotEquals($key1, $key2);
     }
 
@@ -138,7 +138,7 @@ class CacheServiceTest extends TestCase
         $this->assertGreaterThan(0, CacheService::DASHBOARD_CACHE_DURATION);
         $this->assertGreaterThan(0, CacheService::PRODUCTS_CACHE_DURATION);
         $this->assertGreaterThan(0, CacheService::PRODUCT_DETAIL_DURATION);
-        
+
         // 30 minutes = 1800 seconds
         $this->assertEquals(1800, CacheService::DASHBOARD_CACHE_DURATION);
         // 15 minutes = 900 seconds

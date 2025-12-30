@@ -12,6 +12,7 @@ class ProfileControllerTest extends TestCase
     use RefreshDatabase;
 
     protected $user;
+
     protected $admin;
 
     protected function setUp(): void

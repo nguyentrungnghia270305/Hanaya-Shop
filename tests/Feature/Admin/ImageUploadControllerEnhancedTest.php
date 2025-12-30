@@ -14,6 +14,7 @@ class ImageUploadControllerEnhancedTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected string $uploadPath;
 
     protected function setUp(): void
@@ -22,7 +23,7 @@ class ImageUploadControllerEnhancedTest extends TestCase
 
         $this->admin = User::factory()->create(['role' => 'admin']);
         $this->uploadPath = public_path('images/posts');
-        
+
         // Ensure clean state
         if (File::exists($this->uploadPath)) {
             File::cleanDirectory($this->uploadPath);
@@ -268,7 +269,7 @@ class ImageUploadControllerEnhancedTest extends TestCase
 
         $response->assertStatus(200);
         $filename = $response->json('filename');
-        
+
         $this->assertNotNull($filename);
         $this->assertStringStartsWith('post_featured_', $filename);
     }
@@ -347,10 +348,10 @@ class ImageUploadControllerEnhancedTest extends TestCase
     {
         $formats = [
             'jpeg' => 'image/jpeg',
-            'png' => 'image/png', 
+            'png' => 'image/png',
             'jpg' => 'image/jpeg',
             'gif' => 'image/gif',
-            'webp' => 'image/webp'
+            'webp' => 'image/webp',
         ];
 
         foreach ($formats as $ext => $mime) {
@@ -428,7 +429,7 @@ class ImageUploadControllerEnhancedTest extends TestCase
 
         $url = $response->json('url');
         $filename = basename($url);
-        $filePath = $this->uploadPath . '/' . $filename;
+        $filePath = $this->uploadPath.'/'.$filename;
 
         $this->assertTrue(File::exists($filePath));
     }
@@ -450,7 +451,7 @@ class ImageUploadControllerEnhancedTest extends TestCase
         $filename1 = basename($url1);
         $filename2 = basename($url2);
 
-        $this->assertTrue(File::exists($this->uploadPath . '/' . $filename1));
-        $this->assertTrue(File::exists($this->uploadPath . '/' . $filename2));
+        $this->assertTrue(File::exists($this->uploadPath.'/'.$filename1));
+        $this->assertTrue(File::exists($this->uploadPath.'/'.$filename2));
     }
 }

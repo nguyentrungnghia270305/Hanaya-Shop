@@ -20,7 +20,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_signature_has_email_argument(): void
     {
         $commands = Artisan::all();
-        
+
         $this->assertArrayHasKey('test:password-reset', $commands);
     }
 
@@ -30,7 +30,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_has_description(): void
     {
         $command = Artisan::all()['test:password-reset'];
-        
+
         $this->assertNotEmpty($command->getDescription());
         $this->assertStringContainsString('password', strtolower($command->getDescription()));
     }
@@ -41,7 +41,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_finds_user_by_email(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create([
             'email' => 'test@example.com',
             'name' => 'Test User',
@@ -68,7 +68,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_creates_password_reset_token(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $this->artisan('test:password-reset', ['email' => 'test@example.com']);
@@ -84,7 +84,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_updates_existing_token(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         // Insert initial token
@@ -110,7 +110,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_sends_reset_password_notification(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $this->artisan('test:password-reset', ['email' => 'test@example.com'])
@@ -125,7 +125,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_uses_default_locale(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $this->artisan('test:password-reset', ['email' => 'test@example.com'])
@@ -140,7 +140,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_accepts_custom_locale(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $this->artisan('test:password-reset', [
@@ -158,7 +158,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_with_japanese_locale(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $this->artisan('test:password-reset', [
@@ -175,7 +175,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_displays_success_message(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $this->artisan('test:password-reset', ['email' => 'test@example.com'])
@@ -190,7 +190,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_stores_hashed_token(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $this->artisan('test:password-reset', ['email' => 'test@example.com']);
@@ -209,7 +209,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_sets_created_at_timestamp(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $beforeTime = now();
@@ -232,7 +232,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_with_special_characters_in_name(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create([
             'email' => 'test@example.com',
             'name' => 'Nguyễn Văn Ắ',
@@ -249,11 +249,11 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_finds_user_with_case_insensitive_email(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $this->artisan('test:password-reset', ['email' => 'TEST@EXAMPLE.COM'])
-            ->expectsOutput('Found user: ' . $user->name . ' (test@example.com)')
+            ->expectsOutput('Found user: '.$user->name.' (test@example.com)')
             ->assertExitCode(0); // Database queries are case-insensitive by default in most DBs
     }
 
@@ -273,7 +273,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_can_be_called_multiple_times(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create(['email' => 'test@example.com']);
 
         $this->artisan('test:password-reset', ['email' => 'test@example.com'])
@@ -306,7 +306,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_works_for_admin_users(): void
     {
         Notification::fake();
-        
+
         $admin = User::factory()->create([
             'email' => 'admin@example.com',
             'role' => 'admin',
@@ -324,7 +324,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_works_for_regular_users(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create([
             'email' => 'user@example.com',
             'role' => 'user',
@@ -342,7 +342,7 @@ class TestPasswordResetCommandTest extends TestCase
     public function test_command_displays_complete_output(): void
     {
         Notification::fake();
-        
+
         $user = User::factory()->create([
             'email' => 'test@example.com',
             'name' => 'Test User',

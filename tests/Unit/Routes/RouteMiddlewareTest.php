@@ -15,7 +15,7 @@ class RouteMiddlewareTest extends TestCase
         $adminRoutes = collect(Route::getRoutes())->filter(function ($route) {
             return str_starts_with($route->getName(), 'admin.');
         });
-        
+
         foreach ($adminRoutes as $route) {
             $middleware = $route->middleware();
             $this->assertTrue(
@@ -32,9 +32,10 @@ class RouteMiddlewareTest extends TestCase
     {
         $adminRoutes = collect(Route::getRoutes())->filter(function ($route) {
             $name = $route->getName();
+
             return $name && str_starts_with($name, 'admin.') && $name !== 'admin.';
         });
-        
+
         foreach ($adminRoutes as $route) {
             $middleware = $route->middleware();
             $this->assertTrue(
@@ -52,7 +53,7 @@ class RouteMiddlewareTest extends TestCase
         $userRoutes = collect(Route::getRoutes())->filter(function ($route) {
             return str_starts_with($route->getName(), 'user.');
         });
-        
+
         foreach ($userRoutes as $route) {
             $middleware = $route->middleware();
             $this->assertTrue(
@@ -69,9 +70,10 @@ class RouteMiddlewareTest extends TestCase
     {
         $webRoutes = collect(Route::getRoutes())->filter(function ($route) {
             $name = $route->getName();
-            return $name && !str_starts_with($name, 'api.') && !str_starts_with($name, 'storage.');
+
+            return $name && ! str_starts_with($name, 'api.') && ! str_starts_with($name, 'storage.');
         });
-        
+
         foreach ($webRoutes as $route) {
             $middleware = $route->middleware();
             $this->assertTrue(
@@ -87,12 +89,12 @@ class RouteMiddlewareTest extends TestCase
     public function guest_routes_accessible_without_auth()
     {
         $guestRoutes = ['login', 'register', 'home'];
-        
+
         foreach ($guestRoutes as $routeName) {
             if (Route::has($routeName)) {
                 $route = Route::getRoutes()->getByName($routeName);
                 $middleware = $route->middleware();
-                
+
                 // Guest routes should not require auth middleware
                 $this->assertFalse(
                     in_array('auth', $middleware),

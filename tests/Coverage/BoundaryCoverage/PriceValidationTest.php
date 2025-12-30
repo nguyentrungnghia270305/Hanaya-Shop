@@ -2,14 +2,14 @@
 
 namespace Tests\Coverage\BoundaryCoverage;
 
-use Tests\TestCase;
-use App\Models\Product\Product;
 use App\Models\Product\Category;
+use App\Models\Product\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * Price Validation Boundary Coverage Test
- * 
+ *
  * Tests boundary conditions for price-related calculations including:
  * - Minimum price values (0, 0.01)
  * - Maximum price values (practical limits)
@@ -17,7 +17,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  * - Price calculation accuracy with various discount levels
  * - Negative price handling
  * - Extreme value handling
- * 
+ *
  * Boundary Analysis:
  * - Price: 0, 0.01, 0.99, 1.00, 999999.99, MAX_VALUE
  * - Discount: 0%, 0.01%, 50%, 99.99%, 100%

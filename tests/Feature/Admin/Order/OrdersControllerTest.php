@@ -51,7 +51,7 @@ class OrdersControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('admin.orders.index');
         $response->assertViewHas('order');
-        
+
         $orders = $response->viewData('order');
         $this->assertEquals(10, $orders->perPage());
     }
@@ -62,7 +62,7 @@ class OrdersControllerTest extends TestCase
     public function test_index_search_by_order_id(): void
     {
         Order::query()->delete();
-        
+
         $order1 = Order::factory()->create(['user_id' => $this->customer->id]);
         Order::factory()->create(['user_id' => $this->customer->id]);
 
@@ -197,7 +197,7 @@ class OrdersControllerTest extends TestCase
     //     $response->assertStatus(200);
     //     $response->assertViewIs('admin.orders.show');
     //     $response->assertViewHas('order');
-        
+
     //     $viewOrder = $response->viewData('order');
     //     $this->assertTrue($viewOrder->relationLoaded('orderDetail'));
     //     $this->assertTrue($viewOrder->relationLoaded('user'));
@@ -245,7 +245,7 @@ class OrdersControllerTest extends TestCase
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
-        
+
         $order->refresh();
         $this->assertEquals('processing', $order->status);
     }
@@ -331,7 +331,7 @@ class OrdersControllerTest extends TestCase
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
-        
+
         $order->refresh();
         $this->assertEquals('shipped', $order->status);
     }
@@ -371,7 +371,7 @@ class OrdersControllerTest extends TestCase
 
     //     $response->assertRedirect();
     //     $response->assertSessionHas('success');
-        
+
     //     $payment->refresh();
     //     $this->assertEquals('completed', $payment->payment_status);
     // }
@@ -455,7 +455,7 @@ class OrdersControllerTest extends TestCase
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
-        
+
         $order->refresh();
         $this->assertEquals('cancelled', $order->status);
     }
@@ -510,7 +510,7 @@ class OrdersControllerTest extends TestCase
     //     $product1 = Product::factory()->create(['stock_quantity' => 50]);
     //     $product2 = Product::factory()->create(['stock_quantity' => 30]);
     //     $order = Order::factory()->create(['user_id' => $this->customer->id]);
-        
+
     //     OrderDetail::factory()->create([
     //         'order_id' => $order->id,
     //         'product_id' => $product1->id,
@@ -651,7 +651,7 @@ class OrdersControllerTest extends TestCase
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
-        
+
         $order->refresh();
         $this->assertEquals('cancelled', $order->status);
     }

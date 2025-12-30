@@ -39,7 +39,7 @@ class PostControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('admin.posts.index');
         $response->assertViewHas('posts');
-        
+
         $posts = $response->viewData('posts');
         $this->assertEquals(10, $posts->perPage());
     }
@@ -149,7 +149,7 @@ class PostControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('admin.posts.show');
         $response->assertViewHas('post');
-        
+
         $viewPost = $response->viewData('post');
         $this->assertTrue($viewPost->relationLoaded('author'));
     }
@@ -190,7 +190,7 @@ class PostControllerTest extends TestCase
 
         $response->assertRedirect(route('admin.post.index'));
         $response->assertSessionHas('success');
-        
+
         $this->assertDatabaseHas('posts', [
             'title' => 'New Blog Post',
             'content' => 'This is the content of the blog post.',
@@ -223,7 +223,7 @@ class PostControllerTest extends TestCase
     public function test_store_with_image_upload(): void
     {
         $this->markTestSkipped('GD extension not available in test environment');
-        
+
         $image = UploadedFile::fake()->image('post.jpg', 800, 600);
 
         $data = [
@@ -236,7 +236,7 @@ class PostControllerTest extends TestCase
         $response = $this->post(route('admin.post.store'), $data);
 
         $response->assertRedirect(route('admin.post.index'));
-        
+
         $post = Post::where('title', 'Post with Image')->first();
         $this->assertNotNull($post->image);
         $this->assertStringContainsString('post_featured_', $post->image);
@@ -392,7 +392,7 @@ class PostControllerTest extends TestCase
 
         $response->assertRedirect(route('admin.post.index'));
         $response->assertSessionHas('success');
-        
+
         $this->assertDatabaseHas('posts', [
             'id' => $post->id,
             'title' => 'Updated Title',
@@ -429,7 +429,7 @@ class PostControllerTest extends TestCase
     public function test_update_with_new_image_replaces_old(): void
     {
         $this->markTestSkipped('GD extension not available in test environment');
-        
+
         File::shouldReceive('exists')->andReturn(true);
         File::shouldReceive('delete')->once();
 
@@ -484,7 +484,7 @@ class PostControllerTest extends TestCase
 
         $response->assertRedirect(route('admin.post.index'));
         $response->assertSessionHas('success');
-        
+
         $this->assertDatabaseMissing('posts', [
             'id' => $post->id,
         ]);
@@ -496,7 +496,7 @@ class PostControllerTest extends TestCase
     public function test_destroy_deletes_featured_image(): void
     {
         $this->markTestSkipped('File mocking conflicts with translation system');
-        
+
         File::shouldReceive('get')->zeroOrMoreTimes()->andReturn('{}');
         File::shouldReceive('exists')->andReturn(true);
         File::shouldReceive('delete')->andReturn(true);
@@ -507,7 +507,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $response = $this->delete(route('admin.post.destroy', $post->id));
-        
+
         $response->assertRedirect(route('admin.post.index'));
         $this->assertDatabaseMissing('posts', ['id' => $post->id]);
     }
@@ -563,7 +563,7 @@ class PostControllerTest extends TestCase
     public function test_store_creates_upload_directory(): void
     {
         $this->markTestSkipped('GD extension not available in test environment');
-        
+
         $image = UploadedFile::fake()->image('post.jpg');
 
         $data = [
@@ -584,7 +584,7 @@ class PostControllerTest extends TestCase
     public function test_update_creates_upload_directory(): void
     {
         $this->markTestSkipped('GD extension not available in test environment');
-        
+
         $post = Post::factory()->create(['user_id' => $this->admin->id]);
         $image = UploadedFile::fake()->image('new.jpg');
 

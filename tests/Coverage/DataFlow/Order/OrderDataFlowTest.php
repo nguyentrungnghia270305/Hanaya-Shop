@@ -14,7 +14,6 @@
  * - Stock adjustment data flow
  *
  * @category Testing
- * @package  Tests\Coverage\DataFlow\Order
  */
 
 // namespace Tests\Coverage\DataFlow\Order;
@@ -239,7 +238,7 @@
 //         // Then: Order reflects discounted price
 //         $order = Order::where('user_id', $user->id)->first();
 //         $orderDetail = OrderDetail::where('order_id', $order->id)->first();
-        
+
 //         // Note: Order captures current price, which should be original price
 //         // but total_amount should reflect the calculation
 //         $this->assertNotNull($order);
@@ -277,7 +276,7 @@
 
 //         // When: Progress through each status
 //         $currentIndex = 0; // DEF: Track position in flow
-        
+
 //         // Confirm (pending → processing)
 //         $this->actingAs($order->user)->post(route('admin.orders.confirm', $order->id));
 //         $order->refresh();
@@ -500,7 +499,7 @@
 //         // Given: Order with multiple products
 //         $user = User::factory()->create();
 //         $address = Address::factory()->create(['user_id' => $user->id]);
-        
+
 //         $stocks = [100, 50, 75]; // DEF: Initial stocks
 //         $quantities = [5, 3, 7]; // DEF: Order quantities
 //         $products = [];
